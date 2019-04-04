@@ -1,0 +1,329 @@
+{% extends 'crm_base.html' %}
+{% load widget_tweaks %}
+{% block title %} НТЗ {% endblock %}
+
+{% block styles %}
+<link href="/static/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<link href="/static/css/plugins/dualListbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block leftMenu %}
+    <li>
+        <a href="/mariner/"><i class="fa fa-th-large"></i> <span class="nav-label">Головна</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/trainigDirections/"><i class="fa fa-sitemap"></i> <span class="nav-label">Напрямки Підготовки</span> </a>
+    </li>
+    {% if user.groups.all.0.name != 'НТЗ' %}
+    <li class="active">
+        <a href="/mariner/trainigOrganisations/"><i class="fa fa-pie-chart"></i> <span class="nav-label">НТЗ</span> </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href="/mariner/sailors/"><i class="fa fa-files-o"></i> <span class="nav-label">Моряки</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/certification/"><i class="fa fa-edit"></i> <span class="nav-label">Сертифiкати</span></a>
+    </li>
+    {% if user.groups.all.0.name == 'Адміністратор' %}
+    <li>
+        <a href="/mariner/regulations/"><i class="fa fa-database"></i> <span class="nav-label">Нормативнi документы</span></a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Навчально-Тренувальний Заклад</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/mariner/">Головна</a>
+            </li>
+            <li>
+                <a href="/mariner/trainigOrganisations/">НТЗ</a>
+            </li>
+            <li class="active">
+                <strong>Навчально-Тренувальний Заклад</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<p></p>
+
+
+<div class="row">
+	<div class="col-lg-12">
+        <div class="ibox-title">
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
+                {% endfor %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="font-normal">{{ form.organisation_id.label_tag }}</label>
+                            {% if form.is_bound %}
+                                    {% if form.organisation_id.errors %}
+                                        <div class="form-group has-error">
+                                            {% render_field form.organisation_id class="form-control is-invalid" %}
+                                        </div>
+                                        {% for error in form.organisation_id.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            {% render_field form.organisation_id class="form-control is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div>
+                                        {{ form.organisation_id|add_class:"form-control" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if form.organisation_id.help_text %}
+                                    <small class="form-text text-muted">{{ form.organisation_id.help_text }}</small>
+                                {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="font-normal">{{ form.organisation_name.label_tag }}</label>
+                            {% if form.is_bound %}
+                                    {% if form.organisation_name.errors %}
+                                        <div class="form-group has-error">
+                                            {% render_field form.organisation_name class="form-control is-invalid" %}
+                                        </div>
+                                        {% for error in form.organisation_name.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            {% render_field form.organisation_name class="form-control is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div>
+                                        {{ form.organisation_name|add_class:"form-control" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if form.organisation_name.help_text %}
+                                    <small class="form-text text-muted">{{ form.organisation_name.help_text }}</small>
+                                {% endif %}
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="font-normal">{{ form.orgnisation_email.label_tag }}</label>
+                            {% if form.is_bound %}
+                                    {% if form.orgnisation_email.errors %}
+                                        <div class="form-group has-error">
+                                            {% render_field form.orgnisation_email class="form-control is-invalid" %}
+                                        </div>
+                                        {% for error in form.orgnisation_email.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            {% render_field form.orgnisation_email class="form-control is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div>
+                                        {{ form.orgnisation_email|add_class:"form-control" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if form.orgnisation_email.help_text %}
+                                    <small class="form-text text-muted">{{ form.orgnisation_email.help_text }}</small>
+                                {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group" id="data_1">
+                                <label class="font-normal">{{ form.activated.label_tag }}</label>
+                                {% if form.is_bound %}
+                                    {% if form.activated.errors %}
+                                    <div class="form-group has-error">
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            {% render_field form.activated class="form-control is-invalid" %}
+                                        </div>
+                                    </div>
+                                        {% for error in form.activated.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            {% render_field form.activated class="form-control is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        {{ form.activated|add_class:"form-control" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if form.activated.help_text %}
+                                    <small class="form-text text-muted">{{ form.activated.help_text }}</small>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group" id="data_1">
+                                <label class="font-normal">{{ form.active_till.label_tag }}</label>
+                                {% if form.is_bound %}
+                                    {% if form.active_till.errors %}
+                                    <div class="form-group has-error">
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            {% render_field form.active_till class="form-control is-invalid" %}
+                                        </div>
+                                    </div>
+                                        {% for error in form.active_till.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            {% render_field form.active_till class="form-control is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        {{ form.active_till|add_class:"form-control" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if form.active_till.help_text %}
+                                    <small class="form-text text-muted">{{ form.active_till.help_text }}</small>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hr-line-dashed"></div>
+
+                    <!-- <div class="row">
+                        <div class="col-md-9"> -->
+                            <label class="font-normal">{{ form.directions.label_tag }}</label>
+                            {% if form.is_bound %}
+                                    {% if form.directions.errors %}
+                                        <div class="form-group has-error">
+                                            {% render_field form.directions class="form-control dual_select is-invalid" %}
+                                        </div>
+                                        {% for error in form.directions.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            {% render_field form.directions class="form-control dual_select is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div>
+                                        {{ form.directions|add_class:"form-control dual_select" }}
+                                    </div>
+                                {% endif %}
+
+                                {% if form.directions.help_text %}
+                                    <small class="form-text text-muted">{{ form.directions.help_text }}</small>
+                                {% endif %}
+                       <!--  </div>
+                    </div> -->
+
+                    <div class="hr-line-dashed"></div>
+
+                    <div class="form-group text-center m-t-30">
+                        <div class="text-center">
+                            <button class="btn btn-primary " type="submit"><i class="fa fa-check"></i>&nbsp;Зберегти</button>
+                            <a href="{% url 'crm_trainigOrganisations' %}"><button class="btn btn-info " type="button">Скасувати</button></a>
+                        </div>
+                    </div>
+                    <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            </form>
+
+    </div>  
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <p></p>
+                </div>
+            </div>
+    </div>
+    <div class="col-lg-2">
+    
+    </div> 
+ <p></p>    
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Date Picker-->
+<script src="/static/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Dual Listbox -->
+<script src="/static/js/plugins/dualListbox/jquery.bootstrap-duallistbox.js"></script>
+<!-- <script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script> -->
+
+<script>
+    $(document).ready(function(){
+
+        $('#data_1 .input-group.date').datepicker({
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true,
+                format: "dd.mm.yyyy"
+            });
+
+        $('.dual_select').bootstrapDualListbox({
+            selectorMinimalHeight: 160
+        });
+
+
+    });
+
+</script>
+
+{% endblock %}

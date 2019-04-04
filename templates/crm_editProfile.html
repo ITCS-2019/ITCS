@@ -1,0 +1,89 @@
+{% extends 'crm_base.html' %}
+{% block title %} Профіль {% endblock %}
+
+{% block styles %}
+    <!-- <link href="/static/css/plugins/toastr/toastr.min.css" rel="stylesheet"> -->
+{% endblock %}
+
+{% block leftMenu %}
+    <li>
+        <a href="/mariner/"><i class="fa fa-th-large"></i> <span class="nav-label">Головна</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/trainigDirections/"><i class="fa fa-sitemap"></i> <span class="nav-label">Напрямки Підготовки</span> </a>
+    </li>
+    {% if user.groups.all.0.name != 'НТЗ' %}
+    <li>
+        <a href="/mariner/trainigOrganisations/"><i class="fa fa-pie-chart"></i> <span class="nav-label">НТЗ</span> </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href="/mariner/sailors/"><i class="fa fa-files-o"></i> <span class="nav-label">Моряки</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/certification/"><i class="fa fa-edit"></i> <span class="nav-label">Сертифiкати</span></a>
+    </li>
+    {% if user.groups.all.0.name == 'Адміністратор' %}
+    <li>
+        <a href="/mariner/regulations/"><i class="fa fa-database"></i> <span class="nav-label">Нормативнi документы</span></a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Профіль</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/mariner/">Головна</a>
+            </li>
+            <li class="active">
+                <strong>Профіль</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox-title">
+
+            <form method="post">
+                {% csrf_token %}
+                {{ user_form.as_p }}
+                {{ profile_form.as_p }}
+                <button type="submit">Зберегти</button>
+            </form> 
+                
+            
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Toastr -->
+<!-- <script src="/static/js/plugins/toastr/toastr.min.js"></script>
+
+<script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 2000
+                };
+                toastr.success('Система реєстрації та перевірки документів моряків', 'Вітаємо у ITCS');
+
+            }, 1300);
+        });
+</script> -->     
+{% endblock %}

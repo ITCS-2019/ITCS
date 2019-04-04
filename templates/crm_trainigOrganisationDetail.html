@@ -1,0 +1,204 @@
+{% extends 'crm_base.html' %}
+{% block title %} НТЗ {% endblock %}
+{% block styles %}
+    <link href="/static/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block userName %}{{ userName }}{% endblock %}
+{% block userGroup %}{{ userGroup }}{% endblock %}
+
+{% block leftMenu %}
+    <li>
+        <a href="/mariner/"><i class="fa fa-th-large"></i> <span class="nav-label">Головна</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/trainigDirections/"><i class="fa fa-sitemap"></i> <span class="nav-label">Напрямки Підготовки</span> </a>
+    </li>
+    {% if user.groups.all.0.name != 'НТЗ' %}
+    <li class="active">
+        <a href="/mariner/trainigOrganisations/"><i class="fa fa-pie-chart"></i> <span class="nav-label">НТЗ</span> </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href="/mariner/sailors/"><i class="fa fa-files-o"></i> <span class="nav-label">Моряки</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/certification/"><i class="fa fa-edit"></i> <span class="nav-label">Сертифiкати</span></a>
+    </li>
+    {% if user.groups.all.0.name == 'Адміністратор' %}
+    <li>
+        <a href="/mariner/regulations/"><i class="fa fa-database"></i> <span class="nav-label">Нормативнi документы</span></a>
+    </li>
+    {% endif %} 
+{% endblock %}
+
+{% block content %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>{{ trainigOrganisation.organisation_name }} </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/mariner/">Головна</a>
+            </li>
+            <li>
+                <a href="/mariner/trainigOrganisations/">НТЗ</a>
+            </li>
+            <li class="active">
+                <strong>{{ trainigOrganisation.organisation_name }}</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<p></p>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Діючи Напрямки Підготовки </h5>                    
+                    <div class="ibox-tools">
+                        <a href="/mariner/editTrainigOrganisation/{{trainigOrganisation.organisation_name}}/" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Ред. </a>
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+            </div>
+            <div class="ibox-content">
+                <table class="table table-striped footable footable-1 footable-filtering footable-filtering-left footable-paging footable-paging-center breakpoint-lg" data-toggle-column="first" data-filtering="true" data-paging="true" data-sorting="true" id="regulations-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Напрямок Підготовки</th>
+                            <!-- <th>Ціна</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for direction in trainigOrganisation.directions.all %}
+                            <tr data-expanded="false">
+                                <td>{{direction.direction_id}}</td>
+                                <td>{{direction.direction_title}}</td>
+                                <!-- <td>{{direction.price}}</td> -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <ul class="pagination pull-right"></ul>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Сертифікати на підтвердження</h5>                    
+                    <div class="ibox-tools">
+                        <a href="/mariner/certification/exportToRegister/{{ trainigOrganisation.organisation_name }}/"><button class="btn btn-w-m btn-success" type="button"><i class="fa fa-upload"></i> Вигрузка у Реєстр</button>
+                        </a>
+                        <a href="/mariner/certification/give/{{ trainigOrganisation.organisation_name }}/"><button class="btn btn-primary" type="button"><i class="fa fa-check"></i> Видати Сертифікати</button>
+                        </a>
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+            </div>
+            <div class="ibox-content">
+                <div class="table-responsive">
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                <table class="table table-striped table-bordered table-hover dataTables-example dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" role="grid">
+                    <thead>
+                        <tr role="row">
+                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера Сертифікатів: activate to sort column descending" aria-sort="ascending" style="width: 50.078125px;">№ Сертифіката
+                            </th>
+                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера Форм: activate to sort column descending" aria-sort="ascending" style="width: 50.078125px;">№ Форми
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Дати видачі: activate to sort column ascending" style="width: 80.640625px;">Дата видачі
+                            </th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Напрямки підготовки: activate to sort column ascending">Напрямок підготовки</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Моряк: activate to sort column ascending">Моряк</th>
+                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Статус: activate to sort column ascending" style="width: 60.828125px;">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for certificate in trainigOrganisation.get_certInReview %}
+                        <tr class="gradeA odd" role="row">
+                            <td class="sorting_1"><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.certf_number}}</a></td>
+                            <td class="sorting_1"><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.form_number}}</a></td>
+                            <td>{{certificate.date_of_issue|date:"d.m.Y"}}</td>
+                            <td><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.training_direction}}</a></td>
+                            <td>{{certificate.sailor}}</td>
+                            <td>
+                            {% if certificate.status == 0 %}
+                                Чернетка
+                            {% elif certificate.status == 1 %}
+                                Обробка
+                            {% elif certificate.status == 2 %}
+                                Видан
+                            {% else %}
+                                Анульований
+                            {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %} 
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th rowspan="1" colspan="1">№ Сертифіката</th>
+                            <th rowspan="1" colspan="1">№ Форми</th>
+                            <th rowspan="1" colspan="1">Дата видачі</th>
+                            <th rowspan="1" colspan="1">Напрямок підготовки</th>
+                            <th rowspan="1" colspan="1">Моряк</th>
+                            <th rowspan="1" colspan="1">Статус</th>
+                        </tr>
+                    </tfoot>
+                </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/plugins/dataTables/datatables.min.js"></script>
+
+<script>
+        $(document).ready(function() {
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    {extend: 'print',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                    }
+                    }
+                ]
+
+            });
+        });
+</script>    
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'crm_base.html' %}
+{% block title %} Нормативнi документы {% endblock %}
+{% block styles %} 
+<!-- FooTable Bootstrap CSS -->
+    <link href="/static/css/plugins/footable/footable.bootstrap.min.css" rel="stylesheet">
+
+{% endblock %}
+
+{% block userName %}{{ userName }}{% endblock %}
+{% block userGroup %}{% endblock %}
+
+{% block leftMenu %}
+    <li>
+        <a href="/mariner/"><i class="fa fa-th-large"></i> <span class="nav-label">Головна</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/trainigDirections/"><i class="fa fa-sitemap"></i> <span class="nav-label">Напрямки Підготовки</span> </a>
+    </li>
+    {% if user.groups.all.0.name != 'НТЗ' %}
+    <li>
+        <a href="/mariner/trainigOrganisations/"><i class="fa fa-pie-chart"></i> <span class="nav-label">НТЗ</span> </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href="/mariner/sailors/"><i class="fa fa-files-o"></i> <span class="nav-label">Моряки</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/certification/"><i class="fa fa-edit"></i> <span class="nav-label">Сертифiкати</span></a>
+    </li>
+    {% if user.groups.all.0.name == 'Адміністратор' %}
+    <li class="active">
+        <a href="/mariner/regulations/"><i class="fa fa-database"></i> <span class="nav-label">Нормативнi документы</span></a>
+    </li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Нормативнi документы</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/mariner/">Головна</a>
+            </li>
+            <li class="active">
+                <strong>Нормативнi документы</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<p></p>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+    <a href="{% url 'new_regulation' %}"><button class="btn btn-w-m btn-success" type="button"><i class="fa fa-plus-square"></i> Новий документ</button></a>
+    </div></div></div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Таблиця документів</h5>                    
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+            </div>
+            <div class="ibox-content">
+                
+                
+                    <label>
+                        Select the page size
+                        <button type="button" data-page-size="10">10</button>
+                        <button type="button" data-page-size="20">20</button>
+                        <button type="button" data-page-size="30">30</button>
+                    </label>
+                
+                    <!-- <table class="table footable footable-1 footable-filtering footable-filtering-right footable-paging footable-paging-center breakpoint-lg" data-filtering="true" data-paging="true" data-sorting="true" id="regulations-table"> 
+
+                    table table-striped footable footable-1 footable-filtering footable-filtering-right footable-paging footable-paging-center breakpoint-lg
+                    -->
+                    <table class="table table-striped footable footable-1 footable-filtering footable-filtering-left footable-paging footable-paging-center breakpoint-lg" data-toggle-column="first" data-filtering="true" data-paging="true" data-sorting="true" id="regulations-table">
+     <!--               <table id="regulations-table" class="footable table table-stripped" data-paging="true" data-filter=#filter> -->
+
+                                <thead>
+                                <tr>
+                                    <th>Doc Number</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Date Activation</th>
+                                    <th>#</th>
+                                    <th data-breakpoints="all" data-title="User">User</th>
+                                    <th data-breakpoints="all" data-title="Organisation">Organisation</th>
+                                    <th data-breakpoints="all" data-title="Text">Text</th>
+                                   <!--  <th data-hide="phone,tablet"></th> -->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {% for regulation in regulations %}
+                                        <tr data-expanded="false">
+                                            <td><a href="/regulations/">{{regulation.number}}</a></td>
+                                            <td>{{regulation.title}}</td>
+                                            <td>{{regulation.status}}</td>
+                                            <td>{{regulation.date_activation}}</td>
+                                            <td><a href="/mariner/editRegulation/{{regulation.number}}/"><button class="btn btn-info" type="button"><i class="fa fa-paste"></i> Edit</button></a></td>
+                                            <td>{{regulation.user}}</td>
+                                            <td class="center">{{regulation.organisation}}</td>
+                                            <td class="center">{{regulation.text}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                <tr data-expanded="false">
+                                    <td><a href="/regulations/">Trident</a></td>
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Internet Explorer 4.0</td>
+                                    <td><button class="btn btn-info" type="button"><i class="fa fa-paste"></i> Edit</button></td>
+                                    <td>Win 95+</td>
+                                    <td class="center">4</td>
+                                    <td class="center">X</td>
+                                </tr>
+                                <tr class="gradeC">
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Internet
+                                        Explorer 5.0
+                                    </td>
+                                    <td>Win 95+</td>
+                                    <td>Win 95+</td>
+                                    <td class="center">5</td>
+                                    <td class="center">C</td>
+                                </tr>
+                                <tr class="gradeA">
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Internet
+                                        Explorer 5.5
+                                    </td>
+                                    <td>Win 95+</td>
+                                    <td>Win 95+</td>
+                                    <td class="center">5.5</td>
+                                    <td class="center">A</td>
+                                </tr>
+                                <tr class="gradeX">
+                                    <td>Misc</td>
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>Text only</td>
+                                    <td>Win 95+</td>
+                                    <td class="center">-</td>
+                                    <td class="center">X</td>
+                                </tr>
+                                <tr class="gradeU">
+                                    <td>Other browsers</td>
+                                    <td>Trident</td>
+                                    <td>Trident</td>
+                                    <td>All others</td>
+                                    <td>Win 95+</td>
+                                    <td>-</td>
+                                    <td class="center">-</td>
+                                    <td class="center">U</td>
+                                </tr>
+                                </tbody>
+                                <tfoot>
+                                <tr>
+                                    <td colspan="5">
+                                        <ul class="pagination pull-right"></ul>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Add in any FooTable dependencies we may need -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<!-- FooTable -->
+<script src="/static/js/plugins/footable/footable.js"></script>
+<script>
+    $(document).ready(function() {
+
+            $('.footable').footable();
+
+            $('[data-page-size]').on('click', function(e){
+            e.preventDefault();
+            var newSize = $(this).data('pageSize');
+            FooTable.get('#regulations-table').pageSize(newSize);
+            });    
+           
+
+    });
+
+</script>
+{% endblock %}

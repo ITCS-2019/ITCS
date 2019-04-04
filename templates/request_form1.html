@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ITCS | Register</title>
+
+    <style>
+        div {
+            /*border: 1px solid black; /* Параметры рамки */
+            padding: 5px; /* Поля вокруг текста */
+            margin-bottom: 5px; /* Отступ снизу */
+        }
+        #left { text-align: left; }
+        #right { text-align: right; }
+        #center { text-align: center; }
+        .content {
+            width: 75%; /* Ширина слоя */
+            background: #fc0; /* Цвет фона */
+        }
+  </style>
+
+    <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+    <div id="right">
+        <p>
+            Додаток № 01
+        </p>
+        <p>
+            До договору № ___ /2019-НТЗ
+        </p>
+        <p>
+            про надання послуг з реєстрації документів моряків України
+        </p>
+        <p>
+            та їх внесення у Єдиний державний реєстр документів моряків
+        </p>
+        <p>
+            від «___»___________ 2019 р.
+        </p>
+        <p>
+            На бланку Замовника
+        </p>
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <p>
+                                Вих. № _____________________
+                            </p>
+                            <p>
+                                від _________________________
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                Інспекції з питань підготовки та дипломування моряків
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p>
+        Відповідно до договору № ________-НТЗ від__________ р. просимо надати
+        реєстраційний номер для подальшого внесення до єдиного Державного реєстру
+        документів моряків інформацію про свідоцтва (сертифікати), які видаються
+        __________________________________________
+    </p>
+    <p>
+        (назва НТЗ або його відокремленого підрозділу)
+    </p>
+    <p>
+        після закінчення відповідних курсів відповідно до даних таблиці 1:
+    </p>
+    <p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Email</th>
+                    </tr>
+            </thead>
+            <tbody>
+                {% for person in certifications %}
+                <tr>
+                    <td>{{ person.first_name_en }}</td>
+                    <td>{{ person.last_name_ukr }}</td>
+                    <td>{{ person.first_name_ukr }}</td>
+                </tr>
+                {% endfor %}    
+            </tbody>
+        </table>
+    </p>
+
+</body>
+
+</html>

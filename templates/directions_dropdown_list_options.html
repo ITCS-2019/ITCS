@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for direction in dirOfOrg %}
+<option value="{{ direction.pk }}">{{ direction.direction_title }}</option>
+{% endfor %}
