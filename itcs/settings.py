@@ -34,8 +34,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'regulations.apps.RegulationsConfig',
-    'mariner.apps.MarinerConfig',
     'accounts.apps.AccountsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -44,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'rest_framework',
+    'api.apps.ApiConfig',
+    'regulations.apps.RegulationsConfig',
+    'mariner.apps.MarinerConfig',
 ]
 
 MIDDLEWARE = [

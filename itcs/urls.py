@@ -34,6 +34,7 @@ urlpatterns = [
     path('', index_page, name='index_page'),
     path('admin/', admin.site.urls),
     # path('accounts/', include('accounts.urls')),
+    path('mariner/api/', include('api.urls')),
     path('mariner/', include('mariner.urls')),
     #override django login/loguot view with CRM template
     path('mariner/', include('django.contrib.auth.urls')),
