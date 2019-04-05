@@ -48,20 +48,22 @@ $(function() {
                 visible: true,
                 applyFilter: "auto"
             },
+            hoverStateEnabled: true,
             wordWrapEnabled: true,
             columnAutoWidth: true,
             onCellClick: function (e) {
                 switch (e.column.dataField) {
                     case 'certificateNumber':
                         window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-                        break;
+                        return;
                     case 'sailor':
                         window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-                        break;
+                        return;
                     case 'ntz':
                         window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
-                        break;
+                        return;
                 }
+                window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
             },
             onRowClick: function (e) {
                 let component = e.component;
