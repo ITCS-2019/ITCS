@@ -1,10 +1,4 @@
 $(function() {
-    console.log('certifications');
-    console.log(certifications);
-    console.log('certifications');
-
-    console.log(DevExpress.localization);
-
     if ($('#certificates-grid').length > 0) {
         DevExpress.localization.locale('ru');
 
@@ -38,7 +32,7 @@ $(function() {
             },
             export: {
                 enabled: true,
-                fileName: "ntz",
+                fileName: "certificates",
                 allowExportSelectedData: true
             },
             headerFilter: {
@@ -63,7 +57,10 @@ $(function() {
                         window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
                         return;
                 }
-                window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+
+                if (e.column.dataField) {
+                    window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                }
             },
             onRowClick: function (e) {
                 let component = e.component;
