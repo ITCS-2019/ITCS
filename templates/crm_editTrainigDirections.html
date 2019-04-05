@@ -166,7 +166,7 @@
                 <div class="hr-line-dashed"></div>
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-md-offset-1">
                         <label class="font-normal">{{ form.price_id.label_tag }}</label>
                         {% if form.is_bound %}
                             {% if form.price_id.errors %}
@@ -194,7 +194,7 @@
                         {% endif %}
                     </div>
 
-                    <!-- <div class="col-md-4 col-md-offset-1">
+                    <div class="col-md-4 col-md-offset-1">
                         <label class="font-normal">{{ form.price.label_tag }}</label>
                         {% if form.is_bound %}
                             {% if form.price.errors %}
@@ -220,7 +220,7 @@
                         {% if form.price.help_text %}
                             <small class="form-text text-muted">{{ form.price.help_text }}</small>
                         {% endif %}
-                    </div> -->
+                    </div>
                 </div>
 
                 <div class="hr-line-dashed"></div>

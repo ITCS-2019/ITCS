@@ -87,7 +87,7 @@
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Напрямок навчання: activate to sort column ascending" style="width: 70.0px;">Напрямок навчання</th>
                                     <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Рівень кваліфікації: activate to sort column ascending" style="width: 70.0px;">Рівень кваліфікації</th>
-                                    <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Ціна: activate to sort column ascending" style="width: 70.0px;">Ціна</th> -->
+                                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Ціна: activate to sort column ascending" style="width: 70.0px;">Ціна</th>
                                     {% if user.groups.all.0.name != 'НТЗ' %}
                                     <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="activate to sort column ascending" style="width: 50.0px;"></th>
                                     {% endif %}
@@ -100,7 +100,7 @@
                                         <td>{{trainigDirection.direction_title}}</td>
                                         <td>{{trainigDirection.allow_functions}}</td>
                                         <td>{{trainigDirection.level}}</td>
-                                        <!-- <td>{{trainigDirection.price}}</td> -->
+                                        <td>{{trainigDirection.price}}</td>
                                         {% if user.groups.all.0.name != 'НТЗ' %}
                                         <td><a href="/mariner/editDirection/{{trainigDirection.id}}/" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Ред. </a></td>
                                         {% endif %}
@@ -113,7 +113,7 @@
                                         <th rowspan="1" colspan="1">Назва Напрямка Пiдготовки</th>
                                         <th rowspan="1" colspan="1">Напрямок навчання</th>
                                         <th rowspan="1" colspan="1">Рівень кваліфікації</th>
-                                        <!-- <th rowspan="1" colspan="1">Ціна</th> -->
+                                        <th rowspan="1" colspan="1">Ціна</th>
                                         {% if user.groups.all.0.name != 'НТЗ' %}
                                         <th rowspan="1" colspan="1"></th>
                                         {% endif %}
