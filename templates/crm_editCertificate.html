@@ -694,9 +694,7 @@
             $("#id_trainigOrganisation").change(function () {
                 var url = $("#certificateForm").attr("data-directions-url");
                 var organisationName = $(this).val();
-                console.log( $(this).val() );
-                alert($(this).val());
-                $.ajax({           
+                $.ajax({
                     url: url,
                     data: {
                     'organisation': 'Приватне підприємство \"Ізмаїльський морський тренажерний центр \"Марін Про Сервіс\"'       // add to the GET parameters

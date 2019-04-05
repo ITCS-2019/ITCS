@@ -1,36 +1,15 @@
 $(function() {
-    function getCertificates() {
-        $.get('mariner/api/allCerts/', function(data, status) {
-            console.log('data---------------------');
-            console.log(data);
-            console.log('data---------------------');
-        });
-    }
+    console.log('certifications');
+    console.log(certifications);
+    console.log('certifications');
+
+    console.log(DevExpress.localization);
 
     if ($('#certificates-grid').length > 0) {
-        let certificates = [
-            {
-                certificateNumber: '122',
-                blankNumber: '321',
-                issueDate: '12-01-2019',
-                specialty: 'Штурман',
-                sailor: 'Рогов Василий Петрович',
-                ntz: 'Вектор 21',
-                status: 'Выдан'
-            },
-            {
-                certificateNumber: '122',
-                blankNumber: '321',
-                issueDate: '12-01-2019',
-                specialty: 'Штурман',
-                sailor: 'Рогов Василий Петрович',
-                ntz: 'Вектор 21',
-                status: 'Чернетка'
-            },
-        ];
+        DevExpress.localization.locale('ru');
 
         let certificatesGrid = $('#certificates-grid').dxDataGrid({
-            dataSource: certificates,
+            dataSource: certifications,
             allowColumnReordering: false,
             allowColumnResizing: true,
             columnAutoWidth: false,
@@ -68,6 +47,21 @@ $(function() {
             filterRow: {
                 visible: true,
                 applyFilter: "auto"
+            },
+            wordWrapEnabled: true,
+            columnAutoWidth: true,
+            onCellClick: function (e) {
+                switch (e.column.dataField) {
+                    case 'certificateNumber':
+                        window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                        break;
+                    case 'sailor':
+                        window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                        break;
+                    case 'ntz':
+                        window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
+                        break;
+                }
             },
             onRowClick: function (e) {
                 let component = e.component;
@@ -151,52 +145,55 @@ $(function() {
             },
             columns: [
                 {
+                    dataField: 'certificateId',
+                    visible: false
+                },
+                {
                     dataField: 'certificateNumber',
                     caption: '№ Сертифіката',
-                    width: 100,
-                    allowEditing: true,
-                    allowFiltering: false
+                    allowEditing: false,
+                    allowFiltering: true,
+                    visible: isNotNtz
                 },
                 {
                     dataField: 'blankNumber',
                     caption: '№ Бланку',
-                    // width: 200,
                     allowEditing: false,
-                    allowFiltering: false
+                    allowFiltering: true
                 },
                 {
                     dataField: 'issueDate',
                     caption: 'Дата видачі',
                     dataType: 'date',
-                    // width: 200,
                     allowEditing: false,
-                    allowFiltering: true
+                    format: 'dd.MM.yyyy'
                 },
                 {
                     dataField: 'specialty',
                     caption: 'Напрямок підготовки',
-                    // width: 200,
                     allowEditing: false,
                     allowFiltering: true
                 },
                 {
+                    dataField: 'sailorId',
+                    visible: false
+                },
+                {
                     dataField: 'sailor',
                     caption: 'Моряк',
-                    // width: 200,
                     allowEditing: false,
                     allowFiltering: true
                 },
                 {
                     dataField: 'ntz',
                     caption: 'НТЗ',
-                    // width: 200,
                     allowEditing: false,
-                    allowFiltering: false
+                    allowFiltering: true,
+                    visible: isNotNtz
                 },
                 {
                     dataField: 'status',
                     caption: 'Статус',
-                    // width: 200,
                     allowEditing: false
                 }
             ]

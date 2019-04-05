@@ -1,38 +1,13 @@
 $(function() {
-    if ($('#certificates-home-grid').length > 0) {
-        let data = [
-            {
-                ntz: 'НТЗ1',
-                certificatesAmount: 1
-            },
-            {
-                ntz: 'НТЗ2',
-                certificatesAmount: 33
-            },
-            {
-                ntz: 'Вектор',
-                certificatesAmount: 4
-            },
-            {
-                ntz: 'Морская академия №1',
-                certificatesAmount: 199
-            }
-        ];
 
+    if ($('#certificates-home-grid').length > 0) {
         let certificatesHomeGrid = $('#certificates-home-grid').dxDataGrid({
-            dataSource: data,
+            dataSource: trainigOrganisations,
             allowColumnReordering: false,
             allowColumnResizing: true,
             columnAutoWidth: false,
             showBorders: true,
             showRowLines: true,
-            editing: {
-                mode: "cell",
-                allowUpdating: true
-            },
-            selection: {
-                mode: "multiple"
-            },
             paging: {
                 enabled: true,
                 pageSize: 10
@@ -47,36 +22,9 @@ $(function() {
                 width: 240,
                 placeholder: "Шукати..."
             },
-            export: {
-                enabled: true,
-                fileName: "ntz",
-                allowExportSelectedData: true
-            },
+            hoverStateEnabled: true,
             onRowClick: function (e) {
-                let component = e.component;
-
-                function initialClick() {
-                    component.clickCount = 1;
-                    component.clickKey = e.key;
-                    component.clickDate = new Date();
-                }
-
-                function doubleClick() {
-                    console.log('second click');
-                    component.clickCount = 0;
-                    component.clickKey = 0;
-                    component.clickDate = null;
-                }
-
-                if ((!component.clickCount) || (component.clickCount != 1) || (component.clickKey != e.key) ) {
-                    initialClick();
-                }
-                else if (component.clickKey == e.key) {
-                    if (((new Date()) - component.clickDate) <= 300)
-                        doubleClick();
-                    else
-                        initialClick();
-                }
+                window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
             },
             onContentReady: function(e) {
                 function changePage(page) {

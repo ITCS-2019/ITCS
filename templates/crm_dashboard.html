@@ -153,7 +153,7 @@
                         Остання
                     </button>
                 </div>
-                <div id="certificates-home-grid" class="dx-selection-disabled">
+                <div id="certificates-home-grid">
                 </div>
 
                 <!--<div class="table-responsive">-->
@@ -198,6 +198,19 @@
 
 <!--Custom scripts-->
 <script src="/static/js/templates/certificatesHomeGrid.js"></script>
+
+<script>
+    // var trainigOrganisations = '{{ trainigOrganisations|safe }}';
+    var trainigOrganisations = [];
+
+    {% for organisation in trainigOrganisations %}
+        trainigOrganisations.push({
+            ntz: '{{ organisation.organisation_name }}'.replace(/&quot;/g, `"`),
+            certificatesAmount:'{{ organisation.get_certInReview.count }}'
+        });
+    {% endfor%}
+</script>
+
 
 <script>
         $(document).ready(function() {

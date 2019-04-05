@@ -183,6 +183,40 @@
 <script src="/static/js/plugins/dataTables/datatables.min.js"></script>
 
 <!--Custom scripts-->
+<script>
+    var certifications = [];
+        isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false;
+
+    let status;
+    {% for certificate in certifications %}
+        switch (~~'{{certificate.status}}') {
+            case 0:
+                status = 'Чернетка';
+                break;
+            case 1:
+                status = 'Обробка';
+                break;
+            case 2:
+                status = 'Видан';
+                break;
+            case 3:
+                status = 'Анульований';
+                break;
+        }
+        certifications.push({
+            certificateId: '{{certificate.id}}',
+            certificateNumber: '{{ certificate.certf_number }}',
+            blankNumber: '{{ certificate.form_number }}',
+            issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
+            specialty: '{{ certificate.training_direction }}',
+            sailorId: '{{ certificate.sailor.id }}',
+            sailor: '{{ certificate.sailor }}',
+            ntz: '{{ certificate.trainigOrganisation }}'.replace(/&quot;/g, `"`),
+            status: status,
+        });
+    {% endfor%}
+</script>
+
 <script src="/static/js/templates/certificatesGrid.js">
 </script>
 
@@ -202,32 +236,32 @@
 
 </script> -->
 <script>
-        $(document).ready(function(){
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                responsive: true,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    { extend: 'copy'},
-                    {extend: 'csv'},
-                    {extend: 'excel', title: 'ExampleFile'},
-                    {extend: 'pdf', title: 'ExampleFile'},
+    $(document).ready(function(){
+        $('.dataTables-example').DataTable({
+            pageLength: 25,
+            responsive: true,
+            dom: '<"html5buttons"B>lTfgitp',
+            buttons: [
+                { extend: 'copy'},
+                {extend: 'csv'},
+                {extend: 'excel', title: 'ExampleFile'},
+                {extend: 'pdf', title: 'ExampleFile'},
 
-                    {extend: 'print',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
+                {extend: 'print',
+                 customize: function (win){
+                        $(win.document.body).addClass('white-bg');
+                        $(win.document.body).css('font-size', '10px');
 
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
-
-            });
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                }
+                }
+            ]
 
         });
 
-    </script>
+    });
+
+</script>
 {% endblock %}
