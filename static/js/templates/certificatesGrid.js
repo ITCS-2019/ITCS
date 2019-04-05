@@ -14,7 +14,8 @@ $(function() {
                 allowUpdating: true
             },
             selection: {
-                mode: "multiple"
+                mode: "multiple",
+                showCheckBoxesMode: 'always'
             },
             paging: {
                 enabled: true,
