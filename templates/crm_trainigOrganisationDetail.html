@@ -119,53 +119,56 @@
             <div class="ibox-content">
                 <div class="table-responsive">
                     <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                <table class="table table-striped table-bordered table-hover dataTables-example dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" role="grid">
-                    <thead>
-                        <tr role="row">
-                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера Сертифікатів: activate to sort column descending" aria-sort="ascending" style="width: 50.078125px;">№ Сертифіката
-                            </th>
-                            <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера Форм: activate to sort column descending" aria-sort="ascending" style="width: 50.078125px;">№ Форми
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Дати видачі: activate to sort column ascending" style="width: 80.640625px;">Дата видачі
-                            </th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Напрямки підготовки: activate to sort column ascending">Напрямок підготовки</th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Моряк: activate to sort column ascending">Моряк</th>
-                            <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Статус: activate to sort column ascending" style="width: 60.828125px;">Статус</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for certificate in trainigOrganisation.get_certInReview %}
-                        <tr class="gradeA odd" role="row">
-                            <td class="sorting_1"><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.certf_number}}</a></td>
-                            <td class="sorting_1"><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.form_number}}</a></td>
-                            <td>{{certificate.date_of_issue|date:"d.m.Y"}}</td>
-                            <td><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.training_direction}}</a></td>
-                            <td>{{certificate.sailor}}</td>
-                            <td>
-                            {% if certificate.status == 0 %}
-                                Чернетка
-                            {% elif certificate.status == 1 %}
-                                Обробка
-                            {% elif certificate.status == 2 %}
-                                Видан
-                            {% else %}
-                                Анульований
-                            {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %} 
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th rowspan="1" colspan="1">№ Сертифіката</th>
-                            <th rowspan="1" colspan="1">№ Форми</th>
-                            <th rowspan="1" colspan="1">Дата видачі</th>
-                            <th rowspan="1" colspan="1">Напрямок підготовки</th>
-                            <th rowspan="1" colspan="1">Моряк</th>
-                            <th rowspan="1" colspan="1">Статус</th>
-                        </tr>
-                    </tfoot>
-                </table>
+                        <div id="certificates-on-review-grid" class="dx-selection-disabled">
+                        </div>
+
+                <!--<table class="table table-striped table-bordered table-hover dataTables-example dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" role="grid">-->
+                    <!--<thead>-->
+                        <!--<tr role="row">-->
+                            <!--<th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера Сертифікатів: activate to sort column descending" aria-sort="ascending" style="width: 50.078125px;">№ Сертифіката-->
+                            <!--</th>-->
+                            <!--<th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера Форм: activate to sort column descending" aria-sort="ascending" style="width: 50.078125px;">№ Форми-->
+                            <!--</th>-->
+                            <!--<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Дати видачі: activate to sort column ascending" style="width: 80.640625px;">Дата видачі-->
+                            <!--</th>-->
+                            <!--<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Напрямки підготовки: activate to sort column ascending">Напрямок підготовки</th>-->
+                            <!--<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Моряк: activate to sort column ascending">Моряк</th>-->
+                            <!--<th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Статус: activate to sort column ascending" style="width: 60.828125px;">Статус</th>-->
+                        <!--</tr>-->
+                    <!--</thead>-->
+                    <!--<tbody>-->
+                        <!--{% for certificate in trainigOrganisation.get_certInReview %}-->
+                        <!--<tr class="gradeA odd" role="row">-->
+                            <!--<td class="sorting_1"><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.certf_number}}</a></td>-->
+                            <!--<td class="sorting_1"><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.form_number}}</a></td>-->
+                            <!--<td>{{certificate.date_of_issue|date:"d.m.Y"}}</td>-->
+                            <!--<td><a href="/mariner/editCertification/{{certificate.id}}/">{{certificate.training_direction}}</a></td>-->
+                            <!--<td>{{certificate.sailor}}</td>-->
+                            <!--<td>-->
+                            <!--{% if certificate.status == 0 %}-->
+                                <!--Чернетка-->
+                            <!--{% elif certificate.status == 1 %}-->
+                                <!--Обробка-->
+                            <!--{% elif certificate.status == 2 %}-->
+                                <!--Видан-->
+                            <!--{% else %}-->
+                                <!--Анульований-->
+                            <!--{% endif %}-->
+                            <!--</td>-->
+                        <!--</tr>-->
+                        <!--{% endfor %}-->
+                    <!--</tbody>-->
+                    <!--<tfoot>-->
+                        <!--<tr>-->
+                            <!--<th rowspan="1" colspan="1">№ Сертифіката</th>-->
+                            <!--<th rowspan="1" colspan="1">№ Форми</th>-->
+                            <!--<th rowspan="1" colspan="1">Дата видачі</th>-->
+                            <!--<th rowspan="1" colspan="1">Напрямок підготовки</th>-->
+                            <!--<th rowspan="1" colspan="1">Моряк</th>-->
+                            <!--<th rowspan="1" colspan="1">Статус</th>-->
+                        <!--</tr>-->
+                    <!--</tfoot>-->
+                <!--</table>-->
                 </div>
                 </div>
             </div>
@@ -178,6 +181,41 @@
 
 {% block scripts %}
 <script src="/static/js/plugins/dataTables/datatables.min.js"></script>
+
+<!--custom scripts-->
+<script>
+    var certifications = [];
+
+    let status;
+    {% for certificate in trainigOrganisation.get_certInReview %}
+        switch (~~'{{certificate.status}}') {
+            case 0:
+                status = 'Чернетка';
+                break;
+            case 1:
+                status = 'Обробка';
+                break;
+            case 2:
+                status = 'Видан';
+                break;
+            case 3:
+                status = 'Анульований';
+                break;
+        }
+        certifications.push({
+            certificateId: '{{certificate.id}}',
+            certificateNumber: '{{ certificate.certf_number }}',
+            formNumber: '{{ certificate.form_number }}',
+            issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
+            specialty: '{{ certificate.training_direction }}',
+            sailorId: '{{ certificate.sailor.id }}',
+            sailor: '{{ certificate.sailor }}',
+            status: status,
+        });
+    {% endfor%}
+</script>
+<script src="/static/js/templates/certificatesOnReviewGrid.js">
+</script>
 
 <script>
         $(document).ready(function() {

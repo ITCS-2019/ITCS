@@ -520,6 +520,9 @@
 
 <script src="/static/js/plugins/toastr/toastr.min.js"></script>
 
+<!--Custom scripts-->
+<script src="/static/js/templates/validation.js"></script>
+
 <script>
         // source: ["item 1","item 2","item 3"]
         var arrFNameEng = [];
@@ -583,33 +586,35 @@
 
             $('.selectpicker').selectpicker();
 
-            $("#id_last_name_ukr").change(function () {
-                var url = '{% url 'ajax_transliteration' %}';
-                $.ajax({ 
-                    url: url,
-                    data: {
-                    'fieldData': $(this).val()
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#id_last_name_en').val(data.transliteration);
-                    }
-                });
-            });
 
-            $("#id_first_name_ukr").change(function () {
-                var url = '{% url 'ajax_transliteration' %}';
-                $.ajax({ 
-                    url: url,
-                    data: {
-                    'fieldData': $(this).val()
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        $('#id_first_name_en').val(data.transliteration);
-                    }
-                });
-            });
+
+            // $("#id_last_name_ukr").change(function () {
+            //     var url = '{% url 'ajax_transliteration' %}';
+            //     $.ajax({
+            //         url: url,
+            //         data: {
+            //         'fieldData': $(this).val()
+            //         },
+            //         dataType: 'json',
+            //         success: function (data) {
+            //             $('#id_last_name_en').val(data.transliteration);
+            //         }
+            //     });
+            // });
+
+            // $("#id_first_name_ukr").change(function () {
+            //     var url = '{% url 'ajax_transliteration' %}';
+            //     $.ajax({
+            //         url: url,
+            //         data: {
+            //         'fieldData': $(this).val()
+            //         },
+            //         dataType: 'json',
+            //         success: function (data) {
+            //             $('#id_first_name_en').val(data.transliteration);
+            //         }
+            //     });
+            // });
 
             $("#id_first_name_en").change(function () {
                 var url = '{% url 'ajax_check_certificate' %}';
