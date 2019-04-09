@@ -60,11 +60,10 @@
             <a href="/mariner/trainigDirections/"><h5>Напрямки Підготовки</h5></a>
         </div>
         <div class="ibox-content">
-            <h1 class="no-margins"> {{ trainigDirectionsCount }} </h1>
+            <h3> {{ trainigDirectionsCount }} - Кількість Напрямків</h3>
             <!-- <div class="stat-percent font-bold text-success">
                 98% <i class="fa fa-bolt"></i>
             </div> -->
-            <small>Загальна Кількість Напрямків</small>
         </div>
     </div>
 </div>
@@ -77,11 +76,10 @@
             <a href="/mariner/trainigOrganisations/"><h5>НТЗ</h5></a>
         </div>
         <div class="ibox-content">
-            <h1 class="no-margins"> {{ trainigOrganisations.count }} </h1>
+            <h3> {{ trainigOrganisations.count }} - Кількість НТЗ</h3>
             <!-- <div class="stat-percent font-bold text-success">
                 98% <i class="fa fa-bolt"></i>
             </div> -->
-            <small>Загальна Кількість НТЗ</small>
         </div>
     </div>
 </div>
@@ -111,7 +109,9 @@
         </div>
         <div class="ibox-content">
             <h3>{{ certsInReviewCount }} - сертіфікатів в обробці, </h3>
-            <h3>3 - чернеток,</h3>
+            {% if user.groups.all.0.name == 'НТЗ' %}
+                <h3>{{ certsInDraftCount }} - чернеток,</h3>
+            {% endif %}
             <!-- <div class="stat-percent font-bold text-success">
                 98% <i class="fa fa-bolt"></i>
             </div> -->
