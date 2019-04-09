@@ -42,21 +42,21 @@ $(function() {
     // translit cyrilic to latin
     $('#id_last_name_ukr').on('keyup', function() {
         let node = $(this);
-        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -']/g, ''));
+        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
         node.val(capitalize(node.val()));
 
-        translateToEn($(this).val(), $('#id_last_name_en'))
+        translateToEn($(this).val(), $('#id_last_name_en'));
     });
     $('#id_first_name_ukr').on('keyup', function() {
         let node = $(this);
-        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -']/g, ''));
+        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
         node.val(capitalize(node.val()));
 
-        translateToEn($(this).val(), $('#id_first_name_en'))
+        translateToEn($(this).val(), $('#id_first_name_en'));
     });
     $('#id_second_name_ukr').on('keyup', function() {
         let node = $(this);
-        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -']/g, ''));
+        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
         node.val(capitalize(node.val()));
     });
 });
