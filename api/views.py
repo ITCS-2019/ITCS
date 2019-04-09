@@ -45,3 +45,25 @@ def issuedCerts(request):
 		data =  dict()
 		data['certificates'] = certs
 		return JsonResponse(data)
+
+def changeCertNumber(request):
+	certID = request.GET.get('certID')
+	certNumber = request.GET.get('certNumber')
+	hasError = False
+	errorMessage = "No Error"
+	if certNumber != None:
+		if certNumber != "":
+			certificate = Certificate.objects.get(id=certID)
+			certificate.certf_number = certNumber
+			certificate.save()
+		else:
+			hasError = True
+			errorMessage = "Number is Empty"
+	else:
+			hasError = True
+			errorMessage = "Number is None"
+	data = {
+		'error' : hasError,
+		'error_message' : errorMessage,
+	}
+	return JsonResponse(data)
