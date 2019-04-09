@@ -32,8 +32,9 @@ def crm_home(request):
 			sailorsCount = Sailor.objects.all().count
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 			trainigDirectionsCount = trainigOrganisation.directions.count
-			certCount = trainigOrganisation.trained.count
-			context = {'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount,}
+			certCount = trainigOrganisation.trained.filter(status__startswith=2).count
+			certsInReviewCount = trainigOrganisation.get_certInReview().count
+			context = {'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInReviewCount': certsInReviewCount,}
 			return render(request, "crm_dashboard.html", context)
 	else:
 		sailorsCount = Sailor.objects.all().count
