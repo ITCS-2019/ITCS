@@ -265,6 +265,7 @@ class CertificationForm(forms.ModelForm):
             'form_number': 'Номер бланку документу',
             'certf_number': 'Номер сертифікату',
             'ntz_number': 'Номер сертифікату НТЗ',
+            'ntz_number': 'Номер сертифікату НТЗ',
             'status': 'Статус',
         }
         # >L<??????????????
