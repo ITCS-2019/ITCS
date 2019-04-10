@@ -40,11 +40,11 @@ def crm_home(request):
 	else:
 		sailorsCount = Sailor.objects.all().count
 		certCount = Certificate.objects.filter(status__startswith=2).count
-		certsInReviewCount = trainigOrganisation.get_certInReview().count
+		certsInReviewCount = Certificate.objects.filter(status__startswith=1).count
 		trainigDirectionsCount = TrainigDirections.objects.all().count
 		# certsInReview = Certificate.objects.filter(status__startswith=1)
 		trainigOrganisations = TrainigOrganisation.objects.all()
-		context = {'trainigOrganisations': trainigOrganisations, 'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount}
+		context = {'trainigOrganisations': trainigOrganisations, 'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInReviewCount': certsInReviewCount,}
 		return render(request, "crm_dashboard.html", context)
 
 @login_required(login_url="login/")
