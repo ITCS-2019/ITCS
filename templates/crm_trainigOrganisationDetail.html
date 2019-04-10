@@ -137,7 +137,8 @@
 
 <!--custom scripts-->
 <script>
-    var certifications = [];
+    var certifications = [],
+        editCellRoute = '{% url 'api-changeCertNumber' %}';
 
     let status;
     {% for certificate in trainigOrganisation.get_certInReview %}

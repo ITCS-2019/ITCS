@@ -13,6 +13,19 @@ $(function() {
                 mode: "cell",
                 allowUpdating: true
             },
+            onRowUpdated: function(options) {
+                console.log(options);
+                $.ajax({
+                    url: editCellRoute,
+                    data: {
+                        certID: options.key.certificateId,
+                        certNumber: options.data.certificateNumber
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                    }
+                });
+            },
             selection: {
                 mode: "multiple",
                 showCheckBoxesMode: 'always'

@@ -180,6 +180,7 @@ class CertificationForm(forms.ModelForm):
     #status = forms.ChoiceField(choices=get_status_choices())
     def __init__(self, user, statusIndex, *args, **kwargs):
         super(CertificationForm, self).__init__(*args, **kwargs)
+        self.fields['training_direction'].empty_label = None
         if user.groups.all()[0].name == 'НТЗ':
             try:
                 trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=user.profile.organization_name)
@@ -225,7 +226,7 @@ class CertificationForm(forms.ModelForm):
             self.fields['form_number'].widget.attrs['readonly'] = True
             if user.groups.all()[0].name != 'НТЗ':
                 self.fields['status'].widget.attrs['readonly'] = True
-            
+
 
     class Meta:
         model = Certificate
