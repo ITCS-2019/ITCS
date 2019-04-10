@@ -12,17 +12,43 @@ $(function() {
 
     function translateToEn(str, target = false) {
         let ru = {
-                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
-                'е': 'e', 'ё': 'e', 'ж': 'j', 'з': 'z', 'и': 'i',
-                'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
-                'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
-                'ф': 'f', 'х': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh',
-                'щ': 'shch', 'ы': 'y', 'э': 'e', 'ю': 'u', 'я': 'ya'
+                'а': 'a',
+                'б': 'b',
+                'в': 'v',
+                'г': 'g',
+                'д': 'd',
+                'е': 'e',
+                'є': 'ie',
+                'ж': 'zh',
+                'з': 'z',
+                'и': 'y',
+                'і': 'i',
+                'ї': 'i',
+                'к': 'k',
+                'л': 'l',
+                'м': 'm',
+                'н': 'n',
+                'о': 'o',
+                'п': 'p',
+                'р': 'r',
+                'с': 's',
+                'т': 't',
+                'у': 'u',
+                'ф': 'f',
+                'х': 'kh',
+                'ц': 'ts',
+                'ч': 'ch',
+                'ш': 'sh',
+                'щ': 'shch',
+                'ы': 'y',
+                'э': 'e',
+                'ю': 'iu',
+                'я': 'ia'
             },
             translited = [];
 
         if (str.length > 0) {
-            str = str.replace(/й/g, 'i').replace(/Й/g, 'I').replace(/ьо/g, 'io').replace(/[ъь]+/g, '');
+            str = str.replace(/й/g, 'i').replace(/Й/g, 'Y').replace(/Є/g, 'Ye').replace(/Ї/g, 'Yi').replace(/Ю/g, 'Yu').replace(/Я/g, 'Ya').replace(/[ъь]+/g, '');
 
             for (let i = 0; i < str.length; ++i) {
                 translited.push(
@@ -40,20 +66,48 @@ $(function() {
     }
 
     // translit cyrilic to latin
+    let isFirstNameEn = false,
+        isLastNameEn = false;
+    $('#id_last_name_en').on('keyup', function() {
+        let node = $(this);
+        node.val(node.val().replace(/[^[a-zA-Z\-\'\s]/g, ''));
+        node.val(capitalize(node.val()));
+
+        ($(this).val().length > 0)
+            ? isLastNameEn = true
+            : isLastNameEn = false;
+    });
+
+    $('#id_first_name_en').on('keyup', function() {
+        let node = $(this);
+        node.val(node.val().replace(/[^[a-zA-Z\-\'\s]/g, ''));
+        node.val(capitalize(node.val()));
+
+        ($(this).val().length > 0)
+            ? isFirstNameEn = true
+            : isFirstNameEn = false;
+    });
+
     $('#id_last_name_ukr').on('keyup', function() {
         let node = $(this);
         node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
         node.val(capitalize(node.val()));
 
-        translateToEn($(this).val(), $('#id_last_name_en'));
+        if (!isLastNameEn) {
+            translateToEn($(this).val(), $('#id_last_name_en'));
+        }
     });
+
     $('#id_first_name_ukr').on('keyup', function() {
         let node = $(this);
         node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
         node.val(capitalize(node.val()));
 
-        translateToEn($(this).val(), $('#id_first_name_en'));
+        if (!isFirstNameEn) {
+            translateToEn($(this).val(), $('#id_first_name_en'));
+        }
     });
+
     $('#id_second_name_ukr').on('keyup', function() {
         let node = $(this);
         node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));

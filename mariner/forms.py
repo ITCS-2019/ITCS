@@ -80,7 +80,7 @@ class SailorForm(forms.ModelForm):
             'second_name_ukr': forms.TextInput(attrs={'placeholder': 'По батькові українською. Наприклад: \"Іванович\"',}),
             'born' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'dd.mm.yyyy',}),
 #            'died' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'dd.mm.yyyy',}),
-            'inn': forms.TextInput(attrs={'type': 'text', 'data-mask': '9999999999', 'placeholder': '1111111111',}),
+            'inn': forms.TextInput(attrs={'type': 'text', 'data-mask': '9999999999', 'placeholder': 'ИПН',}),
         }
     def clean(self):
         super(SailorForm, self).clean()
@@ -275,7 +275,7 @@ class CertificationForm(forms.ModelForm):
             'first_name_ukr': forms.TextInput(attrs={'placeholder': 'Ім\'я українською. Наприклад: \"Тан Зунг\"',}),
             'second_name_ukr': forms.TextInput(attrs={'placeholder': 'По батькові українською. Наприклад: \"Іванович\"',}),
             'born': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'dd.mm.yyyy',}),
-            'inn': forms.TextInput(attrs={'type': 'text', 'data-mask': '9999999999', 'placeholder': '1111111111',}),
+            'inn': forms.TextInput(attrs={'type': 'text', 'data-mask': '9999999999', 'placeholder': 'ИПН',}),
             'date_of_issue': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'dd.mm.yyyy',}),
             'valid_date': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'dd.mm.yyyy',}),
         }
