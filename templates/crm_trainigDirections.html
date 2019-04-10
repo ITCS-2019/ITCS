@@ -78,48 +78,8 @@
             <div class="ibox-content">
                 <div class="table-responsive">
                     <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                        <table class="table table-striped table-bordered table-hover dataTables-example dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" role="grid">
-                            <thead>
-                                <tr role="row">
-                                    <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Номера бланку документу: activate to sort column descending" aria-sort="ascending" style="width: 30.0px;">Код
-                                    </th>
-                                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Дати видачі: activate to sort column ascending"">Назва Напрямка Пiдготовки
-                                    </th>
-                                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Напрямок навчання: activate to sort column ascending" style="width: 70.0px;">Напрямок навчання</th>
-                                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Рівень кваліфікації: activate to sort column ascending" style="width: 70.0px;">Рівень кваліфікації</th>
-                                    <!-- <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Ціна: activate to sort column ascending" style="width: 70.0px;">Ціна</th> -->
-                                    {% if user.groups.all.0.name != 'НТЗ' %}
-                                    <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="activate to sort column ascending" style="width: 50.0px;"></th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for trainigDirection in trainigDirections %}
-                                    <tr class="gradeA odd" role="row">
-                                        <td>{{trainigDirection.price_id}}</td>
-                                        <td>{{trainigDirection.direction_title}}</td>
-                                        <td>{{trainigDirection.allow_functions}}</td>
-                                        <td>{{trainigDirection.level}}</td>
-                                        <!-- <td>{{trainigDirection.price}}</td> -->
-                                        {% if user.groups.all.0.name != 'НТЗ' %}
-                                        <td><a href="/mariner/editDirection/{{trainigDirection.id}}/" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Ред. </a></td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %} 
-                            </tbody>
-                            <tfoot>
-                                    <tr>
-                                        <th rowspan="1" colspan="1">Код</th>
-                                        <th rowspan="1" colspan="1">Назва Напрямка Пiдготовки</th>
-                                        <th rowspan="1" colspan="1">Напрямок навчання</th>
-                                        <th rowspan="1" colspan="1">Рівень кваліфікації</th>
-                                        <!-- <th rowspan="1" colspan="1">Ціна</th> -->
-                                        {% if user.groups.all.0.name != 'НТЗ' %}
-                                        <th rowspan="1" colspan="1"></th>
-                                        {% endif %}
-                                    </tr>
-                            </tfoot>
-                        </table>
+                        <div id="training-directions-grid" class="dx-selection-disabled">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,6 +92,23 @@
 
 {% block scripts %}
 <script src="/static/js/plugins/dataTables/datatables.min.js"></script>
+
+<!--custom scripts-->
+<script>
+    var trainigDirections = [];
+
+    {% for trainigDirection in trainigDirections %}
+        trainigDirections.push({
+            id: '{{trainigDirection.id}}',
+            price_id: '{{trainigDirection.price_id}}',
+            direction_title: '{{ trainigDirection.direction_title }}',
+            allow_functions: '{{ trainigDirection.allow_functions }}',
+            level: '{{ trainigDirection.level }}'
+        });
+    {% endfor%}
+</script>
+<script src="/static/js/templates/dev_extreme_grids/trainingDirectionsGrid.js">
+</script>
 
 <script>
         $(document).ready(function(){
