@@ -53,6 +53,7 @@ $(function() {
 
                 $.ajax({
                     url: exportRoute,
+                    method: 'POST',
                     data: {
                         exportType: (exportSelected) ? 'Selected' : 'All',
                         certIDs: certIDs

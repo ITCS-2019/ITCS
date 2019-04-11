@@ -2,7 +2,15 @@ $(function() {
     if ($('#certificates-on-review-grid').length > 0) {
         DevExpress.localization.locale('ru');
 
-        let certificatesOnReviewGrid = $('#certificates-on-review-grid').dxDataGrid({
+        let exportSelected,
+            interceptExportItemClick = function(e) {
+                let contextMenu = e.element.find(".dx-datagrid-export-menu").dxContextMenu("instance");
+                contextMenu.on("itemClick", function (e) {
+                    exportSelected = (e.itemData.exportSelected) ? true : false;
+                });
+            };
+
+        $('#certificates-on-review-grid').dxDataGrid({
             dataSource: certifications,
             allowColumnReordering: false,
             allowColumnResizing: true,
@@ -16,6 +24,7 @@ $(function() {
             onRowUpdated: function(options) {
                 $.ajax({
                     url: editCellRoute,
+                    method: 'GET',
                     data: {
                         certID: options.key.certificateId,
                         certNumber: options.data.certificateNumber
@@ -47,6 +56,30 @@ $(function() {
                 enabled: true,
                 fileName: "certificates",
                 allowExportSelectedData: true
+            },
+            onExporting: interceptExportItemClick,
+            customizeExportData: function(cols, rows) {
+                let certIDs = [];
+
+                rows.forEach((row) => {
+                    certIDs.push(row.data.certificateId);
+                });
+
+                $.ajax({
+                    url: exportRoute,
+                    method: 'POST',
+                    data: {
+                        exportType: (exportSelected) ? 'Selected' : 'All',
+                        certIDs: certIDs
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            },
+            onFileSaving: function (e) {
+                e.cancel = true;
             },
             headerFilter: {
                 visible: true
@@ -201,6 +234,6 @@ $(function() {
                     allowEditing: false
                 }
             ]
-        }).dxDataGrid('instance');
+        });
     }
 });
