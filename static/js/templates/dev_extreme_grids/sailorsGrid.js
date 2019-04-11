@@ -1,34 +1,14 @@
 $(function() {
-    if ($('#certificates-on-review-grid').length > 0) {
+    if ($('#sailors-grid').length > 0) {
         DevExpress.localization.locale('ru');
 
-        let certificatesOnReviewGrid = $('#certificates-on-review-grid').dxDataGrid({
-            dataSource: certifications,
+        let trainingDirectionsGrid = $('#sailors-grid').dxDataGrid({
+            dataSource: sailors,
             allowColumnReordering: false,
             allowColumnResizing: true,
             columnAutoWidth: false,
             showBorders: true,
             showRowLines: true,
-            editing: {
-                mode: "cell",
-                allowUpdating: true
-            },
-            onRowUpdated: function(options) {
-                $.ajax({
-                    url: editCellRoute,
-                    data: {
-                        certID: options.key.certificateId,
-                        certNumber: options.data.certificateNumber
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                    }
-                });
-            },
-            selection: {
-                mode: "multiple",
-                showCheckBoxesMode: 'always'
-            },
             paging: {
                 enabled: true,
                 pageSize: 10
@@ -59,20 +39,8 @@ $(function() {
             wordWrapEnabled: true,
             columnAutoWidth: true,
             onCellClick: function (e) {
-                switch (e.column.dataField) {
-                    // case 'certificateNumber':
-                    //     window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-                    //     return;
-                    case 'sailor':
-                        window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-                        return;
-                    case 'ntz':
-                        window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
-                        return;
-                }
-
-                if (e.column.dataField && e.column.dataField !== 'certificateNumber') {
-                    window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                if (e.column.dataField) {
+                    window.location.replace(`/mariner/sailor/${e.data.id}`);
                 }
             },
             onRowClick: function (e) {
@@ -157,48 +125,40 @@ $(function() {
             },
             columns: [
                 {
-                    dataField: 'certificateId',
-                    visible: false
-                },
-                {
-                    dataField: 'certificateNumber',
-                    caption: '№ Сертифіката',
-                    allowEditing: true,
-                    allowFiltering: true
-                },
-                {
-                    dataField: 'formNumber',
-                    caption: '№ Форми',
+                    dataField: 'id',
+                    caption: 'ID',
                     allowEditing: false,
                     allowFiltering: true
                 },
                 {
-                    dataField: 'issueDate',
-                    caption: 'Дата видачі',
-                    dataType: 'date',
-                    allowEditing: false,
-                    format: 'dd.MM.yyyy'
-                },
-                {
-                    dataField: 'specialty',
-                    caption: 'Напрямок підготовки',
+                    dataField: 'inn',
+                    caption: 'ИНН',
                     allowEditing: false,
                     allowFiltering: true
                 },
                 {
-                    dataField: 'sailorId',
-                    visible: false
-                },
-                {
-                    dataField: 'sailor',
-                    caption: 'Моряк',
+                    dataField: 'last_name_ukr',
+                    caption: 'Прiзвище',
                     allowEditing: false,
                     allowFiltering: true
                 },
                 {
-                    dataField: 'status',
-                    caption: 'Статус',
-                    allowEditing: false
+                    dataField: 'first_name_ukr',
+                    caption: 'Iм\'я',
+                    allowEditing: false,
+                    allowFiltering: true
+                },
+                {
+                    type: "buttons",
+                    width: 110,
+                    visible: isAdmin,
+                    buttons: [{
+                        hint: 'Редагувати',
+                        icon: 'edit',
+                        onClick: function(e) {
+                            window.location.replace(`/mariner/editSailor/${e.row.data.id}`);
+                        }
+                    }]
                 }
             ]
         }).dxDataGrid('instance');
