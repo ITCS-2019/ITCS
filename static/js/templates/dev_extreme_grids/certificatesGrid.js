@@ -2,7 +2,14 @@ $(function() {
     if ($('#certificates-grid').length > 0) {
         DevExpress.localization.locale('ru');
 
-        let certificatesGrid = $('#certificates-grid').dxDataGrid({
+        let exportSelected,
+            interceptExportItemClick = function(e) {
+                let contextMenu = e.element.find(".dx-datagrid-export-menu").dxContextMenu("instance");
+                contextMenu.on("itemClick", function (e) {
+                    exportSelected = (e.itemData.exportSelected) ? true : false;
+                });
+            };
+        $('#certificates-grid').dxDataGrid({
             dataSource: certifications,
             allowColumnReordering: false,
             allowColumnResizing: true,
@@ -35,6 +42,29 @@ $(function() {
                 enabled: true,
                 fileName: "certificates",
                 allowExportSelectedData: true
+            },
+            onExporting: interceptExportItemClick,
+            customizeExportData: function(cols, rows) {
+                let certIDs = [];
+
+                rows.forEach((row) => {
+                    certIDs.push(row.data.certificateId);
+                });
+
+                $.ajax({
+                    url: exportRoute,
+                    data: {
+                        exportType: (exportSelected) ? 'Selected' : 'All',
+                        certIDs: certIDs
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            },
+            onFileSaving: function (e) {
+                e.cancel = true;
             },
             headerFilter: {
                 visible: true
@@ -90,6 +120,8 @@ $(function() {
                 }
             },
             onContentReady: function(e) {
+                interceptExportItemClick(e);
+
                 function changePage(page) {
                     e.component.pageIndex(page);
                 }
@@ -146,57 +178,58 @@ $(function() {
             columns: [
                 {
                     dataField: 'certificateId',
-                    visible: false
+                    visible: false,
+                    allowExporting: false
                 },
                 {
                     dataField: 'certificateNumber',
                     caption: '№ Сертифіката',
                     allowEditing: false,
                     allowFiltering: true,
-                    visible: isNotNtz
+                    visible: isNotNtz,
                 },
                 {
                     dataField: 'blankNumber',
                     caption: '№ Бланку',
                     allowEditing: false,
-                    allowFiltering: true
+                    allowFiltering: true,
                 },
                 {
                     dataField: 'issueDate',
                     caption: 'Дата видачі',
                     dataType: 'date',
                     allowEditing: false,
-                    format: 'dd.MM.yyyy'
+                    format: 'dd.MM.yyyy',
                 },
                 {
                     dataField: 'specialty',
                     caption: 'Напрямок підготовки',
                     allowEditing: false,
-                    allowFiltering: true
+                    allowFiltering: true,
                 },
                 {
                     dataField: 'sailorId',
-                    visible: false
+                    visible: false,
                 },
                 {
                     dataField: 'sailor',
                     caption: 'Моряк',
                     allowEditing: false,
-                    allowFiltering: true
+                    allowFiltering: true,
                 },
                 {
                     dataField: 'ntz',
                     caption: 'НТЗ',
                     allowEditing: false,
                     allowFiltering: true,
-                    visible: isNotNtz
+                    visible: isNotNtz,
                 },
                 {
                     dataField: 'status',
                     caption: 'Статус',
-                    allowEditing: false
+                    allowEditing: false,
                 }
             ]
-        }).dxDataGrid('instance');
+        });
     }
 });

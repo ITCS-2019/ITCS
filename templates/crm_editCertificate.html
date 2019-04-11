@@ -595,7 +595,7 @@
                 daysOfWeekDisabled: [0,6]
             }).on('changeDate', function(e) {
                 let selectedDate = new Date(e.date.valueOf()),
-                    validDate = new Date(selectedDate.setFullYear(selectedDate.getFullYear() + 3));
+                    validDate = new Date(selectedDate.setFullYear(selectedDate.getFullYear() + 5));
 
                 $('#valid-date').datepicker('setStartDate', selectedDate);
                 $('#valid-date').datepicker('update', validDate);

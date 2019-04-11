@@ -185,7 +185,8 @@
 <!--Custom scripts-->
 <script>
     var certifications = [];
-        isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false;
+        isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
+        exportRoute = '{% url 'api-exportXLS' %}';
 
     let status;
     {% for certificate in certifications %}
