@@ -19,9 +19,11 @@
         <a href="/mariner/trainigOrganisations/"><i class="fa fa-pie-chart"></i> <span class="nav-label">НТЗ</span> </a>
     </li>
     {% endif %}
+    {% if user.groups.all.0.name != 'НТЗ' %}
     <li>
         <a href="/mariner/sailors/"><i class="fa fa-files-o"></i> <span class="nav-label">Моряки</span> </a>
     </li>
+    {% endif %}
     <li  class="active">
         <a href="/mariner/certification/"><i class="fa fa-edit"></i> <span class="nav-label">Сертифiкати</span></a>
     </li>
