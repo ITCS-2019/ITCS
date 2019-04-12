@@ -65,13 +65,28 @@ $(function() {
         }
     }
 
+    // allow only latin letters, space, hyphen, apostrophe
+    function enLettersValid(node) {
+        node.val(node.val().replace(/[^[a-zA-Z\-\'\s]/g, ''));
+        node.val(capitalize(node.val()));
+    }
+
+    // allow only cyrilic letters, space, hyphen, apostrophe
+    function cyrLettersValid(node) {
+        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
+        node.val(capitalize(node.val()));
+    }
+
+    // allow only numbers and hyphen
+    function numbersValid(node) {
+        node.val(node.val().replace(/[^0-9-]/g, ''));
+    }
+
     // translit cyrilic to latin
     let isFirstNameEn = false,
         isLastNameEn = false;
     $('#id_last_name_en').on('keyup', function() {
-        let node = $(this);
-        node.val(node.val().replace(/[^[a-zA-Z\-\'\s]/g, ''));
-        node.val(capitalize(node.val()));
+        enLettersValid($(this));
 
         ($(this).val().length > 0)
             ? isLastNameEn = true
@@ -79,9 +94,7 @@ $(function() {
     });
 
     $('#id_first_name_en').on('keyup', function() {
-        let node = $(this);
-        node.val(node.val().replace(/[^[a-zA-Z\-\'\s]/g, ''));
-        node.val(capitalize(node.val()));
+        enLettersValid($(this));
 
         ($(this).val().length > 0)
             ? isFirstNameEn = true
@@ -89,9 +102,7 @@ $(function() {
     });
 
     $('#id_last_name_ukr').on('keyup', function() {
-        let node = $(this);
-        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
-        node.val(capitalize(node.val()));
+        cyrLettersValid($(this));
 
         if (!isLastNameEn) {
             translateToEn($(this).val(), $('#id_last_name_en'));
@@ -99,9 +110,7 @@ $(function() {
     });
 
     $('#id_first_name_ukr').on('keyup', function() {
-        let node = $(this);
-        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
-        node.val(capitalize(node.val()));
+        cyrLettersValid($(this));
 
         if (!isFirstNameEn) {
             translateToEn($(this).val(), $('#id_first_name_en'));
@@ -109,8 +118,14 @@ $(function() {
     });
 
     $('#id_second_name_ukr').on('keyup', function() {
-        let node = $(this);
-        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g, ''));
-        node.val(capitalize(node.val()));
+        cyrLettersValid($(this));
+    });
+
+    $('#id_form_number').on('keyup', function() {
+        numbersValid($(this));
+    });
+
+    $('#id_certf_number').on('keyup', function() {
+        numbersValid($(this));
     });
 });
