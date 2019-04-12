@@ -53,10 +53,10 @@ $(function() {
 
                 $.ajax({
                     url: exportRoute,
-                    method: 'POST',
+                    method: 'GET',
                     data: {
                         exportType: (exportSelected) ? 'Selected' : 'All',
-                        certIDs: certIDs
+                        certIDs: certIDs.join(',')
                     },
                     dataType: 'json',
                     success: function (data) {

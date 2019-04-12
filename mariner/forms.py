@@ -116,10 +116,10 @@ class SailorForm(forms.ModelForm):
         if sialorBirthday != None:
             if sialorBirthday > dateMin:
                 self._errors['born'] = self.error_class([
-                    'Будь ласка, перевірте. Дуже молодий'])
+                    'Неприпустима дата'])
             if sialorBirthday < dateMax:
                 self._errors['born'] = self.error_class([
-                    'Будь ласка, перевірте. Дуже старий'])
+                    'Неприпустима дата'])
                 
         return self.cleaned_data
 
@@ -318,14 +318,14 @@ class CertificationForm(forms.ModelForm):
         if sialorBirthday != None:
             if sialorBirthday > dateMin:
                 self._errors['born'] = self.error_class([
-                    'Будь ласка, перевірте. Дуже молодий'])
+                    'Неприпустима дата'])
             if sialorBirthday < dateMax:
                 self._errors['born'] = self.error_class([
-                    'Будь ласка, перевірте. Дуже старий'])
+                    'Неприпустима дата'])
         if issueDate != None:
             if issueDate < isuDateMin:
                 self._errors['date_of_issue'] = self.error_class([
-                    'Будь ласка, перевірте. Дуже старий'])
+                    'Неприпустима дата'])
             if issueDate > isuDateMax:
                 self._errors['date_of_issue'] = self.error_class([
                     'Будь ласка, перевірте.'])

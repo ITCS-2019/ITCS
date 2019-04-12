@@ -70,7 +70,7 @@ $(function() {
                     method: 'POST',
                     data: {
                         exportType: (exportSelected) ? 'Selected' : 'All',
-                        certIDs: certIDs
+                        certIDs: certIDs.join(',')
                     },
                     dataType: 'json',
                     success: function (data) {

@@ -70,7 +70,16 @@ def changeCertNumber(request):
 
 @login_required(login_url="login/")
 def exportXLS(request):
+#print(request.GET.get('data'))
 	print(request.GET.get('exportType'))
+	print(request.GET.get('certIDs'))
+	hasError = False
+	errorMessage = "No Error"
+	data = {
+	'error' : hasError,
+	'error_message' : errorMessage,
+	}
+	return JsonResponse(data)
 	# trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=name)
 	# rows = trainigOrganisation.get_certInReview().exclude(certf_number__isnull=True).values_list(
 	# 	'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
