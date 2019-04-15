@@ -10,6 +10,10 @@ from .serializers import TrainigDirectionsSerializer
 
 from django.http import HttpResponse
 
+# from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
+from weasyprint import HTML
+
 import xlwt
 
 import datetime
@@ -146,9 +150,40 @@ def exportToPrint(request):
 	print(request.GET.get('exportType'))
 	certIDsList = request.GET.get('certIDs').split(',')
 	if request.GET.get('exportType') == 'XLSExp':
-		return HttpResponse(status=204)
+		rows = Certificate.objects.filter(pk__in=certIDsList).values_list(
+		'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
+		'born', 'date_of_issue', 'valid_date')
+		response = HttpResponse(content_type='application/ms-excel')
+		response['Content-Disposition'] = 'attachment; filename="certificates.xls"'
+		wb = xlwt.Workbook(encoding='utf-8')
+		ws = wb.add_sheet('Сертифікати')
+		
+		row_num = 0
+		font_style = xlwt.XFStyle()
+		font_style.font.bold = True
+		columns = ['Номер документу', 'Name', 'SurName', 'Прізвище','Ім\'я', 'По батькові', 'Дата народження', 'Дата видачі', 'Дійсний до',]
+		for col_num in range(len(columns)):
+			ws.write(row_num, col_num, columns[col_num], font_style)
+		# Sheet body, remaining rows
+		font_style = xlwt.XFStyle()
+		font_style.num_format_str = 'dd.mm.yyyy'
+		
+		if rows.count() > 0:
+			for row in rows:
+				row_num += 1
+				for col_num in range(len(row)):
+					ws.write(row_num, col_num, row[col_num], font_style)
+			wb.save(response)
+			return response
+		else:
+			return HttpResponse(status=204)
 	elif request.GET.get('exportType') == 'PdfExp':
-		return HttpResponse(status=204)
+		certifications = Certificate.objects.filter(pk__in=certIDsList)
+		html_string = render_to_string('printTable.html', {'certifications': certifications})
+		html = HTML(string=html_string).write_pdf()
+		response = HttpResponse(html, content_type='application/pdf')
+		response['Content-Disposition'] = "inline; filename=certificates.pdf"
+		return response
 	elif request.GET.get('exportType') == 'PrintExp':
 		return HttpResponse(status=204)
 	else:
