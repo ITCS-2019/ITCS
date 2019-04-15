@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 def index_page(request):
-    return render(request,"index.html")
+    #return render(request,"index.html")
+    return redirect('crm_home')
 
 def page_not_found(request):
     return render(request,"page-404.html")
