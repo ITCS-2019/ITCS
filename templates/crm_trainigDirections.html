@@ -104,7 +104,7 @@
         trainigDirections.push({
             id: '{{trainigDirection.id}}',
             price_id: '{{trainigDirection.price_id}}',
-            direction_title: '{{ trainigDirection.direction_title }}',
+            direction_title: '{{ trainigDirection.direction_title }}'.replace(/&quot;/g, `"`),
             allow_functions: '{{ trainigDirection.allow_functions }}',
             level: '{{ trainigDirection.level }}'
         });
