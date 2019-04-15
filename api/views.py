@@ -12,6 +12,8 @@ from django.http import HttpResponse
 
 import xlwt
 
+import datetime
+
 
 class ListTrainigDirectionsView(generics.ListAPIView):
 	queryset = TrainigDirections.objects.all()
