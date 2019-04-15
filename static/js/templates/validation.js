@@ -65,6 +65,8 @@ $(function() {
         }
     }
 
+    $('input', '.date').attr('autocomplete', 'off');
+
     // allow only latin letters, space, hyphen, apostrophe
     function enLettersValid(node) {
         node.val(node.val().replace(/[^[a-zA-Z\-\'\s]/g, ''));

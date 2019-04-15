@@ -524,42 +524,7 @@
 <script src="/static/js/templates/validation.js"></script>
 
 <script>
-        // source: ["item 1","item 2","item 3"]
-        var arrFNameEng = [];
-        var arrLNameEng = [];
-        var arrLNameUkr = [];
-        var arrFNameUkr = [];
-        var arrSNameUkr = [];
-        
-        {% for sailor in sailors %}
-            arrFNameEng.push("{{ sailor.first_name_en }}");
-            arrLNameEng.push("{{ sailor.last_name_en }}");
-            arrLNameUkr.push("{{ sailor.last_name_ukr }}");
-            arrFNameUkr.push("{{ sailor.first_name_ukr }}");
-            arrSNameUkr.push("{{ sailor.second_name_ukr }}");
-        {% endfor%}
-
         $(document).ready(function(){
-
-            $('.typeahead_first_name_en').typeahead({
-                source: arrFNameEng
-            });
-            
-            $('.typeahead_last_name_en').typeahead({
-                source: arrLNameEng
-            });
-
-            $('.typeahead_last_name_ukr').typeahead({
-                source: arrLNameUkr
-            });
-
-            $('.typeahead_first_name_ukr').typeahead({
-                source: arrFNameUkr
-            });
-
-            $('.typeahead_second_name_ukr').typeahead({
-                source: arrSNameUkr
-            });
 
             $.fn.datepicker.dates['itcsUkr'] = {
                 days: ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П’ятниця", "Субота"],
@@ -596,6 +561,7 @@
                 startDate: '-0d',
                 endDate: '+5y'
             });
+            $('#id_born').attr('autocomplete', 'off');
 
             $('#date-of-issue').datepicker({
                 language: 'itcsUkr',
@@ -637,8 +603,5 @@
             });
 
         });
-
-
-    
 </script>
 {% endblock %}
