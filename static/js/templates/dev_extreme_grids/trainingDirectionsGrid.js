@@ -127,7 +127,8 @@ $(function() {
                     dataField: 'price_id',
                     caption: 'Код',
                     allowEditing: false,
-                    allowFiltering: true
+                    allowFiltering: true,
+                    sortOrder: 'asc'
                 },
                 {
                     dataField: 'direction_title',

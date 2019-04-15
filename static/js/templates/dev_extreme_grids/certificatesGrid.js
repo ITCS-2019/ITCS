@@ -39,9 +39,9 @@ $(function() {
                 placeholder: "Шукати..."
             },
             export: {
-                enabled: true,
+                enabled: isExportable,
                 fileName: "certificates",
-                allowExportSelectedData: true
+                allowExportSelectedData: true,
             },
             onExporting: interceptExportItemClick,
             customizeExportData: function(cols, rows) {
@@ -198,6 +198,18 @@ $(function() {
                     dataType: 'date',
                     allowEditing: false,
                     format: 'dd.MM.yyyy',
+                },
+                {
+                    dataField: 'validDate',
+                    caption: 'Дійсний до',
+                    dataType: 'date',
+                    allowEditing: false,
+                    format: 'dd.MM.yyyy',
+                },
+                {
+                    dataField: 'certificateNumberGenerated',
+                    caption: '№ сертифіката(сген.)',
+                    allowEditing: false
                 },
                 {
                     dataField: 'specialty',
