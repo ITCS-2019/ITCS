@@ -138,3 +138,18 @@ def exportXLS(request):
 		#ErrorMessage: "Incorrect Export Type"
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
+
+@login_required(login_url="login/")
+def exportToPrint(request):
+	print(request.GET.get('exportType'))
+	certIDsList = request.GET.get('certIDs').split(',')
+	if request.GET.get('exportType') == 'XLSExp':
+		return HttpResponse(status=204)
+	elif request.GET.get('exportType') == 'PdfExp':
+		return HttpResponse(status=204)
+	elif request.GET.get('exportType') == 'PrintExp':
+		return HttpResponse(status=204)
+	else:
+		#ErrorMessage: "Incorrect Export Type"
+		print('Incorrect Export Type')
+		return HttpResponse(status=204)

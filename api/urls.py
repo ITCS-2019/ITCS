@@ -8,4 +8,5 @@ urlpatterns = [
     path('issuedCerts/', views.issuedCerts, name="api-issuedCerts"),
     path('changeCertNumber/', views.changeCertNumber, name="api-changeCertNumber"),
     path('exportXLS/', views.exportXLS, name='api-exportXLS'),
+    path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
 ]
