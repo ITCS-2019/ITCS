@@ -45,14 +45,18 @@ $(function() {
             },
             onExporting: interceptExportItemClick,
             customizeExportData: function(cols, rows) {
-                let certIDs = [];
+                let certIDs = [],
+                    $exportTypeBtn = $('.btn-primary', '#export-type-group'),
+                    exportType = $exportTypeBtn.attr('data-type');
+
 
                 rows.forEach((row) => {
                     certIDs.push(row.data.certificateId);
                 });
 
                 $.ajax({
-                    url: exportRoute,
+                    // url: exportRoute,
+                    url: exportType,
                     method: 'GET',
                     data: {
                         exportType: (exportSelected) ? 'Selected' : 'All',

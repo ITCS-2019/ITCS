@@ -104,6 +104,23 @@
                                 Остання
                             </button>
                         </div>
+
+                        <div class="btn-group" id="export-type-group">
+                            <!--<button class="btn btn-white" type="button">CSV</button>-->
+                            <button class="btn btn-export btn-primary" type="button"
+                            data-type="XLSExp">
+                                Excel
+                            </button>
+                            <button class="btn btn-export btn-white" type="button"
+                            data-type="PdfExp">
+                                PDF
+                            </button>
+                            <button class="btn btn-export btn-white" type="button"
+                            data-type="PrintExp">
+                                Print
+                            </button>
+                        </div>
+
                         <div id="certificates-grid" class="dx-selection-disabled">
                         </div>
                     </div>
@@ -163,6 +180,8 @@
 </script>
 
 <script src="/static/js/templates/dev_extreme_grids/certificatesGrid.js">
+</script>
+<script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
 </script>
 
 <!-- <script>
