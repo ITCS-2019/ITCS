@@ -187,6 +187,5 @@ def exportToPrint(request):
 	elif request.GET.get('exportType') == 'PrintExp':
 		return HttpResponse(status=204)
 	else:
-		#ErrorMessage: "Incorrect Export Type"
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
