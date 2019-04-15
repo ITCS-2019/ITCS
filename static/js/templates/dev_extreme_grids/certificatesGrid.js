@@ -55,11 +55,10 @@ $(function() {
                 });
 
                 $.ajax({
-                    // url: exportRoute,
-                    url: exportType,
+                    url: exportRoute,
                     method: 'GET',
                     data: {
-                        exportType: (exportSelected) ? 'Selected' : 'All',
+                        exportType: exportType,
                         certIDs: certIDs.join(',')
                     },
                     dataType: 'json',
