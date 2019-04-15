@@ -68,7 +68,6 @@ $(function() {
                 });
 
                 let element = document.createElement('a');
-
                 element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
                 element.style.display = 'none';
                 document.body.appendChild(element);
