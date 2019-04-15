@@ -97,7 +97,8 @@
 
 <!--custom scripts-->
 <script>
-    var trainigDirections = [];
+    var trainigDirections = [],
+        isNtz = ('{{ user.groups.all.0.name }}' === 'НТЗ') ? true : false;
 
     {% for trainigDirection in trainigDirections %}
         trainigDirections.push({

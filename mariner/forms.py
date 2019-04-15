@@ -78,8 +78,8 @@ class SailorForm(forms.ModelForm):
             'last_name_ukr': forms.TextInput(attrs={'placeholder': 'Прізвище українською. Наприклад: \"Салтиков-Щедрін\"',}),
             'first_name_ukr': forms.TextInput(attrs={'placeholder': 'Ім\'я українською. Наприклад: \"Тан Зунг\"',}),
             'second_name_ukr': forms.TextInput(attrs={'placeholder': 'По батькові українською. Наприклад: \"Іванович\"',}),
-            'born' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
-#            'died' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
+            'born' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
+#            'died' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
             'inn': forms.TextInput(attrs={'type': 'text', 'data-mask': '9999999999', 'placeholder': 'ІПН',}),
         }
     def clean(self):
@@ -143,8 +143,8 @@ class TrainigOrganisationForm(forms.ModelForm):
             'directions': 'Напрямки підготовки',
         }
         widgets = {
-            'activated' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
-            'active_till' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
+            'activated' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
+            'active_till' : forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
         }
 
 
@@ -278,10 +278,10 @@ class CertificationForm(forms.ModelForm):
             'last_name_ukr': forms.TextInput(attrs={'placeholder': 'Прізвище українською. Наприклад: \"Салтиков-Щедрін\"',}),
             'first_name_ukr': forms.TextInput(attrs={'placeholder': 'Ім\'я українською. Наприклад: \"Тан Зунг\"',}),
             'second_name_ukr': forms.TextInput(attrs={'placeholder': 'По батькові українською. Наприклад: \"Іванович\"',}),
-            'born': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
+            'born': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
             'inn': forms.TextInput(attrs={'type': 'text', 'data-mask': '9999999999', 'placeholder': 'ІПН',}),
-            'date_of_issue': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
-            'valid_date': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.гггг',}),
+            'date_of_issue': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
+            'valid_date': forms.DateInput(format="%d.%m.%Y", attrs={'placeholder': 'дд.мм.рррр',}),
         }
     def clean(self):
         super(CertificationForm, self).clean()

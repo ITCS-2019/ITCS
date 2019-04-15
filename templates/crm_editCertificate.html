@@ -585,6 +585,18 @@
                 endDate: '-16y',
             });
 
+            $('#valid-date').datepicker({
+                language: 'itcsUkr',
+                todayBtn: 'linked',
+                keyboardNavigation: false,
+                forceParse: false,
+                calendarWeeks: true,
+                autoclose: true,
+                format: 'dd.mm.yyyy',
+                startDate: '-0d',
+                endDate: '+5y'
+            });
+
             $('#date-of-issue').datepicker({
                 language: 'itcsUkr',
                 todayBtn: 'linked',
@@ -597,22 +609,11 @@
                 daysOfWeekDisabled: [0,6]
             }).on('changeDate', function(e) {
                 let selectedDate = new Date(e.date.valueOf()),
-                    validDate = new Date(selectedDate.setFullYear(selectedDate.getFullYear() + 5));
+                    validDate = new Date(new Date(e.date.valueOf()).setFullYear(selectedDate.getFullYear() + 5));
 
                 $('#valid-date').datepicker('setStartDate', selectedDate);
+                $('#valid-date').datepicker('setEndDate', validDate);
                 $('#valid-date').datepicker('update', validDate);
-            });
-
-            $('#valid-date').datepicker({
-                language: 'itcsUkr',
-                todayBtn: 'linked',
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: 'dd.mm.yyyy',
-                startDate: '-0d',
-                endDate: '+5y'
             });
 
             $('.selectpicker').selectpicker();

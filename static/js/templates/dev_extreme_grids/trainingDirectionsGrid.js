@@ -131,13 +131,13 @@ $(function() {
                 },
                 {
                     dataField: 'direction_title',
-                    caption: 'Назва Напрямка Пiдготовки',
+                    caption: 'Напрямок підготовки',
                     allowEditing: false,
                     allowFiltering: true
                 },
                 {
                     dataField: 'allow_functions',
-                    caption: 'Напрямок навчання',
+                    caption: 'Рівень функцій',
                     allowEditing: false,
                     allowFiltering: true
                 },
@@ -150,6 +150,7 @@ $(function() {
                 {
                     type: "buttons",
                     width: 110,
+                    visible: !isNtz,
                     buttons: [{
                         hint: 'Редагувати',
                         icon: 'edit',
