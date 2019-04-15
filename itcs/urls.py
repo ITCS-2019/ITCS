@@ -23,6 +23,8 @@ from django.conf.urls.static import static
 
 from itcs.views import index_page
 
+from django.views.generic import RedirectView
+
 #for overriding django auth view
 #from django.contrib.auth import views as auth_views
 #from mariner.forms import LoginForm
