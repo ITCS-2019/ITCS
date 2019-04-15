@@ -54,18 +54,12 @@ $(function() {
                     certIDs.push(row.data.certificateId);
                 });
 
-                $.ajax({
-                    url: exportRoute,
-                    method: 'GET',
-                    data: {
-                        exportType: exportType,
-                        certIDs: certIDs.join(',')
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        console.log(data);
-                    }
-                });
+                let element = document.createElement('a');
+                element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
             },
             onFileSaving: function (e) {
                 e.cancel = true;
