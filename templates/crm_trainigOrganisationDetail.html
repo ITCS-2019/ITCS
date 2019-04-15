@@ -139,17 +139,19 @@
                             </button>
                         </div>
 
-                        <div class="btn-group" id="export-type-group">
-                            <!--<button class="btn btn-white" type="button">CSV</button>-->
-                            <button class="btn btn-export btn-primary" type="button"
-                            data-type="Register">
-                                Вигрузка у Реєстр
-                            </button>
-                            <button class="btn btn-export btn-white" type="button"
-                            data-type="GiveCerts">
-                                Видати Сертифікати
-                            </button>
-                        </div>
+                        {% if trainigOrganisation.get_certInReview.count > 0 %}
+                            <div class="btn-group" id="export-type-group">
+                                <!--<button class="btn btn-white" type="button">CSV</button>-->
+                                <button class="btn btn-export btn-primary" type="button"
+                                data-type="Register">
+                                    Вигрузка у Реєстр
+                                </button>
+                                <button class="btn btn-export btn-white" type="button"
+                                data-type="GiveCerts">
+                                    Видати Сертифікати
+                                </button>
+                            </div>
+                        {% endif %}
                         <div id="certificates-on-review-grid" class="dx-selection-disabled">
                         </div>
                     </div>
@@ -169,6 +171,7 @@
 <script>
     var certifications = [],
         editCellRoute = '{% url 'api-changeCertNumber' %}',
+        isExportable = ('{{trainigOrganisation.get_certInReview.count}}' > 0) ? true : false,
         exportRoute = '{% url 'api-exportXLS' %}';
 
     let status;
