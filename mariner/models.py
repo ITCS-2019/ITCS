@@ -11,7 +11,17 @@ from django.contrib import admin
 #         qs = self.get_queryset()
 #         return qs.prefetch_related('certificated')
 
+
+
 class Sailor(models.Model):
+    M = 0
+    W = 1
+    ISU = 2
+    ANU = 3
+    SEX = (
+        (M, 'Чоловік'),
+        (W, 'Жінка')
+    )
     first_name_en = models.CharField(max_length=140, blank=True)
     last_name_en = models.CharField(max_length=140, blank=True)
     last_name_ukr = models.CharField(max_length=140)
@@ -20,6 +30,7 @@ class Sailor(models.Model):
     born = models.DateField()
     died = models.DateField(null=True, blank=True)
     inn = models.CharField(max_length=100, null=True, blank=True)
+    sex = models.IntegerField(choices=SEX, null=True, default=M)
     # objects = SailorManager()
     class Meta:
         ordering = ('last_name_ukr', 'first_name_ukr')
@@ -48,12 +59,21 @@ ALLOWS = (
 )
 
 class TrainigDirections(models.Model):
+    ACT = 0
+    NACT = 1
+    DIRECTSTATUS = (
+        (ACT, 'Активний'),
+        (NACT, 'Не Активний')
+    )
+
     price_id = models.IntegerField(null=True, blank=True)
     direction_title = models.CharField(max_length=200)
     level = models.CharField(max_length=20, choices=LEVELS, default='---')
     
     allow_functions = models.CharField(max_length=20, choices=ALLOWS, default='---')
     price = models.IntegerField(null=True, blank=True)
+
+    status = models.IntegerField(choices=DIRECTSTATUS, null=True, default=ACT)
     
     def __str__(self):
         return u"%s / %s / %s /" % (self.direction_title, self.get_allow_functions_display(), self.get_level_display())
@@ -99,10 +119,10 @@ class Certificate(models.Model):
     	(ISU, 'Видан'),
     	(ANU, 'Анульований')
     )
-    NTZ_STATUSES = (
-        (DRF, 'Чернетка'),
-        (IRV, 'Обробка')
-    )
+    # NTZ_STATUSES = (
+    #     (DRF, 'Чернетка'),
+    #     (IRV, 'Обробка')
+    # )
     WTL = 0
     TER = 1
     VALID = (
