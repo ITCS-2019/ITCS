@@ -1,14 +1,6 @@
 $(function() {
-    function changeExportType() {
-           let $btnsContainer = $(this).parent(),
-               $btns = $('.btn-export', $btnsContainer);
-           $btns.each(function() {
-               $(this).removeClass('btn-primary');
-               $(this).addClass('btn-white');
-           });
-           $(this).addClass('btn-primary');
-           $(this).removeClass('btn-white');
-    }
+    $.getScript('/static/js/templates/dev_extreme_grids/certificatesGrid.js');
+    $.getScript('/static/js/templates/dev_extreme_grids/certificatesOnReviewGrid.js');
 
     function printGrid(elemId) {
         let mywindow = window.open('', 'PRINT', 'height=400,width=600');
@@ -28,8 +20,21 @@ $(function() {
         return true;
     }
 
-    $('.btn-export').on('click', changeExportType);
+    function exportGrid() {
+        let isSelection = ($(this).attr('data-selection') === 'checked') ? true : false;
+
+        $(this).addClass('dropdown-item--clicked');
+
+        if ((typeof certificatesGrid !== 'undefined')) {
+            certificatesGrid.exportToExcel(isSelection);
+        }
+        if ((typeof certificatesOnReviewGrid !== 'undefined')) {
+            certificatesOnReviewGrid.exportToExcel(isSelection);
+        }
+    }
+
     $('#print-grid').on('click', function() {
         printGrid($(this).attr('data-grid-id'));
     });
+    $('.dropdown-item--export').on('click', exportGrid);
 });

@@ -140,18 +140,43 @@
                         </div>
 
                         {% if trainigOrganisation.get_certInReview.count > 0 %}
-                            <div class="btn-group" id="export-type-group">
-                                <!--<button class="btn btn-white" type="button">CSV</button>-->
-                                <button class="btn btn-export btn-primary" type="button"
-                                data-type="Register">
-                                    Вигрузка у Реєстр
-                                </button>
-                                <button class="btn btn-export btn-white" type="button"
-                                data-type="GiveCerts">
-                                    Видати Сертифікати
-                                </button>
+                            <div id="export-type-group">
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        Вигрузка у Реєстр
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="all">
+                                                Експортувати все
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="checked">
+                                                Експортувати обране
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        Видати Сертифікати
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="GiveCerts" data-selection="all">
+                                                Експортувати все
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="GiveCerts" data-selection="checked">
+                                                Експортувати обране
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <a href="http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert"
-                                class="btn btn-white" type="button">
+                                class="btn btn-primary" type="button">
                                     Замолвленная сертифікатів
                                 </a>
                             </div>
@@ -172,10 +197,12 @@
 <script src="/static/js/plugins/dataTables/datatables.min.js"></script>
 
 <!--custom scripts-->
+<script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
+</script>
+
 <script>
     var certifications = [],
         editCellRoute = '{% url 'api-changeCertNumber' %}',
-        isExportable = ('{{trainigOrganisation.get_certInReview.count}}' > 0) ? true : false,
         exportRoute = '{% url 'api-exportXLS' %}';
 
     let status;
@@ -205,10 +232,6 @@
             status: status,
         });
     {% endfor%}
-</script>
-<script src="/static/js/templates/dev_extreme_grids/certificatesOnReviewGrid.js">
-</script>
-<script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
 </script>
 
 <script>
