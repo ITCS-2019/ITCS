@@ -16,6 +16,8 @@ from weasyprint import HTML
 
 import xlwt
 
+import openpyxl
+
 import datetime
 
 
@@ -72,6 +74,38 @@ def changeCertNumber(request):
 	else:
 			hasError = True
 			errorMessage = "Number is None"
+	data = {
+		'error' : hasError,
+		'error_message' : errorMessage,
+	}
+	return JsonResponse(data)
+
+
+@login_required(login_url="login/")
+def changeToReviewStatus(request):
+	certIDsList = request.GET.get('certIDs').split(',')
+	hasError = False
+	errorMessage = "No Error"
+	certsInChange = Certificate.objects.filter(pk__in=certIDsList)
+	for cert in certsInChange:
+		if cert.status == 0:
+			cert.status = 1
+			cert.save()
+	data = {
+		'error' : hasError,
+		'error_message' : errorMessage,
+	}
+	return JsonResponse(data)
+
+@login_required(login_url="login/")
+def removeDraftCerts(request):
+	certIDsList = request.GET.get('certIDs').split(',')
+	hasError = False
+	errorMessage = "No Error"
+	certsInChange = Certificate.objects.filter(pk__in=certIDsList)
+	for cert in certsInChange:
+		if cert.status == 0:
+			cert.delete()
 	data = {
 		'error' : hasError,
 		'error_message' : errorMessage,
@@ -189,3 +223,28 @@ def exportToPrint(request):
 	else:
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
+
+@login_required(login_url="login/")
+def uploadXLS(request):
+	if "GET" == request.method:
+		print('GET request')
+		return render(request, "crm_xlsImport.html", {})
+	else:
+		print('load file')
+		excel_file = request.FILES["excel_file"]
+		# TODO: validations check extension or file size
+		wb = openpyxl.load_workbook(excel_file, read_only=False, keep_vba=False, data_only=False, keep_links=True)
+		# getting a particular sheet by name out of many sheets
+		worksheet = wb[0]
+		print(worksheet)
+		excel_data = list()
+		# iterating over the rows and
+		# getting value from each cell in row
+		for row in worksheet.iter_rows():
+			row_data = list()
+			for cell in row:
+				row_data.append(str(cell.value))
+			excel_data.append(row_data)
+		print(excel_data)
+		return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
+		#return HttpResponse(status=204)
