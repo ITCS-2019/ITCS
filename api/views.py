@@ -59,7 +59,7 @@ def issuedCerts(request):
 		return JsonResponse(data)
 
 @login_required(login_url="login/")
-def changeTrinigDirectionStatus(request):
+def changeTrainigDirectionStatus(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 		data = {
