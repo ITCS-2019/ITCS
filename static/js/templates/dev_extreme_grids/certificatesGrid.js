@@ -1,15 +1,7 @@
-$(function() {
-    if ($('#certificates-grid').length > 0) {
-        DevExpress.localization.locale('ru');
+if ($('#certificates-grid').length > 0) {
+    DevExpress.localization.locale('ru');
 
-        let exportSelected,
-            interceptExportItemClick = function(e) {
-                let contextMenu = e.element.find(".dx-datagrid-export-menu").dxContextMenu("instance");
-                contextMenu.on("itemClick", function (e) {
-                    exportSelected = (e.itemData.exportSelected) ? true : false;
-                });
-            };
-        $('#certificates-grid').dxDataGrid({
+    var certificatesGrid = $('#certificates-grid').dxDataGrid({
             dataSource: certifications,
             allowColumnReordering: false,
             allowColumnResizing: true,
@@ -39,27 +31,29 @@ $(function() {
                 placeholder: "Шукати..."
             },
             export: {
-                enabled: isExportable,
+                enabled: false,
                 fileName: "certificates",
                 allowExportSelectedData: true,
             },
-            onExporting: interceptExportItemClick,
             customizeExportData: function(cols, rows) {
                 let certIDs = [],
-                    $exportTypeBtn = $('.btn-primary', '#export-type-group'),
-                    exportType = $exportTypeBtn.attr('data-type');
+                    $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
+                    exportType = $clickedItem.attr('data-type');
 
+                if (rows.length > 0) {
+                    rows.forEach((row) => {
+                        certIDs.push(row.data.certificateId);
+                    });
 
-                rows.forEach((row) => {
-                    certIDs.push(row.data.certificateId);
-                });
+                    let element = document.createElement('a');
+                    element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                }
 
-                let element = document.createElement('a');
-                element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-                element.style.display = 'none';
-                document.body.appendChild(element);
-                element.click();
-                document.body.removeChild(element);
+                $clickedItem.removeClass('dropdown-item--clicked');
             },
             onFileSaving: function (e) {
                 e.cancel = true;
@@ -118,8 +112,6 @@ $(function() {
                 }
             },
             onContentReady: function(e) {
-                interceptExportItemClick(e);
-
                 function changePage(page) {
                     e.component.pageIndex(page);
                 }
@@ -240,6 +232,5 @@ $(function() {
                     allowEditing: false,
                 }
             ]
-        });
-    }
-});
+        }).dxDataGrid('instance');
+}

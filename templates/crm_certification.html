@@ -108,17 +108,42 @@
                         </div>
 
                         {% if certifications.count > 0 %}
-                            <div class="btn-group" id="export-type-group">
-                                <!--<button class="btn btn-white" type="button">CSV</button>-->
-                                <button class="btn btn-export btn-primary" type="button"
-                                data-type="XLSExp">
-                                    Excel
-                                </button>
-                                <button class="btn btn-export btn-white" type="button"
-                                data-type="PdfExp">
-                                    PDF
-                                </button>
-                                <button class="btn btn-white" type="button" id="print-grid"
+                            <div id="export-type-group">
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        Excell
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="XLSExp" data-selection="all">
+                                                Експортувати все
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="XLSExp" data-selection="checked">
+                                                Експортувати обране
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        PDF
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="PdfExp" data-selection="all">
+                                                Експортувати все
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="PdfExp" data-selection="checked">
+                                                Експортувати обране
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button class="btn btn-primary" type="button" id="print-grid"
                                 data-grid-id="certificates-grid">
                                     Print
                                 </button>
@@ -145,10 +170,11 @@
 <script src="/static/js/plugins/dataTables/datatables.min.js"></script>
 
 <!--Custom scripts-->
+<script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
+</script>
 <script>
     var certifications = [];
         isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
-        isExportable = ('{{certifications.count}}' > 0) ? true : false,
         exportRoute = '{% url 'api-exportToPrint' %}';
 
     let status;
@@ -183,26 +209,6 @@
     {% endfor%}
 </script>
 
-<script src="/static/js/templates/dev_extreme_grids/certificatesGrid.js">
-</script>
-<script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
-</script>
-
-<!-- <script>
-    $(document).ready(function() {
-
-            $('.footable').footable();
-
-            $('[data-page-size]').on('click', function(e){
-            e.preventDefault();
-            var newSize = $(this).data('pageSize');
-            FooTable.get('#regulations-table').pageSize(newSize);
-            });    
-           
-
-    });
-
-</script> -->
 <script>
     $(document).ready(function(){
         $('.dataTables-example').DataTable({
