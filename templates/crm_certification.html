@@ -87,76 +87,99 @@
                 </div>
             </div>
             <div class="ibox-content">    
-                
-                <div class="table-responsive">
-                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
-                        <div class="custom-pagination custom-pagination--certificates" style="display: none;">
-                            <button class="custom-pagination__btn custom-pagination__btn--first-page">
-                                Перша
-                            </button>
-                            <button class="custom-pagination__btn custom-pagination__btn--prev">
-                                &laquo;
-                            </button>
-                            <select name="certificates-select" class="custom-pagination__select">
-                            </select>
-                            <button class="custom-pagination__btn custom-pagination__btn--next">
-                                &raquo;
-                            </button>
-                            <button class="custom-pagination__btn custom-pagination__btn--last-page">
-                                Остання
+                <div class="custom-pagination custom-pagination--certificates" style="display: none;">
+                    <button class="custom-pagination__btn custom-pagination__btn--first-page">
+                        Перша
+                    </button>
+                    <button class="custom-pagination__btn custom-pagination__btn--prev">
+                        &laquo;
+                    </button>
+                    <select name="certificates-select" class="custom-pagination__select">
+                    </select>
+                    <button class="custom-pagination__btn custom-pagination__btn--next">
+                        &raquo;
+                    </button>
+                    <button class="custom-pagination__btn custom-pagination__btn--last-page">
+                        Остання
+                    </button>
+                </div>
+
+                {% if certifications.count > 0 %}
+                    <div class="c-row c-row--flex c-row--space-between">
+                        <div class="c-row__block" id="export-type-group">
+                            <div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                    Excell
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item dropdown-item--export" href="#" data-type="XLSExp" data-selection="all">
+                                            Експортувати все
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item dropdown-item--export" href="#" data-type="XLSExp" data-selection="checked">
+                                            Експортувати обране
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                    PDF
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item dropdown-item--export" href="#" data-type="PdfExp" data-selection="all">
+                                            Експортувати все
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item dropdown-item--export" href="#" data-type="PdfExp" data-selection="checked">
+                                            Експортувати обране
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <button class="btn btn-primary" type="button" id="print-grid"
+                            data-grid-id="certificates-grid">
+                                Друкувати
                             </button>
                         </div>
-
-                        {% if certifications.count > 0 %}
-                            <div id="export-type-group">
-                                <div class="btn-group">
-                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
-                                        Excell
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="XLSExp" data-selection="all">
-                                                Експортувати все
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="XLSExp" data-selection="checked">
-                                                Експортувати обране
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="btn-group">
-                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
-                                        PDF
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="PdfExp" data-selection="all">
-                                                Експортувати все
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="PdfExp" data-selection="checked">
-                                                Експортувати обране
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <button class="btn btn-primary" type="button" id="print-grid"
-                                data-grid-id="certificates-grid">
-                                    Print
-                                </button>
-                            </div>
-                        {% endif %}
-                        <div id="certificates-grid" class="dx-selection-disabled">
+                        <div class="c-row__block">
+                            <button class="btn btn-primary" type="button" id="handle-cert">
+                                В обробку
+                            </button>
+                            <button class="btn btn-danger" type="button" id="remove-cert">
+                                Видалити
+                            </button>
                         </div>
                     </div>
+
+                    <!--error modal-->
+                    <div id="error-grid-popup" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Операцiя неможлива!</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p id="modal-text"></p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary btn-outline" data-dismiss="modal">Ok</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endif %}
+                <div id="certificates-grid" class="c-dx-grid dx-selection-disabled">
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 {% endblock %}
@@ -172,10 +195,14 @@
 <!--Custom scripts-->
 <script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
 </script>
+<script src="/static/js/templates/dev_extreme_grids/extraGridMethods.js">
+</script>
 <script>
     var certifications = [];
         isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
-        exportRoute = '{% url 'api-exportToPrint' %}';
+        exportRoute = '{% url 'api-exportToPrint' %}',
+        certOnHandle = '{% url 'api-changeToReviewStatus' %}',
+        certRemove = '{% url 'api-removeDraftCerts' %}';
 
     let status;
     {% for certificate in certifications %}
