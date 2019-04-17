@@ -58,6 +58,10 @@ def issuedCerts(request):
 		data['certificates'] = certs
 		return JsonResponse(data)
 
+@login_required(login_url="login/")
+def changeTrinigDirectionStatus(request):
+
+
 def changeCertNumber(request):
 	certID = request.GET.get('certID')
 	certNumber = request.GET.get('certNumber')
@@ -86,31 +90,49 @@ def changeToReviewStatus(request):
 	certIDsList = request.GET.get('certIDs').split(',')
 	hasError = False
 	errorMessage = "No Error"
-	certsInChange = Certificate.objects.filter(pk__in=certIDsList)
-	for cert in certsInChange:
-		if cert.status == 0:
-			cert.status = 1
-			cert.save()
-	data = {
-		'error' : hasError,
-		'error_message' : errorMessage,
-	}
-	return JsonResponse(data)
+	if certIDsList != '':
+		certsInChange = Certificate.objects.filter(pk__in=certIDsList)
+		for cert in certsInChange:
+			if cert.status == 0:
+				cert.status = 1
+				cert.save()
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
+	else:
+		hasError = True
+		errorMessage = "Empty certIDs"
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
 
 @login_required(login_url="login/")
 def removeDraftCerts(request):
 	certIDsList = request.GET.get('certIDs').split(',')
 	hasError = False
 	errorMessage = "No Error"
-	certsInChange = Certificate.objects.filter(pk__in=certIDsList)
-	for cert in certsInChange:
-		if cert.status == 0:
-			cert.delete()
-	data = {
-		'error' : hasError,
-		'error_message' : errorMessage,
-	}
-	return JsonResponse(data)
+	if certIDsList != '':
+		certsInChange = Certificate.objects.filter(pk__in=certIDsList)
+		for cert in certsInChange:
+			if cert.status == 0:
+				cert.delete()
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
+	else:
+		hasError = True
+		errorMessage = "Empty certIDs"
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
 
 @login_required(login_url="login/")
 def exportXLS(request):
