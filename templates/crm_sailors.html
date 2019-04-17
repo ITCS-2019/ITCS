@@ -94,10 +94,17 @@
 
     {% for sailor in sailors %}
         sailors.push({
-            id: '{{sailor.id}}',
-            inn: '{{sailor.inn}}',
-            last_name_ukr: '{{ sailor.last_name_ukr }}',
-            first_name_ukr: '{{ sailor.first_name_ukr }}'
+            id: '{{ sailor.id }}',
+            pib: {
+                first_name_ukr: '{{ sailor.first_name_ukr }}',
+                second_name_ukr: '{{ sailor.second_name_ukr }}',
+                last_name_ukr: '{{ sailor.last_name_ukr }}',
+                first_name_en: '{{ sailor.first_name_en }}',
+                last_name_en: '{{ sailor.last_name_en }}',
+            },
+            sex: '{{ sailor.sex }}',
+            born: '{{ sailor.born|date:"m.d.Y" }}',
+            inn: '{{ sailor.inn }}',
         });
     {% endfor%}
 </script>

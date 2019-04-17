@@ -126,25 +126,40 @@ $(function() {
             columns: [
                 {
                     dataField: 'id',
-                    caption: 'ID',
+                    visible: false
+                },
+                {
+                    dataField: 'pib',
+                    caption: 'ПIБ',
+                    allowEditing: false,
+                    allowFiltering: false,
+                    cellTemplate: function(element, data) {
+                        // element.append("<div>" + info.text + "</div>")
+                        element.append(`<div style="white-space: nowrap;">
+                                            ${data.value.first_name_ukr} ${data.value.second_name_ukr} ${data.value.last_name_ukr}
+                                        </div>
+                                        <div style="white-space: nowrap;">
+                                            ${data.value.first_name_en} ${data.value.last_name_en}
+                                        </div>`);
+                        console.log(data);
+                    }
+                },
+                {
+                    dataField: 'sex',
+                    caption: 'Стать',
                     allowEditing: false,
                     allowFiltering: true
+                },
+                {
+                    dataField: 'born',
+                    caption: 'Дата народження',
+                    dataType: 'date',
+                    allowEditing: false,
+                    format: 'dd.MM.yyyy',
                 },
                 {
                     dataField: 'inn',
                     caption: 'ИНН',
-                    allowEditing: false,
-                    allowFiltering: true
-                },
-                {
-                    dataField: 'last_name_ukr',
-                    caption: 'Прiзвище',
-                    allowEditing: false,
-                    allowFiltering: true
-                },
-                {
-                    dataField: 'first_name_ukr',
-                    caption: 'Iм\'я',
                     allowEditing: false,
                     allowFiltering: true
                 },
