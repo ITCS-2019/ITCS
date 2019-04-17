@@ -60,7 +60,19 @@ def issuedCerts(request):
 
 @login_required(login_url="login/")
 def changeTrinigDirectionStatus(request):
-
+	if request.user.groups.all()[0].name == 'НТЗ':
+		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		data = {
+			'error' : False,
+			'error_message' : "Test MODE",
+		}
+		return JsonResponse(data)
+	else:
+		data = {
+			'error' : True,
+			'error_message' : "Test MODE",
+		}
+		return JsonResponse(data)
 
 def changeCertNumber(request):
 	certID = request.GET.get('certID')

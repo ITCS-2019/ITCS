@@ -7,6 +7,7 @@ urlpatterns = [
     path('allCerts/', views.certificates, name="api-allCerts"),
     path('issuedCerts/', views.issuedCerts, name="api-issuedCerts"),
     path('changeCertNumber/', views.changeCertNumber, name="api-changeCertNumber"),
+    path('changeTrinigDirectionStatus/', views.changeTrinigDirectionStatus, name="api-changeTrinigDirectionStatus"),
     path('changeToReviewStatus/', views.changeToReviewStatus, name="api-changeToReviewStatus"),
     path('removeDraftCerts/', views.removeDraftCerts, name="api-removeDraftCerts"),
     path('exportXLS/', views.exportXLS, name='api-exportXLS'),
