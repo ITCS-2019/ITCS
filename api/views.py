@@ -225,12 +225,14 @@ def exportXLS(request):
 def exportToPrint(request):
 	print(request.GET.get('exportType'))
 	certIDsList = request.GET.get('certIDs').split(',')
+	fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
+	fileNamePDF = 'inline; filename=itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.pdf'
 	if request.GET.get('exportType') == 'XLSExp':
 		rows = Certificate.objects.filter(pk__in=certIDsList).values_list(
 		'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
 		'born', 'date_of_issue', 'valid_date')
 		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = 'attachment; filename="certificates.xls"'
+		response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet('Сертифікати')
 		
@@ -255,10 +257,14 @@ def exportToPrint(request):
 			return HttpResponse(status=204)
 	elif request.GET.get('exportType') == 'PdfExp':
 		certifications = Certificate.objects.filter(pk__in=certIDsList)
-		html_string = render_to_string('printTable.html', {'certifications': certifications})
+		fileTitleStr = ''
+		if request.user.groups.all()[0].name == 'НТЗ':
+			fileTitleStr = request.user.profile.organization_name
+		fileTitleStr = fileTitleStr + ' ' + datetime.datetime.today().strftime('%Y%m%d-%H%M')
+		html_string = render_to_string('printTable.html', {'certifications': certifications, 'fileTitle': fileTitleStr})
 		html = HTML(string=html_string).write_pdf()
 		response = HttpResponse(html, content_type='application/pdf')
-		response['Content-Disposition'] = "inline; filename=certificates.pdf"
+		response['Content-Disposition'] = fileNamePDF #"inline; filename=certificates.pdf"
 		return response
 	elif request.GET.get('exportType') == 'PrintExp':
 		return HttpResponse(status=204)
