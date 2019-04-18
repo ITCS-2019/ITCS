@@ -38,30 +38,22 @@ $(function() {
             hoverStateEnabled: true,
             wordWrapEnabled: true,
             columnAutoWidth: true,
-            onRowClick: function (e) {
-                let component = e.component;
-
-                function initialClick() {
-                    component.clickCount = 1;
-                    component.clickKey = e.key;
-                    component.clickDate = new Date();
-                }
-
-                function doubleClick() {
-                    console.log('second click');
-                    component.clickCount = 0;
-                    component.clickKey = 0;
-                    component.clickDate = null;
-                }
-
-                if ((!component.clickCount) || (component.clickCount != 1) || (component.clickKey != e.key) ) {
-                    initialClick();
-                }
-                else if (component.clickKey == e.key) {
-                    if (((new Date()) - component.clickDate) <= 300)
-                        doubleClick();
-                    else
-                        initialClick();
+            onCellClick: function (data) {
+                switch (data.column.dataField) {
+                    case 'status':
+                        $.ajax({
+                            url: changeStatusRoute,
+                            method: 'GET',
+                            data: {
+                                certID: data.data.id,
+                                dirStatus: (data.status === '0') ? '1' : '0'
+                            },
+                            dataType: 'json',
+                            success: function (res) {
+                                console.log(res);
+                            }
+                        });
+                        return;
                 }
             },
             onContentReady: function(e) {
@@ -149,9 +141,22 @@ $(function() {
                     allowFiltering: true
                 },
                 {
+                    dataField: 'status',
+                    caption: 'Статус',
+                    allowEditing: false,
+                    allowFiltering: false,
+                    cssClass: 'center-vertical',
+                    cellTemplate: function(element, data) {
+                        element.append(`<div class="text-center" style="color: green;">
+                                            ${(data.value === '0') ? '&#10004;' : '&#x274C;'}
+                                        </div>`);
+                    }
+                },
+                {
                     type: "buttons",
                     width: 110,
                     visible: !isNtz,
+                    cssClass: 'center-vertical',
                     buttons: [{
                         hint: 'Редагувати',
                         icon: 'edit',

@@ -10,3 +10,7 @@
 .c-row.c-row--space-between {
   justify-content: space-between;
 }
+
+.center-vertical {
+  vertical-align: middle!important;
+}

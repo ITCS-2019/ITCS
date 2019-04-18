@@ -134,14 +134,12 @@ $(function() {
                     allowEditing: false,
                     allowFiltering: false,
                     cellTemplate: function(element, data) {
-                        // element.append("<div>" + info.text + "</div>")
                         element.append(`<div style="white-space: nowrap;">
                                             ${data.value.first_name_ukr} ${data.value.second_name_ukr} ${data.value.last_name_ukr}
                                         </div>
                                         <div style="white-space: nowrap;">
                                             ${data.value.first_name_en} ${data.value.last_name_en}
                                         </div>`);
-                        console.log(data);
                     }
                 },
                 {
