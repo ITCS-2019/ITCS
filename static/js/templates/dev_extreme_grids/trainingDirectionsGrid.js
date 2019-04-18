@@ -41,16 +41,19 @@ $(function() {
             onCellClick: function (data) {
                 switch (data.column.dataField) {
                     case 'status':
+                        let newStatus = (data.data.status === '0') ? '1' : '0';
+
                         $.ajax({
                             url: changeStatusRoute,
                             method: 'GET',
                             data: {
                                 certID: data.data.id,
-                                dirStatus: (data.status === '0') ? '1' : '0'
+                                dirStatus: newStatus
                             },
                             dataType: 'json',
                             success: function (res) {
-                                console.log(res);
+                                trainigDirections[data.rowIndex].status = newStatus;
+                                trainingDirectionsGrid.refresh();
                             }
                         });
                         return;
