@@ -60,8 +60,16 @@ def issuedCerts(request):
 
 @login_required(login_url="login/")
 def changeTrainigDirectionStatus(request):
+	trainingDirID = request.GET.get('certID')
+	dirStatus = request.GET.get('dirStatus')
+	print(trainingDirID)
+	print(dirStatus)
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		print(trainigOrganisation.directions.object.get(id=certID))
+		direction = trainigOrganisation.directions.object.get(id=certID)
+		print('Direction Status:')
+		print(direction.status)
 		data = {
 			'error' : False,
 			'error_message' : "Test MODE",
