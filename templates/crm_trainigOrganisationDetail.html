@@ -141,6 +141,11 @@
 
                         {% if trainigOrganisation.get_certInReview.count > 0 %}
                             <div id="export-type-group">
+                                <a href="http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert"
+                                target="_blank"
+                                class="btn btn-primary" type="button">
+                                    Замолвленная сертифікатів
+                                </a>
                                 <div class="btn-group">
                                     <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
                                         Вигрузка у Реєстр
@@ -158,6 +163,11 @@
                                         </li>
                                     </ul>
                                 </div>
+                                <a href="http://registr-itcs.ddns.net/sidebar/Templates/CertSeafarers"
+                                target="_blank"
+                                class="btn btn-primary" type="button">
+                                    Імпорт до Реєстру
+                                </a>
                                 <div class="btn-group">
                                     <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
                                         Видати Сертифікати
@@ -175,10 +185,6 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <a href="http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert"
-                                class="btn btn-primary" type="button">
-                                    Замолвленная сертифікатів
-                                </a>
                             </div>
                         {% endif %}
                         <div id="certificates-on-review-grid" class="dx-selection-disabled">
