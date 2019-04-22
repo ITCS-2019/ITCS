@@ -153,12 +153,12 @@
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="all">
-                                                Експортувати все
+                                                Вигрузити все
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="checked">
-                                                Експортувати обране
+                                                Вигрузити обране
                                             </a>
                                         </li>
                                     </ul>
@@ -184,6 +184,24 @@
                                             </a>
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+
+                            <!--error modal-->
+                            <div id="error-grid-popup" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Операцiя неможлива!</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p id="modal-text"></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary btn-outline" data-dismiss="modal">Ok</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         {% endif %}

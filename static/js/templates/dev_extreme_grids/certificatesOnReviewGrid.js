@@ -54,16 +54,31 @@ if ($('#certificates-on-review-grid').length > 0) {
                 exportType = $clickedItem.attr('data-type');
 
             if (rows.length > 0) {
-                rows.forEach((row) => {
-                    certIDs.push(row.data.certificateId);
+                let specialty = rows[0].data.specialty,
+                    isSameSpecialties = true;
+
+                rows.some((row) => {
+                    if (row.data.specialty === specialty) {
+                        certIDs.push(row.data.certificateId);
+                    }
+                    else {
+                        isSameSpecialties = false;
+                        return true;
+                    }
                 });
 
-                let element = document.createElement('a');
-                element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-                element.style.display = 'none';
-                document.body.appendChild(element);
-                element.click();
-                document.body.removeChild(element);
+                if (isSameSpecialties) {
+                    let element = document.createElement('a');
+                    element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                }
+                else {
+                    $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
+                    $('#error-grid-popup').modal('show');
+                }
             }
 
             $clickedItem.removeClass('dropdown-item--clicked');

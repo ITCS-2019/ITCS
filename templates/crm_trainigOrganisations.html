@@ -89,16 +89,24 @@
 
 <!--custom scripts-->
 <script>
-    var trainigOrganisations = [];
+    var trainigOrganisations = [],
+        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false;
 
     {% for trainig in trainigOrganisations %}
+        let directionNames = '';
+        {% for direction in trainig.directions.all %}
+            // console.log('{{direction.direction_title}}');
+            directionNames += `- ${'{{ direction.direction_title }}'}; <br/>`;
+        {% endfor %}
+
         trainigOrganisations.push({
             organisation_id: '{{trainig.organisation_id}}',
-            organisation_name: '{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`),
+            organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
             activated: '{{ trainig.activated|date:"m.d.Y" }}',
-            active_till: '{{ trainig.active_till|date:"m.d.Y" }}'
+            active_till: '{{ trainig.active_till|date:"m.d.Y" }}',
+            directions: directionNames
         });
-    {% endfor%}
+    {% endfor %}
 </script>
 <script src="/static/js/templates/dev_extreme_grids/trainingOrganisationsMainGrid.js">
 </script>

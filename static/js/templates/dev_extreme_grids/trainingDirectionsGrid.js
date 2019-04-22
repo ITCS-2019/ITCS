@@ -43,6 +43,10 @@ $(function() {
                     case 'status':
                         let newStatus = (data.data.status === '0') ? '1' : '0';
 
+                        console.log(data);
+
+                        console.log(trainigDirections);
+
                         $.ajax({
                             url: changeStatusRoute,
                             method: 'GET',
@@ -52,7 +56,12 @@ $(function() {
                             },
                             dataType: 'json',
                             success: function (res) {
-                                trainigDirections[data.rowIndex].status = newStatus;
+                                trainigDirections.some((direction) => {
+                                    if (direction.id === data.data.id) {
+                                        direction.status = newStatus;
+                                        return true;
+                                    }
+                                });
                                 trainingDirectionsGrid.refresh();
                             }
                         });
