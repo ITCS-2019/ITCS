@@ -43,15 +43,19 @@ $(function() {
                 wordWrapEnabled: true,
                 columnAutoWidth: true,
                 grouping: {
-                    autoExpandAll: true,
-                    expandMode: 'rowClick'
+                    autoExpandAll: false,
+                    expandMode: 'buttonClick'
                 },
                 onCellClick: function (e) {
                     if (e.column.dataField && !isInspector) {
                         window.location.replace(`/mariner/trainigOrganisation/${e.data.organisation_name}`);
                     }
-                    else if (isInspector && e.column.dataField && e.column.dataField !== 'organisation_name') {
-                        let trainingOrganisationName = e.data.organisation_name.split('|')[0];
+                    // else if (isInspector && e.column.dataField && e.column.dataField !== 'organisation_name') {
+                    else if (isInspector
+                    && e.column.dataField
+                    && e.column.dataField === 'organisation_name'
+                    && typeof e.value !== 'boolean') {
+                        let trainingOrganisationName = e.value.split('|')[0];
                         window.location.replace(`/mariner/trainigOrganisation/${trainingOrganisationName}`);
                     }
                 },
@@ -116,7 +120,18 @@ $(function() {
                         allowEditing: false,
                         allowFiltering: false,
                         cellTemplate: function(element, data) {
-                            element.append(`<div>${data.value}</div>`);
+                            let directionsData = data.value;
+
+                            directionsData.forEach((direction) => {
+                                element.append(`<div>
+                                                    <a href="javascript:void(0);">
+                                                        ${direction.directionName}
+                                                    </a>
+                                                    <span>
+                                                        ${direction.certAmount}
+                                                    </span>
+                                                </div>`);
+                            });
                         },
                         visible: isInspector
                     },
