@@ -28,7 +28,7 @@ $(function() {
                     placeholder: "Шукати..."
                 },
                 export: {
-                    enabled: true,
+                    enabled: false,
                     fileName: "certificates",
                     allowExportSelectedData: true
                 },
