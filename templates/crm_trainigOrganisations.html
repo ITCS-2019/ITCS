@@ -90,10 +90,12 @@
 <!--custom scripts-->
 <script>
     var trainigOrganisations = [],
-        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false;
+        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false,
+        directionNames = '';
+
 
     {% for trainig in trainigOrganisations %}
-        let directionNames = '';
+        directionNames = '';
         {% for direction in trainig.directions.all %}
             directionNames += `- ${'{{ direction.direction_title }}'}; <br/>`;
         {% endfor %}
