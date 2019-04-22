@@ -95,7 +95,6 @@
     {% for trainig in trainigOrganisations %}
         let directionNames = '';
         {% for direction in trainig.directions.all %}
-            // console.log('{{direction.direction_title}}');
             directionNames += `- ${'{{ direction.direction_title }}'}; <br/>`;
         {% endfor %}
 
