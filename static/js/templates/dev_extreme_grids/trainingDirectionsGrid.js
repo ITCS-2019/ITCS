@@ -43,10 +43,6 @@ $(function() {
                     case 'status':
                         let newStatus = (data.data.status === '0') ? '1' : '0';
 
-                        console.log(data);
-
-                        console.log(trainigDirections);
-
                         $.ajax({
                             url: changeStatusRoute,
                             method: 'GET',
