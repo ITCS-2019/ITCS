@@ -14,3 +14,113 @@
 .center-vertical {
   vertical-align: middle!important;
 }
+
+/* --------CERTIFICATE TEMPLATE-------- */
+.c-container-a6 {
+  width: 1240px;
+  height: 1748px;
+  padding: 25px 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-content: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.c-container-a6__row {
+  width: 100%;
+}
+  .c-container-a6__row.c-container-a6__row--flex {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .c-container-a6__row.c-container-a6__row--margin-top-70 {
+    margin-top: 70px;
+  }
+
+.c-container-a6__row-block {
+  flex: 1;
+}
+  .c-container-a6__row-block.c-container-a6__row-block--30pc {
+    flex: 0 1 auto;
+    width: 25%;
+  }
+  .c-container-a6__row.c-container-a6__row--margin-top-10 {
+    margin-top: 10px;
+  }
+
+.img {
+  display: inline-block;
+  font-size: 0px;
+}
+  .img.img--logo {
+    width: 100%;
+    height: auto;
+  }
+
+.title {
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 55px;
+  font-weight: 700;
+}
+  .title.title--red {
+    color: red;
+  }
+
+.text {
+  font-family: sans-serif;
+  font-size: 26px;
+}
+  .text.text--align-center {
+    text-align: center;
+  }
+  .text.text--serif {
+    font-family: serif;
+  }
+  .text.text--font-size-35 {
+    font-size: 35px;
+  }
+  .text.text--font-size-20 {
+    font-size: 20px;
+  }
+  .text.text--uppercase {
+    text-transform: uppercase;
+  }
+  .text.text--uppercase {
+    text-transform: uppercase;
+  }
+  .text.text--margin-top-35 {
+    margin-top: 35px;
+  }
+  .text.text--margin-top-50 {
+    margin-top: 50px;
+  }
+  .text.text--font-weight-700 {
+    font-weight: 700;
+  }
+  .text.text--margin-top-10 {
+    margin-top: 10px;
+  }
+  .text.text--margin-left-70 {
+    margin-left: 70px;
+  }
+  .text.text--margin-left-54 {
+    margin-left: 54px;
+  }
+
+.c-container-a6__head {
+  width: 100%;
+}
+
+.c-container-a6__footer {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* ------CERTIFICATE TEMPLATE END------ */
