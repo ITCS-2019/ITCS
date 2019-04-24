@@ -12,5 +12,5 @@ urlpatterns = [
     path('removeDraftCerts/', views.removeDraftCerts, name="api-removeDraftCerts"),
     path('exportXLS/', views.exportXLS, name='api-exportXLS'),
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
-    path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
+    # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
 ]

@@ -7,7 +7,7 @@ from accounts.models import Profile
 
 from regulations.models import RegulationDoc
 from mariner.models import *
-from mariner.forms import UserForm, ProfileForm, RegulationForm, CertificationForm, CertificationFormPDF, SailorForm, TrainigOrganisationForm, TrainigDirectionsForm
+from mariner.forms import UserForm, ProfileForm, RegulationForm, CertificationForm, CertificationFormPDF, SailorForm, TrainigOrganisationForm, TrainigDirectionsForm, UploadXLSForm
 
 import datetime
 
@@ -18,6 +18,9 @@ from weasyprint import HTML
 
 import xlwt
 import re
+import xlrd
+import openpyxl
+import os
 #from transliterate import translit
 from transliterate.base import TranslitLanguagePack, registry
 from transliterate import translit, get_available_language_codes
@@ -543,3 +546,46 @@ def generate_pdf(request):
 	# 	return response
 
 	return response
+
+@login_required(login_url="login/")
+def uploadXLS(request):
+	if "GET" == request.method:
+		print('GET request')
+		# return render(request, "crm_xlsImport.html", {})
+		form = UploadXLSForm(request.user)
+		return render(request, 'crm_xlsImport.html', {'form': form})
+	else:
+		print('load file')
+		print(request.POST.get('directions'))
+		excel_file = request.FILES['file']
+		# TODO: validations check extension or file size
+		extesion = os.path.splitext(str(request.FILES['file']))[1]
+		print(extesion)
+		if extesion == '.xlsx':
+			wb = openpyxl.load_workbook(excel_file, read_only=False, keep_vba=False, data_only=False, keep_links=True)
+			# getting a particular sheet by name out of many sheets
+			worksheet = wb.active
+			#print(worksheet)
+			excel_data = list()
+			# iterating over the rows and
+			# getting value from each cell in row
+			for row in worksheet.iter_rows():
+				row_data = list()
+				for cell in row:
+					row_data.append(str(cell.value))
+				excel_data.append(row_data)
+			#print(excel_data)
+			return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
+		elif extesion == '.xls':
+			rb = xlrd.open_workbook(file_contents=excel_file.read())
+			sheet = rb.sheet_by_index(0)
+			excel_data = list()
+			for rownum in range(sheet.nrows):
+				row_data = list()
+				row = sheet.row_values(rownum)
+				for cell in row:
+					row_data.append(cell)
+				excel_data.append(row_data)
+			return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
+		else:
+			return HttpResponse(status=204)

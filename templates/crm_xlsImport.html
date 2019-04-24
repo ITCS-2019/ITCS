@@ -1,7 +1,8 @@
 {% extends 'crm_base.html' %}
+{% load widget_tweaks %}
 {% block title %} Профіль {% endblock %}
 {% block styles %}
-    <!-- <link href="/static/css/plugins/toastr/toastr.min.css" rel="stylesheet"> -->
+    <link href="/static/css/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block userName %}{{ userName }}{% endblock %}
@@ -35,15 +36,19 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Профіль</h2>
+        <h2>Сертифiкати</h2>
         <ol class="breadcrumb">
             <li>
                 <a href="/mariner/">Головна</a>
             </li>
+            <li>
+                <a href="/mariner/certification/">Сертифiкати</a>
+            </li>
             <li class="active">
-                <strong>Профіль</strong>
+                <strong>Завантажити сертифікати</strong>
             </li>
         </ol>
     </div>
@@ -52,30 +57,121 @@
     </div>
 </div>
 
-<form action="{% url 'api-uploadXLS' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="file"
-                   title="Upload excel file"
-                   name="excel_file"
-                   style="border: 1px solid black; padding: 5px;"
-                   required="required">
-            <p>
-            <input type="submit"
-                   value="Upload"
-                   style="border: 1px solid green; padding:5px; border-radius: 2px; cursor: pointer;">
-        </form>
+<p></p>
 
-        <p></p>
-        <hr>
 
-        {% for row in excel_data %}
-            {% for cell in row %}
-                {{ cell }}&nbsp;&nbsp;
-            {% endfor %}
-            <br>
-        {% endfor %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Завантажити сертифікати з файлу <small>з настройкою напрямкiв пiдготовки.</small></h5>
+            </div>
+            
+            <div class="ibox-content">
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- {{ form.as_p }} -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="font-normal">{{ form.directions.label_tag }}</label>
+                            <div>
+                                {{ form.directions|add_class:"selectpicker form-control"|append_attr:"data-live-search:true" }}
+                            </div>    
+                        </div>
+
+                    </div>
+                    <p>
+                    <p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="font-normal">{{ form.file.label_tag }}</label>
+                            <div>
+                                {{ form.file|add_class:"form-control" }}
+                            </div>
+                            <div>
+                            <p>
+                            </div>  
+                        </div>
+
+                    </div>
+                    <p>
+                    <p>
+                    <div class="form-group text-center m-t-30">
+                        <div class="text-center">
+                            <button class="btn btn-primary " type="submit"><i class="fa fa-check"></i>&nbsp;Завантажити</button>
+                        </div>
+                    </div>
+
+                 </form>
+
+                <!-- <form action="{% url 'api-uploadXLS' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <select id="my_options" class="selectpicker" data-live-search="true">
+                        <option>Авто визначення</option>
+                        {% for training_direction in training_directions %}
+                            <option>training_direction</option>
+                        {% endfor %}
+                    </select>
+                    <p>
+                    <p>
+                    <input type="file"
+                        title="Завантажити excel файл"
+                        name="excel_file"
+                        style="border: 1px solid black; padding: 5px;"
+                        required="required">
+                    <p>
+                    <p>
+                    <input type="submit" value="Завантажити" style="border: 1px solid green; padding:5px; border-radius: 2px; cursor: pointer;">
+                </form> -->
+
+                <p>
+                <hr>
+
+                <!-- {% for row in excel_data %}
+                    {% for cell in row %}
+                        {{ cell }}&nbsp;&nbsp;
+                    {% endfor %}
+                    <br>
+                {% endfor %} -->
+
+                <table border="1">
+                    <thead>
+                <tr>
+                    <!-- <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in excel_data %}
+                <tr>
+                    {% for cell in row %}
+                        <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}    
+            </tbody>
+        </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
 {% block scripts %}
+<script src="/static/js/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+
+<script>
+        $(document).ready(function(){
+            $('.selectpicker').selectpicker();
+        });
+</script>
 {% endblock %}

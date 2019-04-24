@@ -16,7 +16,7 @@ from weasyprint import HTML
 
 import xlwt
 
-import openpyxl
+# import openpyxl
 
 import datetime
 
@@ -272,27 +272,28 @@ def exportToPrint(request):
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
 
-@login_required(login_url="login/")
-def uploadXLS(request):
-	if "GET" == request.method:
-		print('GET request')
-		return render(request, "crm_xlsImport.html", {})
-	else:
-		print('load file')
-		excel_file = request.FILES["excel_file"]
-		# TODO: validations check extension or file size
-		wb = openpyxl.load_workbook(excel_file, read_only=False, keep_vba=False, data_only=False, keep_links=True)
-		# getting a particular sheet by name out of many sheets
-		worksheet = wb[0]
-		print(worksheet)
-		excel_data = list()
-		# iterating over the rows and
-		# getting value from each cell in row
-		for row in worksheet.iter_rows():
-			row_data = list()
-			for cell in row:
-				row_data.append(str(cell.value))
-			excel_data.append(row_data)
-		print(excel_data)
-		return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
-		#return HttpResponse(status=204)
+# @login_required(login_url="login/")
+# def uploadXLS(request):
+# 	if "GET" == request.method:
+# 		print('GET request')
+# 		return render(request, "crm_xlsImport.html", {})
+# 	else:
+# 		print('load file')
+# 		print(request.POST.get('my_options'))
+# 		excel_file = request.FILES["excel_file"]
+# 		# TODO: validations check extension or file size
+# 		wb = openpyxl.load_workbook(excel_file, read_only=False, keep_vba=False, data_only=False, keep_links=True)
+# 		# getting a particular sheet by name out of many sheets
+# 		worksheet = wb[0]
+# 		print(worksheet)
+# 		excel_data = list()
+# 		# iterating over the rows and
+# 		# getting value from each cell in row
+# 		for row in worksheet.iter_rows():
+# 			row_data = list()
+# 			for cell in row:
+# 				row_data.append(str(cell.value))
+# 			excel_data.append(row_data)
+# 		print(excel_data)
+# 		return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
+# 		#return HttpResponse(status=204)

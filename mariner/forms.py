@@ -337,3 +337,31 @@ class CertificationForm(forms.ModelForm):
 class CertificationFormPDF(forms.Form):
     startDate = forms.CharField(max_length=20)
     endDate = forms.CharField(max_length=20)
+
+class UploadXLSForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(UploadXLSForm, self).__init__(*args, **kwargs)
+        if user.groups.all()[0].name == 'НТЗ':
+            try:
+                trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=user.profile.organization_name)
+            except TrainigOrganisation.DoesNotExist:
+                user = None
+            if user != None:
+                #self.fields['directions'].queryset = trainigOrganisation.directions.all()
+                DIRS = (
+                (0, 'Авто визначення'))
+
+                ntzDirections= [(direction.pk, direction) for direction in trainigOrganisation.directions.all()]
+                ntzDirections.insert(0, [0, 'Авто визначення'])#([0, 'Авто визначення'])
+                #DIRS.append(ntzDirections)
+                self.fields['directions'] = forms.ChoiceField(choices=ntzDirections)
+                self.fields['directions'].label = 'Напрямки'
+        else:
+            DIRS = (
+                (0, 'Авто визначення'))
+            self.fields['directions'].label = 'Напрямки'
+            self.fields['directions'] = forms.ChoiceField(choices=DIRS)
+
+    directions=forms.ChoiceField()#(label='Напрямки', choices=DIRS)
+    file = forms.FileField(label='Файл')
+    
