@@ -91,13 +91,16 @@
 <script>
     var trainigOrganisations = [],
         isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false,
-        directionNames = '';
+        directions = [];
 
 
     {% for trainig in trainigOrganisations %}
-        directionNames = '';
+        directions = [];
         {% for direction in trainig.directions.all %}
-            directionNames += `- ${'{{ direction.direction_title }}'}; <br/>`;
+            directions.push({
+                directionName: '{{ direction.direction_title }}',
+                certAmount: Math.floor(Math.random() * (20 - 1)) + 1
+            });
         {% endfor %}
 
         trainigOrganisations.push({
@@ -105,7 +108,7 @@
             organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
             activated: '{{ trainig.activated|date:"m.d.Y" }}',
             active_till: '{{ trainig.active_till|date:"m.d.Y" }}',
-            directions: directionNames
+            directions: directions
         });
     {% endfor %}
 </script>
