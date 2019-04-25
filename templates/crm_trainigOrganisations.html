@@ -89,8 +89,10 @@
 
 <!--custom scripts-->
 <script>
+    console.log('{{ user.groups.all.0.name }}');
+
     var trainigOrganisations = [],
-        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false,
+        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор' || 'Адміністратор') ? true : false,
         directions = [];
 
     {% for trainig in trainigOrganisations %}
