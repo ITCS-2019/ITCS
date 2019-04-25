@@ -93,7 +93,6 @@
         isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false,
         directions = [];
 
-
     {% for trainig in trainigOrganisations %}
         directions = [];
         {% for direction in trainig.directions.all %}

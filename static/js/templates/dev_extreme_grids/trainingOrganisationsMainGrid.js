@@ -74,7 +74,8 @@ $(function() {
                         $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
                         $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
                             ? e.element.find('.dx-toolbar-items-container')
-                            : e.element.find('.dx-datagrid-header-panel');
+                            : e.element.find('.dx-datagrid-header-panel'),
+                        appendedPagination = $('.custom-pagination.custom-pagination--certificates', $gridToolbar);
 
                     if (pageCount > 1) {
                         $select.empty();
@@ -84,6 +85,7 @@ $(function() {
                                 : $select.append(`<option value="${i}">${i + 1}</option>>`);
                         }
 
+                        appendedPagination.remove();
                         $gridToolbar.append($customPagination);
 
                         if (currentPage === 0) {
