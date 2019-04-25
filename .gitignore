@@ -9,4 +9,5 @@ itcs/__pycache__/*
 mariner/migrations/__pycache__/*
 regulations/__pycache__/*
 regulations/migrations/__pycache__/*
+.DS_Store
 
