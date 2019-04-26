@@ -86,6 +86,14 @@ def crm_trainigOrganisationView(request, name):
 	return render(request, "crm_trainigOrganisationDetail.html", context)
 
 @login_required(login_url="login/")
+def crm_trainigOrganisationDirectionView(request, organisation_name, direction_name):
+	trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=name)
+	filtredCerts = trainigOrganisation.trained.filter(directions = direction_name)
+	print(filtredCerts)
+	context = {'trainigOrganisation': trainigOrganisation,}
+	return render(request, "crm_trainigOrganisationDetail.html", context)
+
+@login_required(login_url="login/")
 def add_trainigOrganisation(request):
 	if request.method == "POST":
 		form = TrainigOrganisationForm(request.POST)

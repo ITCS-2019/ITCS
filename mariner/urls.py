@@ -11,6 +11,7 @@ urlpatterns = [
     path('editRegulation/<number>/', views.crm_editRegulation, name='crm_editRegulation'),
     path('trainigOrganisations/', views.crm_trainigOrganisations, name='crm_trainigOrganisations'),
     path('trainigOrganisation/<name>/', views.crm_trainigOrganisationView, name='crm_trainigOrganisationView'),
+    path('trainigOrganisation/<organisation_name>/direction/<direction_name>', views.crm_trainigOrganisationDirectionView, name='crm_trainigOrganisationDirectionView'),
     path('trainigOrganisations/add/', views.add_trainigOrganisation, name='add_trainigOrganisation'),
     path('editTrainigOrganisation/<name>/', views.crm_editTrainigOrganisation, name='crm_editTrainigOrganisation'),
     path('certification/', views.crm_certification, name='crm_certification'),
