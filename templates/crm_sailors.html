@@ -96,11 +96,11 @@
         sailors.push({
             id: '{{ sailor.id }}',
             pib: {
-                first_name_ukr: '{{ sailor.first_name_ukr }}',
-                second_name_ukr: '{{ sailor.second_name_ukr }}',
-                last_name_ukr: '{{ sailor.last_name_ukr }}',
-                first_name_en: '{{ sailor.first_name_en }}',
-                last_name_en: '{{ sailor.last_name_en }}',
+                first_name_ukr: '{{ sailor.first_name_ukr }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+                second_name_ukr: '{{ sailor.second_name_ukr }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+                last_name_ukr: '{{ sailor.last_name_ukr }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+                first_name_en: '{{ sailor.first_name_en }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+                last_name_en: '{{ sailor.last_name_en }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
             },
             sex: '{{ sailor.sex }}',
             born: '{{ sailor.born|date:"m.d.Y" }}',
@@ -109,29 +109,5 @@
     {% endfor%}
 </script>
 <script src="/static/js/templates/dev_extreme_grids/sailorsGrid.js">
-</script>
-
-<script>
-        // $(document).ready(function(){
-        //     $('.dataTables-example').DataTable({
-        //         pageLength: 25,
-        //         responsive: true,
-        //         dom: '<"html5buttons"B>lTfgitp',
-        //         buttons: [
-        //             {extend: 'print',
-        //              customize: function (win){
-        //                     $(win.document.body).addClass('white-bg');
-        //                     $(win.document.body).css('font-size', '10px');
-        //
-        //                     $(win.document.body).find('table')
-        //                             .addClass('compact')
-        //                             .css('font-size', 'inherit');
-        //             }
-        //             }
-        //         ]
-        //
-        //     });
-        //
-        // });
 </script>
 {% endblock %}

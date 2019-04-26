@@ -250,34 +250,11 @@
             certificateNumber: '{{ certificate.certf_number }}',
             formNumber: '{{ certificate.form_number }}',
             issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
-            specialty: '{{ certificate.training_direction }}',
+            specialty: '{{ certificate.training_direction }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
             sailorId: '{{ certificate.sailor.id }}',
-            sailor: '{{ certificate.sailor }}',
+            sailor: '{{ certificate.sailor }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
             status: status,
         });
     {% endfor%}
 </script>
-
-<script>
-        $(document).ready(function() {
-            $('.dataTables-example').DataTable({
-                pageLength: 25,
-                responsive: true,
-                dom: '<"html5buttons"B>lTfgitp',
-                buttons: [
-                    {extend: 'print',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
-
-            });
-        });
-</script>    
 {% endblock %}

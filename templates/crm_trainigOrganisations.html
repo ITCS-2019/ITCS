@@ -99,14 +99,14 @@
         directions = [];
         {% for direction in trainig.directions.all %}
             directions.push({
-                directionName: '{{ direction.direction_title }}',
+                directionName: '{{ direction.direction_title }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
                 certAmount: Math.floor(Math.random() * (20 - 1)) + 1
             });
         {% endfor %}
 
         trainigOrganisations.push({
             organisation_id: '{{trainig.organisation_id}}',
-            organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
+            organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
             activated: '{{ trainig.activated|date:"m.d.Y" }}',
             active_till: '{{ trainig.active_till|date:"m.d.Y" }}',
             directions: directions

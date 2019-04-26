@@ -87,9 +87,9 @@
 
     {% for certificate in sailor.certificated.all %}
         certificates.push({
-            training_direction: '{{certificate.training_direction}}',
-            last_name_ukr: '{{certificate.last_name_ukr}}',
-            first_name_ukr: '{{ certificate.first_name_ukr }}',
+            training_direction: '{{certificate.training_direction}}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+            last_name_ukr: '{{certificate.last_name_ukr}}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+            first_name_ukr: '{{ certificate.first_name_ukr }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
         });
     {% endfor%}
 </script>

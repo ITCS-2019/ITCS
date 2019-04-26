@@ -235,10 +235,10 @@
             issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
             validDate: '{{ certificate.valid_date|date:"m.d.Y" }}',
             certificateNumberGenerated: '{{ certificate.ntz_number }}',
-            specialty: '{{ certificate.training_direction }}',
+            specialty: '{{ certificate.training_direction }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
             sailorId: '{{ certificate.sailor.id }}',
-            sailor: '{{ certificate.sailor }}',
-            ntz: '{{ certificate.trainigOrganisation }}'.replace(/&quot;/g, `"`),
+            sailor: '{{ certificate.sailor }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+            ntz: '{{ certificate.trainigOrganisation }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
             status: status,
         });
     {% endfor%}
