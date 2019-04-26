@@ -86,11 +86,18 @@ def crm_trainigOrganisationView(request, name):
 	return render(request, "crm_trainigOrganisationDetail.html", context)
 
 @login_required(login_url="login/")
-def crm_trainigOrganisationDirectionView(request, organisation_name, direction_name):
-	trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=name)
-	filtredCerts = trainigOrganisation.trained.filter(directions = direction_name)
-	print(filtredCerts)
-	context = {'trainigOrganisation': trainigOrganisation, 'directionName': direction_name, 'filtredCerts': filtredCerts}
+def crm_trainigOrganisationDirectionView(request, organisation_name, direction_id):
+	trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=organisation_name)
+	# print('Direction ID:')
+	# print(direction_id)
+	organisationCerts = trainigOrganisation.trained.all()
+	filtredCerts = []
+	for cert in organisationCerts:
+		print("Use Training Direction ID:")
+		print(cert.training_direction.id)
+		if cert.training_direction.id == int(direction_id):
+			filtredCerts.append(cert)
+	context = {'trainigOrganisation': trainigOrganisation, 'filtredCerts': filtredCerts}
 	return render(request, "crm_trainigOrganisationDirectionDetail.html", context)
 
 @login_required(login_url="login/")
