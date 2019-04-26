@@ -242,35 +242,31 @@
 
                     <div class="hr-line-dashed"></div>
 
-                    <!-- <div class="row">
-                        <div class="col-md-9"> -->
-                            <label class="font-normal">{{ form.directions.label_tag }}</label>
-                            {% if form.is_bound %}
-                                    {% if form.directions.errors %}
-                                        <div class="form-group has-error">
-                                            {% render_field form.directions class="form-control dual_select is-invalid" %}
-                                        </div>
-                                        {% for error in form.directions.errors %}
-                                            <div class="invalid-feedback">
-                                                <p class="text-warning">{{ error }}</p>
-                                            </div>
-                                        {% endfor %}
-                                    {% else %}
-                                        <div>
-                                            {% render_field form.directions class="form-control dual_select is-valid" %}
-                                        </div>
-                                    {% endif %}
-                                {% else %}
-                                    <div>
-                                        {{ form.directions|add_class:"form-control dual_select" }}
-                                    </div>
-                                {% endif %}
+                    <label class="font-normal">{{ form.directions.label_tag }}</label>
+                    {% if form.is_bound %}
+                        {% if form.directions.errors %}
+                            <div class="form-group has-error">
+                                {% render_field form.directions class="form-control dual_select is-invalid" %}
+                            </div>
+                            {% for error in form.directions.errors %}
+                                <div class="invalid-feedback">
+                                    <p class="text-warning">{{ error }}</p>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div>
+                                {% render_field form.directions class="form-control dual_select is-valid" %}
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div>
+                            {{ form.directions|add_class:"form-control dual_select" }}
+                        </div>
+                    {% endif %}
 
-                                {% if form.directions.help_text %}
-                                    <small class="form-text text-muted">{{ form.directions.help_text }}</small>
-                                {% endif %}
-                       <!--  </div>
-                    </div> -->
+                    {% if form.directions.help_text %}
+                        <small class="form-text text-muted">{{ form.directions.help_text }}</small>
+                    {% endif %}
 
                     <div class="hr-line-dashed"></div>
 

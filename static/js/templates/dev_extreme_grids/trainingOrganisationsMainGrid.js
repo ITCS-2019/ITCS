@@ -125,11 +125,11 @@ $(function() {
                             let directionsData = data.value;
 
                             directionsData.forEach((direction) => {
-                                element.append(`<div>
-                                                    <a href="javascript:void(0);">
+                                element.append(`<div class="c-cell__row">
+                                                    <a class="c-cell__text" href="javascript:void(0);">
                                                         ${direction.directionName}
                                                     </a>
-                                                    <span>
+                                                    <span class="c-cell__amount">
                                                         ${direction.certAmount}
                                                     </span>
                                                 </div>`);
