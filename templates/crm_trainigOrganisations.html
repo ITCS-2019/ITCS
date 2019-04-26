@@ -89,10 +89,11 @@
 
 <!--custom scripts-->
 <script>
-    var trainigOrganisations = [],
-        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор') ? true : false,
-        directions = [];
+    console.log('{{ user.groups.all.0.name }}');
 
+    var trainigOrganisations = [],
+        isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор' || 'Адміністратор') ? true : false,
+        directions = [];
 
     {% for trainig in trainigOrganisations %}
         directions = [];

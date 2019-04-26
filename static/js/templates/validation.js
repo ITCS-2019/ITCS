@@ -84,6 +84,16 @@ $(function() {
         node.val(node.val().replace(/[^0-9-]/g, ''));
     }
 
+    // allow cyrilic/latin letters, space, hyphen, apostrophe
+    function allLettersValid(node) {
+        node.val(node.val().replace(/[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/a-zA-Z/"/]/g, ''));
+    }
+
+    // Deny cyrilic letters
+    function denyCyrilic(node) {
+        node.val(node.val().replace(/[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ /'//"/]/g, ''));
+    }
+
     // translit cyrilic to latin
     let isFirstNameEn = false,
         isLastNameEn = false;
@@ -129,5 +139,18 @@ $(function() {
 
     $('#id_certf_number').on('keyup', function() {
         numbersValid($(this));
+    });
+
+    // Add/Edit training organization form
+    $('#id_organisation_id').on('keyup', function() {
+        numbersValid($(this));
+    });
+
+    $('#id_organisation_name').on('keyup', function() {
+        allLettersValid($(this));
+    });
+
+    $('#id_orgnisation_email').on('keyup', function() {
+        denyCyrilic($(this));
     });
 });
