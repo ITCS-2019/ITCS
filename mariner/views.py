@@ -90,8 +90,8 @@ def crm_trainigOrganisationDirectionView(request, organisation_name, direction_n
 	trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=name)
 	filtredCerts = trainigOrganisation.trained.filter(directions = direction_name)
 	print(filtredCerts)
-	context = {'trainigOrganisation': trainigOrganisation,}
-	return render(request, "crm_trainigOrganisationDetail.html", context)
+	context = {'trainigOrganisation': trainigOrganisation, 'directionName': direction_name, 'filtredCerts': filtredCerts}
+	return render(request, "crm_trainigOrganisationDirectionDetail.html", context)
 
 @login_required(login_url="login/")
 def add_trainigOrganisation(request):

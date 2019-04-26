@@ -1,0 +1,283 @@
+{% extends 'crm_base.html' %}
+{% block title %} НТЗ {% endblock %}
+{% block styles %}
+    <link href="/static/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block userName %}{{ userName }}{% endblock %}
+{% block userGroup %}{{ userGroup }}{% endblock %}
+
+{% block leftMenu %}
+    <li>
+        <a href="/mariner/"><i class="fa fa-th-large"></i> <span class="nav-label">Головна</span> </a>
+    </li>
+    <li>
+        <a href="/mariner/trainigDirections/"><i class="fa fa-sitemap"></i> <span class="nav-label">Напрямки Підготовки</span> </a>
+    </li>
+    {% if user.groups.all.0.name != 'НТЗ' %}
+    <li class="active">
+        <a href="/mariner/trainigOrganisations/"><i class="fa fa-pie-chart"></i> <span class="nav-label">НТЗ</span> </a>
+    </li>
+    {% endif %}
+    {% if user.groups.all.0.name != 'НТЗ' %}
+    <li>
+        <a href="/mariner/sailors/"><i class="fa fa-files-o"></i> <span class="nav-label">Моряки</span> </a>
+    </li>
+    {% endif %}
+    <li>
+        <a href="/mariner/certification/"><i class="fa fa-edit"></i> <span class="nav-label">Сертифiкати</span></a>
+    </li>
+    {% if user.groups.all.0.name == 'Адміністратор' %}
+    <li>
+        <a href="/mariner/regulations/"><i class="fa fa-database"></i> <span class="nav-label">Нормативнi документы</span></a>
+    </li>
+    {% endif %} 
+{% endblock %}
+
+{% block content %}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>{{ trainigOrganisation.organisation_name }} </h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/mariner/">Головна</a>
+            </li>
+            <li>
+                <a href="/mariner/trainigOrganisations/">НТЗ</a>
+            </li>
+            <li class="active">
+                <strong>{{ trainigOrganisation.organisation_name }}</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<p></p>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Діючи Напрямки Підготовки </h5>                    
+                    <div class="ibox-tools">
+                        <a href="/mariner/editTrainigOrganisation/{{trainigOrganisation.organisation_name}}/" class="btn btn-white btn-sm"><i class="fa fa-pencil"></i> Ред. </a>
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+            </div>
+            <div class="ibox-content">
+                <table class="table table-striped footable footable-1 footable-filtering footable-filtering-left footable-paging footable-paging-center breakpoint-lg" data-toggle-column="first" data-filtering="true" data-paging="true" data-sorting="true" id="regulations-table">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Напрямок Підготовки</th>
+                            <!-- <th>Ціна</th> -->
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for direction in trainigOrganisation.directions.all %}
+                            <tr data-expanded="false">
+                                <td>{{direction.direction_id}}</td>
+                                <td>{{direction.direction_title}}</td>
+                                <!-- <td>{{direction.price}}</td> -->
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5">
+                                <ul class="pagination pull-right"></ul>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>Сертифікати на підтвердження</h5>                    
+                    <div class="ibox-tools">
+                        <!--<a href="/mariner/certification/exportToRegister/{{ trainigOrganisation.organisation_name }}/"><button class="btn btn-w-m btn-success" type="button"><i class="fa fa-upload"></i> Вигрузка у Реєстр</button>-->
+                        <!--</a>-->
+                        <!--<a href="/mariner/certification/give/{{ trainigOrganisation.organisation_name }}/"><button class="btn btn-primary" type="button"><i class="fa fa-check"></i> Видати Сертифікати</button>-->
+                        <!--</a>-->
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+            </div>
+            <div class="ibox-content">
+                <div class="table-responsive">
+                    <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                        <div class="custom-pagination custom-pagination--certificates" style="display: none;">
+                            <button class="custom-pagination__btn custom-pagination__btn--first-page">
+                                Перша
+                            </button>
+                            <button class="custom-pagination__btn custom-pagination__btn--prev">
+                                &laquo;
+                            </button>
+                            <select name="certificates-select" class="custom-pagination__select">
+                            </select>
+                            <button class="custom-pagination__btn custom-pagination__btn--next">
+                                &raquo;
+                            </button>
+                            <button class="custom-pagination__btn custom-pagination__btn--last-page">
+                                Остання
+                            </button>
+                        </div>
+
+                        {% if trainigOrganisation.get_certInReview.count > 0 %}
+                            <div id="export-type-group">
+                                <a href="http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert"
+                                target="_blank"
+                                class="btn btn-primary" type="button">
+                                    Замолвленная сертифікатів
+                                </a>
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        Вигрузка у Реєстр
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="all">
+                                                Вигрузити все
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="checked">
+                                                Вигрузити обране
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <a href="http://registr-itcs.ddns.net/sidebar/Templates/CertSeafarers"
+                                target="_blank"
+                                class="btn btn-primary" type="button">
+                                    Імпорт до Реєстру
+                                </a>
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        Видати Сертифікати
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="GiveCerts" data-selection="all">
+                                                Експортувати все
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="GiveCerts" data-selection="checked">
+                                                Експортувати обране
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!--error modal-->
+                            <div id="error-grid-popup" class="modal fade">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Операцiя неможлива!</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p id="modal-text"></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary btn-outline" data-dismiss="modal">Ok</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div id="certificates-on-review-grid" class="dx-selection-disabled">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/plugins/dataTables/datatables.min.js"></script>
+
+<!--custom scripts-->
+<script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
+</script>
+
+<script>
+    var certifications = [],
+        editCellRoute = '{% url 'api-changeCertNumber' %}',
+        exportRoute = '{% url 'api-exportXLS' %}';
+
+    let status;
+    {% for certificate in filtredCerts %}
+        switch (~~'{{certificate.status}}') {
+            case 0:
+                status = 'Чернетка';
+                break;
+            case 1:
+                status = 'Обробка';
+                break;
+            case 2:
+                status = 'Видан';
+                break;
+            case 3:
+                status = 'Анульований';
+                break;
+        }
+        certifications.push({
+            certificateId: '{{certificate.id}}',
+            certificateNumber: '{{ certificate.certf_number }}',
+            formNumber: '{{ certificate.form_number }}',
+            issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
+            specialty: '{{ certificate.training_direction }}',
+            sailorId: '{{ certificate.sailor.id }}',
+            sailor: '{{ certificate.sailor }}',
+            status: status,
+        });
+    {% endfor%}
+</script>
+
+<script>
+        $(document).ready(function() {
+            $('.dataTables-example').DataTable({
+                pageLength: 25,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    {extend: 'print',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                    }
+                    }
+                ]
+
+            });
+        });
+</script>    
+{% endblock %}
