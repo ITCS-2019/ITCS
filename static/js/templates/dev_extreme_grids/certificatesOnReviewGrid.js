@@ -36,7 +36,8 @@ if ($('#certificates-on-review-grid').length > 0) {
         pager: {
             showPageSizeSelector: true,
             allowedPageSizes: [10, 20, 50, 100],
-            showInfo: false
+            showInfo: true,
+            visible: true
         },
         searchPanel: {
             visible: true,
@@ -96,6 +97,11 @@ if ($('#certificates-on-review-grid').length > 0) {
         hoverStateEnabled: true,
         wordWrapEnabled: true,
         columnAutoWidth: true,
+        onSelectionChanged: function(e) {
+            let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+            e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+        },
         onCellClick: function (e) {
             switch (e.column.dataField) {
                 // case 'certificateNumber':
@@ -196,6 +202,10 @@ if ($('#certificates-on-review-grid').length > 0) {
 
                 $customPagination.fadeIn('fast');
             }
+
+            let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+            e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
         },
         columns: [
             {

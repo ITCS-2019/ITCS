@@ -15,7 +15,8 @@ $(function() {
             pager: {
                 showPageSizeSelector: true,
                 allowedPageSizes: [10, 20, 50, 100],
-                showInfo: false
+                showInfo: true,
+                visible: true
             },
             searchPanel: {
                 visible: true,
@@ -23,6 +24,11 @@ $(function() {
                 placeholder: "Шукати..."
             },
             hoverStateEnabled: true,
+            onSelectionChanged: function(e) {
+                let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+                e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
+            },
             onRowClick: function (e) {
                 window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
             },
@@ -81,6 +87,10 @@ $(function() {
 
                     $customPagination.fadeIn('fast');
                 }
+
+                let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+                e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
             },
             columns: [
                 {

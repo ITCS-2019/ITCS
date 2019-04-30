@@ -16,7 +16,8 @@ $(function() {
             pager: {
                 showPageSizeSelector: true,
                 allowedPageSizes: [10, 20, 50, 100],
-                showInfo: false
+                showInfo: true,
+                visible: true
             },
             searchPanel: {
                 visible: true,
@@ -38,6 +39,11 @@ $(function() {
             hoverStateEnabled: true,
             wordWrapEnabled: true,
             columnAutoWidth: true,
+            onSelectionChanged: function(e) {
+                let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+                e.component.option('pager.infoText', `Всього: ${trainigDirections.length}${selected}`);
+            },
             onCellClick: function (data) {
                 switch (data.column.dataField) {
                     case 'status':
@@ -119,6 +125,10 @@ $(function() {
 
                     $customPagination.fadeIn('fast');
                 }
+
+                let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+                e.component.option('pager.infoText', `Всього: ${trainigDirections.length}${selected}`);
             },
             columns: [
                 {

@@ -20,7 +20,8 @@ $(function() {
                 pager: {
                     showPageSizeSelector: true,
                     allowedPageSizes: [10, 20, 50, 100],
-                    showInfo: false
+                    showInfo: true,
+                    visible: true
                 },
                 searchPanel: {
                     visible: true,
@@ -45,6 +46,11 @@ $(function() {
                 grouping: {
                     autoExpandAll: false,
                     expandMode: 'buttonClick'
+                },
+                onSelectionChanged: function(e) {
+                    let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+                    e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
                 },
                 onCellClick: function (e) {
                     if (e.column.dataField && !isInspector) {
@@ -114,6 +120,10 @@ $(function() {
 
                         $customPagination.fadeIn('fast');
                     }
+
+                    let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+
+                    e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
                 },
                 columns: [
                     {
@@ -126,7 +136,7 @@ $(function() {
 
                             directionsData.forEach((direction) => {
                                 element.append(`<div class="c-cell__row">
-                                                    <a class="c-cell__text" href="javascript:void(0);">
+                                                    <a class="c-cell__text" href="${direction.route}">
                                                         ${direction.directionName}
                                                     </a>
                                                     <span class="c-cell__amount">
