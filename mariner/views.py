@@ -86,6 +86,21 @@ def crm_trainigOrganisationView(request, name):
 	return render(request, "crm_trainigOrganisationDetail.html", context)
 
 @login_required(login_url="login/")
+def crm_trainigOrganisationDirectionView(request, organisation_name, direction_id):
+	trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=organisation_name)
+	# print('Direction ID:')
+	# print(direction_id)
+	organisationCerts = trainigOrganisation.trained.all()
+	filtredCerts = []
+	for cert in organisationCerts:
+		print("Use Training Direction ID:")
+		print(cert.training_direction.id)
+		if cert.training_direction.id == int(direction_id):
+			filtredCerts.append(cert)
+	context = {'trainigOrganisation': trainigOrganisation, 'filtredCerts': filtredCerts}
+	return render(request, "crm_trainigOrganisationDirectionDetail.html", context)
+
+@login_required(login_url="login/")
 def add_trainigOrganisation(request):
 	if request.method == "POST":
 		form = TrainigOrganisationForm(request.POST)
@@ -550,17 +565,15 @@ def generate_pdf(request):
 @login_required(login_url="login/")
 def uploadXLS(request):
 	if "GET" == request.method:
-		print('GET request')
-		# return render(request, "crm_xlsImport.html", {})
 		form = UploadXLSForm(request.user)
 		return render(request, 'crm_xlsImport.html', {'form': form})
 	else:
-		print('load file')
-		print(request.POST.get('directions'))
+		directionID = request.POST.get('directions')
+		# if directionID != '0': # if direction not in table
+		# 	directionObj = TrainigDirections.objects.get(id=directionID)
 		excel_file = request.FILES['file']
 		# TODO: validations check extension or file size
 		extesion = os.path.splitext(str(request.FILES['file']))[1]
-		print(extesion)
 		if extesion == '.xlsx':
 			wb = openpyxl.load_workbook(excel_file, read_only=False, keep_vba=False, data_only=False, keep_links=True)
 			# getting a particular sheet by name out of many sheets
@@ -579,13 +592,172 @@ def uploadXLS(request):
 		elif extesion == '.xls':
 			rb = xlrd.open_workbook(file_contents=excel_file.read())
 			sheet = rb.sheet_by_index(0)
-			excel_data = list()
-			for rownum in range(sheet.nrows):
-				row_data = list()
-				row = sheet.row_values(rownum)
-				for cell in row:
-					row_data.append(cell)
-				excel_data.append(row_data)
-			return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
-		else:
-			return HttpResponse(status=204)
+			
+			if sheet.ncols == 9: #Table without direction
+				if directionID != '0':
+					excel_data = list()
+					for rownum in range(sheet.nrows):
+						row_data = list()
+						curCellIndx = 0
+						docNumber = ''
+						firstNameEn = ''
+						lastNameEn = ''
+						lastNameUkr = ''
+						firstNameUkr = ''
+						secondNameUkr = ''
+						birthday = ''
+						startDate = ''
+						endDate = ''
+						row = sheet.row_values(rownum)
+						for cell in row:
+							if rownum != 0:
+								if curCellIndx == 0:
+									docNumber = cell
+								elif curCellIndx == 1:
+									firstNameEn = cell
+								elif curCellIndx == 2:
+									lastNameEn = cell
+								elif curCellIndx == 3:
+									lastNameUkr = cell
+								elif curCellIndx == 4:
+									firstNameUkr = cell
+								elif curCellIndx == 5:
+									secondNameUkr = cell
+								elif curCellIndx == 6:
+									cellAsDatetime = datetime.datetime(*xlrd.xldate_as_tuple(float(cell), rb.datemode))
+									birthday = cellAsDatetime.date().isoformat()
+								elif curCellIndx == 7:
+									cellAsDatetime = datetime.datetime(*xlrd.xldate_as_tuple(float(cell), rb.datemode))
+									startDate = cellAsDatetime.date().isoformat()
+								elif curCellIndx == 8:
+									print(cell)
+									if cell != '':
+										cellAsDatetime = datetime.datetime(*xlrd.xldate_as_tuple(float(cell), rb.datemode))
+										endDate = cellAsDatetime.date().isoformat()
+									else:
+										endDate = None
+							row_data.append(cell)
+							curCellIndx = curCellIndx + 1
+						excel_data.append(row_data)
+						if rownum != 0:
+							sailor, created = Sailor.objects.get_or_create(
+								first_name_en = firstNameEn,
+								last_name_en = lastNameEn,
+								last_name_ukr = lastNameUkr,
+								first_name_ukr = firstNameUkr,
+								second_name_ukr = secondNameUkr,
+								born = birthday,
+							)
+							if created:
+								sailor.save()
+
+							certificate, created = Certificate.objects.get_or_create(
+								form_number = docNumber,
+								trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name),
+								training_direction = TrainigDirections.objects.get(id=directionID),
+								first_name_en = firstNameEn,
+								last_name_en = lastNameEn,
+								last_name_ukr = lastNameUkr,
+								first_name_ukr = firstNameUkr,
+								second_name_ukr = secondNameUkr,
+								born = birthday,
+								sailor = sailor,
+								date_of_issue = startDate,
+								valid_date = endDate,
+								)
+							if created:
+								certificate.save()
+					return render(request, 'crm_xlsImport.html', {"excel_data":excel_data, "error_message": "Сертифікати добавлени"})
+				else:
+					#return render(request, 'crm_xlsImport.html', {"error_message": "Таблиця без напрямку. Будласка, оберить напрямок підготовки"})
+					form = UploadXLSForm(request.user)
+					return render(request, 'crm_xlsImport.html', {'form': form, "error_message": "Таблиця без напрямку. Будласка, оберить напрямок підготовки"})
+			elif sheet.ncols == 11: #Table with directions
+				if directionID == '0':
+					excel_data = list()
+					for rownum in range(sheet.nrows):
+						row_data = list()
+						curCellIndx = 0
+						docNumber = ''
+						firstNameEn = ''
+						lastNameEn = ''
+						lastNameUkr = ''
+						firstNameUkr = ''
+						secondNameUkr = ''
+						birthday = ''
+						innCell = ''
+						startDate = ''
+						endDate = ''
+						directionIdCell = ''
+						row = sheet.row_values(rownum)
+						for cell in row:
+							if rownum != 0:
+								if curCellIndx == 0:
+									docNumber = cell
+								elif curCellIndx == 1:
+									firstNameEn = cell
+								elif curCellIndx == 2:
+									lastNameEn = cell
+								elif curCellIndx == 3:
+									lastNameUkr = cell
+								elif curCellIndx == 4:
+									firstNameUkr = cell
+								elif curCellIndx == 5:
+									secondNameUkr = cell
+								elif curCellIndx == 6:
+									cellAsDatetime = datetime.datetime(*xlrd.xldate_as_tuple(float(cell), rb.datemode))
+									birthday = cellAsDatetime.date().isoformat()
+								elif curCellIndx == 7:
+									innCell = cell
+								elif curCellIndx == 8:
+									cellAsDatetime = datetime.datetime(*xlrd.xldate_as_tuple(float(cell), rb.datemode))
+									startDate = cellAsDatetime.date().isoformat()
+								elif curCellIndx == 9:
+									print(cell)
+									if cell != '':
+										cellAsDatetime = datetime.datetime(*xlrd.xldate_as_tuple(float(cell), rb.datemode))
+										endDate = cellAsDatetime.date().isoformat()
+									else:
+										endDate = None
+								elif curCellIndx == 10:
+									directionIdCell = cell
+							row_data.append(cell)
+							curCellIndx = curCellIndx + 1
+						excel_data.append(row_data)
+						if rownum != 0:
+							sailor, created = Sailor.objects.get_or_create(
+								first_name_en = firstNameEn,
+								last_name_en = lastNameEn,
+								last_name_ukr = lastNameUkr,
+								first_name_ukr = firstNameUkr,
+								second_name_ukr = secondNameUkr,
+								born = birthday,
+								inn = innCell
+							)
+							if created:
+								sailor.save()
+
+							certificate, created = Certificate.objects.get_or_create(
+								form_number = docNumber,
+								trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name),
+								training_direction = TrainigDirections.objects.get(id=directionID),
+								first_name_en = firstNameEn,
+								last_name_en = lastNameEn,
+								last_name_ukr = lastNameUkr,
+								first_name_ukr = firstNameUkr,
+								second_name_ukr = secondNameUkr,
+								born = birthday,
+								inn = innCell,
+								sailor = sailor,
+								date_of_issue = startDate,
+								valid_date = endDate,
+								)
+							if created:
+								certificate.save()
+					return render(request, 'crm_xlsImport.html', {"excel_data":excel_data, "error_message": "Сертифікати добавлени"})
+				else:
+					return render(request, 'crm_xlsImport.html', {"error_message": "Таблиця з напрямками. Будласка, оберіть авто визначення напрямку підготовки"})
+			else:
+				return render(request, 'crm_xlsImport.html', {"error_message": "Будласка, перевірте таблицю"})
+		else:#incorrect file type
+			return render(request, 'crm_xlsImport.html', {"error_message": "Будласка, перевірте тип файлу"})
