@@ -11,7 +11,6 @@ class Profile(models.Model):
     organization_name = models.CharField(max_length=150, blank=True)
 
 
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
