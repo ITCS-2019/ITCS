@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.crm_home, name='crm_home'),
     path('profile/', views.crm_profile, name='crm_profile'),
     path('profile/edit/', views.update_profile, name='update_profile'),
+    path('crmCreateUser/', views.crm_createUser, name='crm_createUser'),
     path('regulations/', views.crm_regulations, name='crm_regulations'),
     path('regulations/new/', views.new_regulation, name='new_regulation'),
     path('editRegulation/<number>/', views.crm_editRegulation, name='crm_editRegulation'),

@@ -364,4 +364,12 @@ class UploadXLSForm(forms.Form):
 
     directions=forms.ChoiceField()#(label='Напрямки', choices=DIRS)
     file = forms.FileField(label='Файл')
-    
+
+class CreateUserForm(forms.Form):
+    userName = forms.CharField(label='Никнейм')
+    userPass = forms.CharField(label='Пароль')
+    userMail = forms.CharField(label='email')
+    userFirstName = forms.CharField(label='Ім\'я')
+    userSurname = forms.CharField(label='Прізвище')
+    userGroup = forms.CharField(label='Тип групи')
+    userNTZName = forms.CharField(label='Назва НТЗ')

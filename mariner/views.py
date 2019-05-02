@@ -7,7 +7,7 @@ from accounts.models import Profile
 
 from regulations.models import RegulationDoc
 from mariner.models import *
-from mariner.forms import UserForm, ProfileForm, RegulationForm, CertificationForm, CertificationFormPDF, SailorForm, TrainigOrganisationForm, TrainigDirectionsForm, UploadXLSForm
+from mariner.forms import * #UserForm, ProfileForm, RegulationForm, CertificationForm, CertificationFormPDF, SailorForm, TrainigOrganisationForm, TrainigDirectionsForm, UploadXLSForm
 
 import datetime
 
@@ -71,6 +71,41 @@ def update_profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+
+@login_required(login_url="login/")
+def crm_createUser(request):
+	if "GET" == request.method:
+		form = CreateUserForm()
+		return render(request, 'crm_createUser.html', {'form': form})
+	else:
+		userName = request.POST.get('userName')
+		userPass = request.POST.get('userPass')
+		userMail = request.POST.get('userMail')
+		userFirstName = request.POST.get('userFirstName')
+		userSurname = request.POST.get('userSurname')
+		userGroup = request.POST.get('userGroup')
+		userNTZName = request.POST.get('userNTZName')
+		print(userName)
+		print(userPass)
+		print(userMail)
+		if userName and userPass and userMail:
+			print('Try Create User')
+			u,created = User.objects.get_or_create(username=userName, email=userMail, password=userPass)
+			if created:
+				print('User Created')
+				u.first_name = userFirstName
+				u.last_name = userFirstName
+				u.groups.add(1)
+				profile, created = Profile.objects.get_or_create(user=u)
+				u.profile.organization_name = userNTZName
+				print('User Profile Created')
+				u.save()
+			else:
+				print('User Not Created and Exist')
+		else:
+			print('request is empty')
+		#return redirect('crm_trainigOrganisations')
+		return HttpResponse(status=204)
 
 #/////////////////TrainigOrganisation//////////////////////
 @login_required(login_url="login/")
