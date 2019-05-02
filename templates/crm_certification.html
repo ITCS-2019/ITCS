@@ -234,7 +234,7 @@
             blankNumber: '{{ certificate.form_number }}',
             issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
             validDate: '{{ certificate.valid_date|date:"m.d.Y" }}',
-            certificateNumberGenerated: '{{ certificate.ntz_number }}',
+            certificateNumberGenerated: '{{ certificate.ntz_number }}'.replace(/\//g, '').replace(/-/g, ''),
             specialty: '{{ certificate.training_direction }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
             sailorId: '{{ certificate.sailor.id }}',
             sailor: '{{ certificate.sailor }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
