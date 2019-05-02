@@ -440,13 +440,13 @@
                     <div class="hr-line-dashed"></div>
 
                     <div class="row">
-                        <div class="col-md-3">
-                            <label class="font-normal">{{ form.ntz_number.label_tag }}</label>
-                            <div>
-                                {{ form.ntz_number|add_class:"form-control" }}
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <!--<div class="col-md-3">-->
+                            <!--<label class="font-normal">{{ form.ntz_number.label_tag }}</label>-->
+                            <!--<div>-->
+                                <!--{{ form.ntz_number|add_class:"form-control" }}-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="col-md-4">
                             <label class="font-normal">{{ form.form_number.label_tag }}</label>
                             <div>
                                 {{ form.form_number|add_class:"form-control" }}
@@ -454,7 +454,7 @@
                         </div>
 
                         {% if user.groups.all.0.name != 'НТЗ' %}
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="font-normal">{{ form.certf_number.label_tag }}</label>
                             <div>
                                 {{ form.certf_number|add_class:"form-control" }}
@@ -462,7 +462,7 @@
                         </div>
                         
                         {% endif %}
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="font-normal">{{ form.status.label_tag }}</label>
                             <div>
                                 {{ form.status|add_class:"selectpicker form-control" }}   

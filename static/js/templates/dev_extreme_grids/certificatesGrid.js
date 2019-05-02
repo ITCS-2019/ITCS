@@ -210,11 +210,11 @@ if ($('#certificates-grid').length > 0) {
                     allowEditing: false,
                     format: 'dd.MM.yyyy',
                 },
-                {
-                    dataField: 'certificateNumberGenerated',
-                    caption: '№ сертифіката(сген.)',
-                    allowEditing: false
-                },
+                // {
+                //     dataField: 'certificateNumberGenerated',
+                //     caption: '№ сертифіката(сген.)',
+                //     allowEditing: false
+                // },
                 {
                     dataField: 'specialty',
                     caption: 'Напрямок підготовки',
