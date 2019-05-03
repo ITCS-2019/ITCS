@@ -1,7 +1,8 @@
 if ($('#certificates-grid').length > 0) {
     DevExpress.localization.locale('ru');
 
-    var certificatesGrid = $('#certificates-grid').dxDataGrid({
+    let clickDelay,
+        certificatesGrid = $('#certificates-grid').dxDataGrid({
             dataSource: certifications,
             allowColumnReordering: false,
             allowColumnResizing: true,
@@ -75,46 +76,49 @@ if ($('#certificates-grid').length > 0) {
                 e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
             },
             onCellClick: function (e) {
-                switch (e.column.dataField) {
-                    case 'certificateNumber':
-                        window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-                        return;
-                    case 'sailor':
-                        window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-                        return;
-                    case 'ntz':
-                        window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
-                        return;
-                }
-
-                if (e.column.dataField) {
-                    window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-                }
-            },
-            onRowClick: function (e) {
                 let component = e.component;
 
                 function initialClick() {
                     component.clickCount = 1;
                     component.clickKey = e.key;
                     component.clickDate = new Date();
+                    clickDelay = setTimeout(() => {
+                        certificatesGrid.selectRows([e.key], true);
+                    }, 300);
                 }
 
                 function doubleClick() {
-                    console.log('second click');
+                    clearTimeout(clickDelay);
                     component.clickCount = 0;
                     component.clickKey = 0;
                     component.clickDate = null;
+                    switch (e.column.dataField) {
+                        case 'certificateNumber':
+                            window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                            return;
+                        case 'sailor':
+                            window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                            return;
+                        case 'ntz':
+                            window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
+                            return;
+                    }
+
+                    if (e.column.dataField) {
+                        window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                    }
                 }
 
                 if ((!component.clickCount) || (component.clickCount != 1) || (component.clickKey != e.key) ) {
                     initialClick();
                 }
                 else if (component.clickKey == e.key) {
-                    if (((new Date()) - component.clickDate) <= 300)
+                    if (((new Date()) - component.clickDate) <= 300) {
                         doubleClick();
-                    else
+                    }
+                    else {
                         initialClick();
+                    }
                 }
             },
             onContentReady: function(e) {

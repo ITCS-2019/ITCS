@@ -134,6 +134,26 @@ $(function() {
                         cellTemplate: function(element, data) {
                             let directionsData = data.value;
 
+                            element.append(`<div class="c-cell__row">
+                                                <span class="c-cell__text">
+                                                </span>
+                                                <span class="c-cell__amount">
+                                                    В обробке
+                                                </span>
+                                                <span class="c-cell__amount">
+                                                    Видано
+                                                </span>
+                                                <span class="c-cell__amount">
+                                                    Всього
+                                                </span>
+                                                <span class="c-cell__amount">
+                                                    Залишок
+                                                </span>
+                                                <span class="c-cell__amount">
+                                                    Разом
+                                                </span>
+                                            </div>`);
+
                             directionsData.forEach((direction) => {
                                 element.append(`<div class="c-cell__row">
                                                     <a class="c-cell__text" href="${direction.route}">
@@ -141,6 +161,18 @@ $(function() {
                                                     </a>
                                                     <span class="c-cell__amount">
                                                         ${direction.certAmount}
+                                                    </span>
+                                                    <span class="c-cell__amount">
+                                                        ${direction.certAmount}
+                                                    </span>
+                                                    <span class="c-cell__amount">
+                                                        ${direction.certAmount + direction.certAmount}
+                                                    </span>
+                                                    <span class="c-cell__amount">
+                                                        ${direction.certAmount}
+                                                    </span>
+                                                    <span class="c-cell__amount">
+                                                        ${direction.certAmount + direction.certAmount + direction.certAmount}
                                                     </span>
                                                 </div>`);
                             });
