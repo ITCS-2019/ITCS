@@ -1,7 +1,7 @@
 if ($('#certificates-grid').length > 0) {
     DevExpress.localization.locale('ru');
 
-    let clickDelay,
+    var clickDelay,
         certificatesGrid = $('#certificates-grid').dxDataGrid({
             dataSource: certifications,
             allowColumnReordering: false,
@@ -83,7 +83,9 @@ if ($('#certificates-grid').length > 0) {
                     component.clickKey = e.key;
                     component.clickDate = new Date();
                     clickDelay = setTimeout(() => {
-                        certificatesGrid.selectRows([e.key], true);
+                        if (e.column.dataField) {
+                            certificatesGrid.selectRows([e.key], true);
+                        }
                     }, 300);
                 }
 
@@ -192,7 +194,7 @@ if ($('#certificates-grid').length > 0) {
                     caption: '№ Сертифіката',
                     allowEditing: false,
                     allowFiltering: true,
-                    visible: isNotNtz,
+                    visible: isNotNtz
                 },
                 {
                     dataField: 'blankNumber',
@@ -214,11 +216,12 @@ if ($('#certificates-grid').length > 0) {
                     allowEditing: false,
                     format: 'dd.MM.yyyy',
                 },
-                // {
-                //     dataField: 'certificateNumberGenerated',
-                //     caption: '№ сертифіката(сген.)',
-                //     allowEditing: false
-                // },
+                {
+                    dataField: 'certificateNumberGenerated',
+                    caption: '№ сертифіката(сген.)',
+                    allowEditing: false,
+                    visible: isNotNtz
+                },
                 {
                     dataField: 'specialty',
                     caption: 'Напрямок підготовки',

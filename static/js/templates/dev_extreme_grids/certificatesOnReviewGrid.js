@@ -1,7 +1,7 @@
 if ($('#certificates-on-review-grid').length > 0) {
     DevExpress.localization.locale('ru');
 
-    let clickDelay,
+    var clickDelay,
         certificatesOnReviewGrid = $('#certificates-on-review-grid').dxDataGrid({
             dataSource: certifications,
             allowColumnReordering: false,
@@ -111,7 +111,9 @@ if ($('#certificates-on-review-grid').length > 0) {
                     component.clickKey = e.key;
                     component.clickDate = new Date();
                     clickDelay = setTimeout(() => {
-                        certificatesOnReviewGrid.selectRows([e.key], true);
+                        if (e.column.dataField) {
+                            certificatesOnReviewGrid.selectRows([e.key], true);
+                        }
                     }, 300);
                 }
 
