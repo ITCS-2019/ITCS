@@ -2,13 +2,13 @@
 db.sqlite3
 mariner/__pycache__/*
 accounts/__pycache__/*
-accounts/migrations/__pycache__/*
+accounts/migrations/*
 api/__pycache__/*
-api/migrations/__pycache__/*
+api/migrations/*
 itcs/__pycache__/*
-mariner/migrations/__pycache__/*
+mariner/migrations/*
 regulations/__pycache__/*
-regulations/migrations/__pycache__/*
+regulations/migrations/*
 .DS_Store
 itcs/*
 
