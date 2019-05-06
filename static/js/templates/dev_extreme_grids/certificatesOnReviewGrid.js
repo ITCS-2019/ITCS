@@ -112,7 +112,12 @@ if ($('#certificates-on-review-grid').length > 0) {
                     component.clickDate = new Date();
                     clickDelay = setTimeout(() => {
                         if (e.column.dataField) {
-                            certificatesOnReviewGrid.selectRows([e.key], true);
+                            if (e.row.isSelected) {
+                                certificatesOnReviewGrid.deselectRows([e.key]);
+                            }
+                            else {
+                                certificatesOnReviewGrid.selectRows([e.key], true);
+                            }
                         }
                     }, 300);
                 }
