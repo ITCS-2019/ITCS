@@ -26,6 +26,49 @@ class ListTrainigDirectionsView(generics.ListAPIView):
 	serializer_class = TrainigDirectionsSerializer
 
 @login_required(login_url="login/")
+def trainingOrganisationsInfo(request):
+	trainigOrganisations = TrainigOrganisation.objects.all()
+	organisationDataArr = []
+	organisationDirections = []
+	
+	for organisation in trainigOrganisations:
+		reviewCertIDs = []
+		for reviewCert in organisation.get_certInReview():
+			reviewCertIDs.append(reviewCert.training_direction.id)
+		issuedCertIDs = []
+		for issuedCert in organisation.get_issuedCerts():
+			issuedCertIDs.append(issuedCert.training_direction.id)
+		directionsDataArr = []
+		for direction in organisation.directions.all():
+			reviewCertCount = reviewCertIDs.count(direction.id)
+			issuedCertCount = issuedCertIDs.count(direction.id)
+			directionData = {
+			'direction_id': direction.id,
+			'dirction_name': direction.direction_title,
+			'direction_reviewCertCount': reviewCertCount,
+			'direction_issuedCertCount': issuedCertCount,
+			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
+			'direction_certsLeftCount': 0,
+			'direction_allCertsCount': reviewCertCount + issuedCertCount,
+			}
+			directionsDataArr.append(directionData)
+		organisationData = {
+		'organisation_id': organisation.id,
+		'organisation_name': organisation.organisation_name,
+		'organisation_activated': organisation.activated,
+		'organisation_active_till': organisation.active_till,
+		'organisation_allCertsInReviewCount': organisation.get_certInReview().count(),
+		'organisation_reviewCertIDs': reviewCertIDs,
+		'organisation_allIssuedCertsCount': organisation.get_issuedCerts().count(),
+		'organisation_issuedCertIDs': issuedCertIDs,
+		'organisation_directions': directionsDataArr,
+		}
+		organisationDataArr.append(organisationData)
+		
+	organisationsDict = {'organistaions': organisationDataArr,}
+	return JsonResponse(organisationsDict)
+
+@login_required(login_url="login/")
 def certificates(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
