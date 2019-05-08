@@ -65,7 +65,7 @@ def trainingOrganisationsInfo(request):
 		}
 		organisationDataArr.append(organisationData)
 		
-	organisationsDict = {'organistaions': organisationDataArr,}
+	organisationsDict = {'organisations': organisationDataArr,}
 	return JsonResponse(organisationsDict)
 
 @login_required(login_url="login/")

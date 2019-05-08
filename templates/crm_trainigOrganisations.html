@@ -95,14 +95,14 @@
 <script>
     var trainigOrganisations = [],
         isInspector = ('{{ user.groups.all.0.name }}' === 'Інспектор' || 'Адміністратор') ? true : false,
-        directions = [];
+        directions = [],
+        organisationInfo = '{% url 'api-trainingOrganisationsInfo' %}';
 
     {% for trainig in trainigOrganisations %}
         directions = [];
         {% for direction in trainig.directions.all %}
             directions.push({
                 directionName: '{{ direction.direction_title }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
-                certAmount: Math.floor(Math.random() * (20 - 1)) + 1,
                 route: `/mariner/trainigOrganisation/${'{{ trainig.organisation_name }}'}/direction/${'{{ direction.id }}'}/`
             });
         {% endfor %}

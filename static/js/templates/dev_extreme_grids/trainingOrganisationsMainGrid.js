@@ -2,7 +2,18 @@ $(function() {
     if ($('#training-organisations-main-grid').length > 0) {
         DevExpress.localization.locale('ru');
 
-        let trainingOrganisationsMainGrid = $('#training-organisations-main-grid').dxDataGrid({
+        let organisationsInfo;
+
+        $.ajax({
+            url: organisationInfo,
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                organisationsInfo = data.organisations;
+            }
+        });
+
+        var trainingOrganisationsMainGrid = $('#training-organisations-main-grid').dxDataGrid({
                 dataSource: trainigOrganisations,
                 allowColumnReordering: false,
                 allowColumnResizing: true,
@@ -56,7 +67,6 @@ $(function() {
                     if (e.column.dataField && !isInspector) {
                         window.location.replace(`/mariner/trainigOrganisation/${e.data.organisation_name}`);
                     }
-                    // else if (isInspector && e.column.dataField && e.column.dataField !== 'organisation_name') {
                     else if (isInspector
                     && e.column.dataField
                     && e.column.dataField === 'organisation_name'
@@ -132,7 +142,13 @@ $(function() {
                         allowEditing: false,
                         allowFiltering: false,
                         cellTemplate: function(element, data) {
-                            let directionsData = data.value;
+                            let directionsData = data.value,
+                                organisationName = data.data.organisation_name.split(' |')[0],
+                                expandedOrganisation = organisationsInfo.find(organisation => {
+                                    return organisation.organisation_name === organisationName;
+                                });
+
+                            console.log(expandedOrganisation);
 
                             element.append(`<div class="c-cell__row">
                                                 <span class="c-cell__text">
@@ -155,24 +171,28 @@ $(function() {
                                             </div>`);
 
                             directionsData.forEach((direction) => {
+                                let directionInfo = expandedOrganisation.organisation_directions.find(organisationDirection => {
+                                    return organisationDirection.dirction_name === direction.directionName;
+                                });
+
                                 element.append(`<div class="c-cell__row">
                                                     <a class="c-cell__text" href="${direction.route}">
                                                         ${direction.directionName}
                                                     </a>
                                                     <span class="c-cell__amount">
-                                                        ${direction.certAmount}
+                                                        ${directionInfo.direction_reviewCertCount}
                                                     </span>
                                                     <span class="c-cell__amount">
-                                                        ${direction.certAmount}
+                                                        ${directionInfo.direction_issuedCertCount}
                                                     </span>
                                                     <span class="c-cell__amount">
-                                                        ${direction.certAmount + direction.certAmount}
+                                                        ${directionInfo.direction_reviewAndIssuedCertsCount}
                                                     </span>
                                                     <span class="c-cell__amount">
-                                                        ${direction.certAmount}
+                                                        ${directionInfo.direction_certsLeftCount}
                                                     </span>
                                                     <span class="c-cell__amount">
-                                                        ${direction.certAmount + direction.certAmount + direction.certAmount}
+                                                        ${directionInfo.direction_allCertsCount}
                                                     </span>
                                                 </div>`);
                             });
