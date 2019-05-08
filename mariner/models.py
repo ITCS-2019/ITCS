@@ -97,6 +97,8 @@ class TrainigOrganisation(models.Model):
 
     def get_certInReview(self):
         return self.trained.filter(status__startswith=1)
+    def get_issuedCerts(self):
+        return self.trained.filter(status__startswith=2)
     
     def __str__(self):
         return u"%s" % (self.organisation_name)
