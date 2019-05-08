@@ -13,6 +13,13 @@ if ($('#certificates-on-review-grid').length > 0) {
                 mode: "cell",
                 allowUpdating: true
             },
+            onCellPrepared: function (data) {
+                if (data.isEditing) {
+                    let editInput = data.cellElement.find('input')[0];
+
+                    editInput.setSelectionRange(0, editInput.value.length);
+                }
+            },
             onRowUpdated: function(options) {
                 $.ajax({
                     url: editCellRoute,
@@ -111,7 +118,6 @@ if ($('#certificates-on-review-grid').length > 0) {
                     component.clickKey = e.key;
                     component.clickDate = new Date();
                     clickDelay = setTimeout(() => {
-                        console.log(e.column.dataField);
                         if (e.column.dataField && e.column.dataField !== 'certificateNumber') {
                             if (e.row.isSelected) {
                                 certificatesOnReviewGrid.deselectRows([e.key]);
