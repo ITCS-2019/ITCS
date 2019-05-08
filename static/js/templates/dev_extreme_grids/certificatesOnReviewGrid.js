@@ -111,7 +111,8 @@ if ($('#certificates-on-review-grid').length > 0) {
                     component.clickKey = e.key;
                     component.clickDate = new Date();
                     clickDelay = setTimeout(() => {
-                        if (e.column.dataField) {
+                        console.log(e.column.dataField);
+                        if (e.column.dataField && e.column.dataField !== 'certificateNumber') {
                             if (e.row.isSelected) {
                                 certificatesOnReviewGrid.deselectRows([e.key]);
                             }
