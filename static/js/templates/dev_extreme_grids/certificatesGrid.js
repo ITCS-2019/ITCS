@@ -84,7 +84,12 @@ if ($('#certificates-grid').length > 0) {
                     component.clickDate = new Date();
                     clickDelay = setTimeout(() => {
                         if (e.column.dataField) {
-                            certificatesGrid.selectRows([e.key], true);
+                            if (e.row.isSelected) {
+                                certificatesGrid.deselectRows([e.key]);
+                            }
+                            else {
+                                certificatesGrid.selectRows([e.key], true);
+                            }
                         }
                     }, 300);
                 }
