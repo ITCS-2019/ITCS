@@ -15,6 +15,7 @@ urlpatterns = [
     path('trainigOrganisation/<organisation_name>/direction/<direction_id>/', views.crm_trainigOrganisationDirectionView, name='crm_trainigOrganisationDirectionView'),
     path('trainigOrganisations/add/', views.add_trainigOrganisation, name='add_trainigOrganisation'),
     path('editTrainigOrganisation/<name>/', views.crm_editTrainigOrganisation, name='crm_editTrainigOrganisation'),
+    path('rageNumbersOrganisation/<orgId>/', views.giveRageNumbers, name='giveRageNumbers'),
     path('certification/', views.crm_certification, name='crm_certification'),
     path('certification/new/', views.new_certification, name='new_certification'),
     path('editCertification/<id>/', views.crm_editCertification, name='crm_editCertification'),
