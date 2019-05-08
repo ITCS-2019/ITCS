@@ -598,6 +598,22 @@ def generate_pdf(request):
 	return response
 
 @login_required(login_url="login/")
+def giveRageNumbers(request, orgId):
+	if "GET" == request.method:
+		form = RangeNumberForm(orgId)
+		organisation = TrainigOrganisation.objects.get(id=orgId)
+		return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation})
+	else:
+		directionID = request.POST.get('directions')
+		startFromNumber = request.POST.get('rangeStart')
+		endAtNumber = request.POST.get('rangeEnd')
+		print('Organisation ID: ', orgId)
+		print('Direction ID: ', directionID)
+		print('Start From Number: ', startFromNumber)
+		print('End At Number: ', endAtNumber)
+		return render(request, 'crm_rangeNumber.html', {"error_message": "Номери добавлени"})
+
+@login_required(login_url="login/")
 def uploadXLS(request):
 	if "GET" == request.method:
 		form = UploadXLSForm(request.user)

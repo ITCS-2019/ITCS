@@ -44,7 +44,14 @@ class SailorAdmin(admin.ModelAdmin):
 
 admin.site.register(Sailor, SailorAdmin)
 
+#//////////////////////////////////////////////////////////
+class RangeNumber(models.Model):
+    number = models.IntegerField(null=True, blank=True)
+    organisation_name = models.CharField(max_length=200, null=True, blank=True)
+    direction_name = models.CharField(max_length=200, null=True, blank=True)
 
+    def __str__(self):
+        return u"%s / %s / %s" % (self.number, self.direction_name, self.organisation_name)
 #//////////////////////////////////////////////////////////
 LEVELS = (
         ('---', '---',),
@@ -74,6 +81,8 @@ class TrainigDirections(models.Model):
     price = models.IntegerField(null=True, blank=True)
 
     status = models.IntegerField(choices=DIRECTSTATUS, null=True, default=ACT)
+
+    range_numbers = models.ManyToManyField(to='RangeNumber', related_name='ranged', blank=True)
     
     def __str__(self):
         return u"%s / %s / %s /" % (self.direction_title, self.get_allow_functions_display(), self.get_level_display())

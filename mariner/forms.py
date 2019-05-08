@@ -338,6 +338,23 @@ class CertificationFormPDF(forms.Form):
     startDate = forms.CharField(max_length=20)
     endDate = forms.CharField(max_length=20)
 
+class RangeNumberForm(forms.Form):
+    def __init__(self, orgId, *args, **kwargs):
+        super(RangeNumberForm, self).__init__(*args, **kwargs)
+        exist = True
+        try:
+            trainigOrganisation = TrainigOrganisation.objects.get(id=orgId)
+        except TrainigOrganisation.DoesNotExist:
+            exist = False
+        if(exist):
+            ntzDirections= [(direction.pk, direction) for direction in trainigOrganisation.directions.all()]
+            self.fields['directions'] = forms.ChoiceField(choices=ntzDirections)
+            self.fields['directions'].label = 'Напрямки'
+
+    directions=forms.ChoiceField()
+    rangeStart = forms.CharField(label='Початок діапазону')
+    rangeEnd = forms.CharField(label='Кінець діапазону')
+
 class UploadXLSForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super(UploadXLSForm, self).__init__(*args, **kwargs)
