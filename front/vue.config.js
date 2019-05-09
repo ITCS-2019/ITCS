@@ -1,14 +1,13 @@
 const BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
-  baseUrl: "http://0.0.0.0:8080/",
+  publicPath: "http://0.0.0.0:8080",
   outputDir: './dist/',
 
   chainWebpack: config => {
 
     config.optimization
         .splitChunks(false)
-
     config
         .plugin('BundleTracker')
         .use(BundleTracker, [{filename: '../front/webpack-stats.json'}])
