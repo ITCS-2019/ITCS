@@ -107,6 +107,13 @@ def crm_createUser(request):
 		#return redirect('crm_trainigOrganisations')
 		return HttpResponse(status=204)
 
+#/////////////////Vue Application//////////////////////
+@login_required(login_url="login/")
+def application(request):
+	#trainigOrganisations = TrainigOrganisation.objects.all()
+	context = {'trainigOrganisations': 0,}
+	return render(request, "application.html", context)
+
 #/////////////////TrainigOrganisation//////////////////////
 @login_required(login_url="login/")
 def crm_trainigOrganisations(request):
