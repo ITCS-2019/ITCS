@@ -47,6 +47,7 @@ $(function() {
                     autoExpandAll: false,
                     expandMode: 'buttonClick'
                 },
+                rowAlternationEnabled: true,
                 onSelectionChanged: function(e) {
                     let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
 
