@@ -143,13 +143,12 @@ $(function() {
                         allowFiltering: false,
                         cellTemplate: function(element, data) {
                             let directionsData = data.value,
-                                organisationName = data.data.organisation_name.split(' |')[0],
+                                organisationId = data.data.id,
                                 expandedOrganisation = organisationsInfo.find(organisation => {
-                                    return organisation.organisation_name === organisationName;
+                                    return organisation.organisation_id === ~~organisationId;
                                 });
 
-                            console.log(expandedOrganisation);
-
+                            console.log(organisationsInfo);
                             element.append(`<div class="c-cell__row">
                                                 <span class="c-cell__text">
                                                 </span>
@@ -172,12 +171,12 @@ $(function() {
 
                             directionsData.forEach((direction) => {
                                 let directionInfo = expandedOrganisation.organisation_directions.find(organisationDirection => {
-                                    return organisationDirection.dirction_name === direction.directionName;
+                                    return organisationDirection.direction_id === ~~direction.directionId;
                                 });
 
                                 element.append(`<div class="c-cell__row">
                                                     <a class="c-cell__text" href="${direction.route}">
-                                                        ${direction.directionName}
+                                                        ${directionInfo.dirction_name}
                                                     </a>
                                                     <span class="c-cell__amount">
                                                         ${directionInfo.direction_reviewCertCount}
