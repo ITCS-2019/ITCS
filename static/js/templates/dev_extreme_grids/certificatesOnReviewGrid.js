@@ -57,6 +57,7 @@ if ($('#certificates-on-review-grid').length > 0) {
                 fileName: "certificates",
                 allowExportSelectedData: true
             },
+            rowAlternationEnabled: true,
             customizeExportData: function(cols, rows) {
                 let certIDs = [],
                     $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
