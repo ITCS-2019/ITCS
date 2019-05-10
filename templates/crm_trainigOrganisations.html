@@ -102,12 +102,13 @@
         directions = [];
         {% for direction in trainig.directions.all %}
             directions.push({
-                directionName: '{{ direction.direction_title }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
+                directionId: '{{ direction.id }}',
                 route: `/mariner/trainigOrganisation/${'{{ trainig.organisation_name }}'}/direction/${'{{ direction.id }}'}/`
             });
         {% endfor %}
 
         trainigOrganisations.push({
+            id: '{{trainig.id}}',
             organisation_id: '{{trainig.organisation_id}}',
             organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
             activated: '{{ trainig.activated|date:"m.d.Y" }}',
