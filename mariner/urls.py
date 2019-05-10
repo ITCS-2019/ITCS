@@ -35,4 +35,6 @@ urlpatterns = [
     path('trainigDirection/new/', views.new_trainigDirection, name='new_trainigDirection'),
     path('editDirection/<direction_id>/', views.crm_editTrainigDirection, name='crm_editTrainigDirection'),
     path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
+    path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
+    path('app/', views.application, name='app'),
 ]

@@ -26,6 +26,7 @@ $(function() {
             },
             wordWrapEnabled: true,
             columnAutoWidth: true,
+            rowAlternationEnabled: true,
             onSelectionChanged: function(e) {
                 let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
 
