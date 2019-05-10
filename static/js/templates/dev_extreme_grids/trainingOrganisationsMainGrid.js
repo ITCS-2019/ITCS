@@ -2,16 +2,7 @@ $(function() {
     if ($('#training-organisations-main-grid').length > 0) {
         DevExpress.localization.locale('ru');
 
-        let organisationsInfo;
-
-        $.ajax({
-            url: organisationInfo,
-            method: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                organisationsInfo = data.organisations;
-            }
-        });
+        // let organisationsInfo;
 
         var trainingOrganisationsMainGrid = $('#training-organisations-main-grid').dxDataGrid({
                 dataSource: trainigOrganisations,
@@ -57,6 +48,9 @@ $(function() {
                 grouping: {
                     autoExpandAll: false,
                     expandMode: 'buttonClick'
+                },
+                loadPanel: {
+                    enabled: true
                 },
                 onSelectionChanged: function(e) {
                     let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
@@ -142,13 +136,6 @@ $(function() {
                         allowEditing: false,
                         allowFiltering: false,
                         cellTemplate: function(element, data) {
-                            let directionsData = data.value,
-                                organisationId = data.data.id,
-                                expandedOrganisation = organisationsInfo.find(organisation => {
-                                    return organisation.organisation_id === ~~organisationId;
-                                });
-
-                            console.log(organisationsInfo);
                             element.append(`<div class="c-cell__row">
                                                 <span class="c-cell__text">
                                                 </span>
@@ -169,12 +156,26 @@ $(function() {
                                                 </span>
                                             </div>`);
 
-                            directionsData.forEach((direction) => {
-                                let directionInfo = expandedOrganisation.organisation_directions.find(organisationDirection => {
-                                    return organisationDirection.direction_id === ~~direction.directionId;
-                                });
+                            // Get training organisations/directions certs info
+                            $.ajax({
+                                url: organisationInfo,
+                                method: 'GET',
+                                dataType: 'json',
+                                success: function (res) {
+                                    let organisationsInfo = res.organisations;
 
-                                element.append(`<div class="c-cell__row">
+                                    let directionsData = data.value,
+                                        organisationId = data.data.id,
+                                        expandedOrganisation = organisationsInfo.find(organisation => {
+                                            return organisation.organisation_id === ~~organisationId;
+                                        });
+
+                                    directionsData.forEach((direction) => {
+                                        let directionInfo = expandedOrganisation.organisation_directions.find(organisationDirection => {
+                                            return organisationDirection.direction_id === ~~direction.directionId;
+                                        });
+
+                                        element.append(`<div class="c-cell__row">
                                                     <a class="c-cell__text" href="${direction.route}">
                                                         ${directionInfo.dirction_name}
                                                     </a>
@@ -194,6 +195,8 @@ $(function() {
                                                         ${directionInfo.direction_allCertsCount}
                                                     </span>
                                                 </div>`);
+                                    });
+                                }
                             });
                         },
                         visible: isInspector
