@@ -50,7 +50,9 @@ $(function() {
                     expandMode: 'buttonClick'
                 },
                 loadPanel: {
-                    enabled: true
+                    shading: true,
+                    shadingColor: 'rgba(255, 255, 255, .5)',
+                    text: 'Завантаження...'
                 },
                 rowAlternationEnabled: true,
                 onSelectionChanged: function(e) {
@@ -157,6 +159,7 @@ $(function() {
                                                 </span>
                                             </div>`);
 
+                            trainingOrganisationsMainGrid.beginCustomLoading();
                             // Get training organisations/directions certs info
                             $.ajax({
                                 url: organisationInfo,
@@ -197,6 +200,7 @@ $(function() {
                                                     </span>
                                                 </div>`);
                                     });
+                                    trainingOrganisationsMainGrid.endCustomLoading();
                                 }
                             });
                         },
