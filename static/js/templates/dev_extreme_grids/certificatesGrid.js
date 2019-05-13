@@ -200,7 +200,7 @@ if ($('#certificates-grid').length > 0) {
                     caption: '№ Сертифіката',
                     allowEditing: false,
                     allowFiltering: true,
-                    visible: isNotNtz
+                    // visible: isNotNtz
                 },
                 {
                     dataField: 'blankNumber',
