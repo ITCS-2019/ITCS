@@ -20,6 +20,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "inspinia": "^2.6.5",
     "vue-template-compiler": "^2.5.21",
     "webpack-bundle-tracker": "^0.4.2-beta"
   },
