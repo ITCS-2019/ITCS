@@ -86,7 +86,7 @@ import {
 export default {
   data: () => ({
     // logo: './img/vuetifylogo.png',
-    logo: './front/public/img/vuetifylogo.png',
+    logo: '/static/img/avatar_empty.jpg',
     links: [
       {
         to: '/dashboard',
