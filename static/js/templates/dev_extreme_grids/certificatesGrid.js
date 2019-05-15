@@ -41,10 +41,11 @@ if ($('#certificates-grid').length > 0) {
             customizeExportData: function(cols, rows) {
                 let certIDs = [],
                     $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
-                    exportType = $clickedItem.attr('data-type');
+                    exportType = $clickedItem.attr('data-type'),
+                    pageRows = certificatesGrid.getVisibleRows();
 
-                if (rows.length > 0) {
-                    rows.forEach((row) => {
+                if (pageRows.length > 0) {
+                    pageRows.forEach((row) => {
                         certIDs.push(row.data.certificateId);
                     });
 
