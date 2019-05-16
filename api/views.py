@@ -206,8 +206,9 @@ def exportXLS(request):
 		rows = Certificate.objects.filter(pk__in=certIDsList).values_list(
 		'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
 		'born', 'date_of_issue', 'valid_date')
+		fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
 		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = 'attachment; filename="certificates.xls"'
+		response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet('Сертифікати')
 		

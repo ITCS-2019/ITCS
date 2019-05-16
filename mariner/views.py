@@ -527,7 +527,8 @@ def exportToRegister(request, name):
 		'born', 'date_of_issue', 'valid_date')
 	#certsInReview = Certificate.objects.filter(status__startswith=1)
 	response = HttpResponse(content_type='application/ms-excel')
-	response['Content-Disposition'] = 'attachment; filename="certificates.xls"'
+	fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
+	response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
 	wb = xlwt.Workbook(encoding='utf-8')
 	ws = wb.add_sheet('Сертифікати')
 	# Sheet header, first row
