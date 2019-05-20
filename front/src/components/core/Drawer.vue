@@ -47,7 +47,7 @@
           v-for="(link, i) in links"
           :key="i"
           :to="link.to"
-          :active-class="color"
+          active-class="info"
           avatar
           class="v-list-item"
         >
@@ -88,6 +88,11 @@ export default {
     // logo: './img/vuetifylogo.png',
     logo: '/static/img/avatar_empty.jpg',
     links: [
+      {
+        to: '/certificates',
+        icon: 'mdi-account-card-details',
+        text: 'Сертифiкати'
+      },
       {
         to: '/dashboard',
         icon: 'mdi-view-dashboard',

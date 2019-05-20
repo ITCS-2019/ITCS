@@ -7,6 +7,8 @@ import './components'
 
 // Plugins
 import './plugins'
+window.axios = require('axios')
+Vue.prototype.axios = window.axios
 
 // Sync router with store
 import { sync } from 'vuex-router-sync'
@@ -17,10 +19,16 @@ import i18n from '@/i18n'
 import router from '@/router'
 import store from '@/store'
 
+import 'devextreme/dist/css/dx.common.css';
+import 'devextreme/dist/css/dx.light.compact.css';
+
 // Sync store with router
 sync(store, router)
 
 Vue.config.productionTip = false
+
+// Components
+Vue.component('DxGrid', require('@/components/devExtremeGrid/DxGrid.vue').default);
 
 /* eslint-disable no-new */
 new Vue({
