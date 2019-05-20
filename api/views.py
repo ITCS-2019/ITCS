@@ -86,6 +86,7 @@ def certificates(request):
 		
 	for cert in certs:
 		certData = {
+			'cert_id': cert.id,
 			'certf_number': cert.certf_number,
 			'form_number': cert.form_number,
 			'ntz_number': cert.ntz_number,
