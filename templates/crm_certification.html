@@ -207,42 +207,11 @@
 <script src="/static/js/templates/dev_extreme_grids/extraGridMethods.js">
 </script>
 <script>
-    var certifications = [];
-        isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
+    console.log('certs template updated');
+    var isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
         exportRoute = '{% url 'api-exportToPrint' %}',
         certOnHandle = '{% url 'api-changeToReviewStatus' %}',
         certRemove = '{% url 'api-removeDraftCerts' %}';
-
-    let status;
-    {% for certificate in certifications %}
-        switch (~~'{{certificate.status}}') {
-            case 0:
-                status = 'Чернетка';
-                break;
-            case 1:
-                status = 'Обробка';
-                break;
-            case 2:
-                status = 'Видан';
-                break;
-            case 3:
-                status = 'Анульований';
-                break;
-        }
-        certifications.push({
-            certificateId: '{{certificate.id}}',
-            certificateNumber: '{{ certificate.certf_number }}',
-            blankNumber: '{{ certificate.form_number }}',
-            issueDate: '{{ certificate.date_of_issue|date:"m.d.Y" }}',
-            validDate: '{{ certificate.valid_date|date:"m.d.Y" }}',
-            // certificateNumberGenerated: '{{ certificate.ntz_number }}'.replace(/\//g, '').replace(/-/g, ''),
-            specialty: '{{ certificate.training_direction }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
-            sailorId: '{{ certificate.sailor.id }}',
-            sailor: '{{ certificate.sailor }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
-            ntz: '{{ certificate.trainigOrganisation }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`),
-            status: status,
-        });
-    {% endfor%}
 </script>
 
 {% endblock %}

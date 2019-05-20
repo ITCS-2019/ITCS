@@ -2,8 +2,9 @@ if ($('#certificates-grid').length > 0) {
     DevExpress.localization.locale('ru');
 
     var clickDelay,
+        certs,
         certificatesGrid = $('#certificates-grid').dxDataGrid({
-            dataSource: certifications,
+            dataSource: [],
             allowColumnReordering: false,
             allowColumnResizing: true,
             columnAutoWidth: false,
@@ -25,7 +26,8 @@ if ($('#certificates-grid').length > 0) {
                 showPageSizeSelector: true,
                 allowedPageSizes: [10, 20, 50, 100],
                 showInfo: true,
-                visible: true
+                visible: true,
+                infoText: ''
             },
             searchPanel: {
                 visible: true,
@@ -37,14 +39,20 @@ if ($('#certificates-grid').length > 0) {
                 fileName: "certificates",
                 allowExportSelectedData: true
             },
+            loadPanel: {
+                shading: true,
+                shadingColor: 'rgba(255, 255, 255, .5)',
+                text: 'Завантаження...'
+            },
             rowAlternationEnabled: true,
             customizeExportData: function(cols, rows) {
                 let certIDs = [],
                     $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
-                    exportType = $clickedItem.attr('data-type');
+                    exportType = $clickedItem.attr('data-type'),
+                    pageRows = certificatesGrid.getVisibleRows();
 
-                if (rows.length > 0) {
-                    rows.forEach((row) => {
+                if (pageRows.length > 0) {
+                    pageRows.forEach((row) => {
                         certIDs.push(row.data.certificateId);
                     });
 
@@ -74,7 +82,7 @@ if ($('#certificates-grid').length > 0) {
             onSelectionChanged: function(e) {
                 let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
 
-                e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+                e.component.option('pager.infoText', `Всього: ${certs.length}${selected}`);
             },
             onCellClick: function (e) {
                 let component = e.component;
@@ -185,9 +193,9 @@ if ($('#certificates-grid').length > 0) {
                     $customPagination.fadeIn('fast');
                 }
 
-                let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+                // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
 
-                e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+                // e.component.option('pager.infoText', `Всього: ${certs.length}${selected}`);
             },
             columns: [
                 {
@@ -226,7 +234,8 @@ if ($('#certificates-grid').length > 0) {
                     dataField: 'certificateNumberGenerated',
                     caption: '№ сертифіката(сген.)',
                     allowEditing: false,
-                    visible: isNotNtz
+                    // visible: isNotNtz
+                    visible: false
                 },
                 {
                     dataField: 'specialty',
@@ -258,4 +267,54 @@ if ($('#certificates-grid').length > 0) {
                 }
             ]
         }).dxDataGrid('instance');
+
+    certificatesGrid.beginCustomLoading();
+    $.ajax({
+        url: '/mariner/api/allCerts/',
+        method: 'GET',
+        dataType: 'json',
+        success: function (res) {
+
+            let dataSource = [];
+
+            certs = res.certificates;
+            certs.forEach((cert) => {
+                let status;
+
+                switch (cert.status) {
+                    case 0:
+                        status = 'Чернетка';
+                        break;
+                    case 1:
+                        status = 'Обробка';
+                        break;
+                    case 2:
+                        status = 'Видан';
+                        break;
+                    case 3:
+                        status = 'Анульований';
+                        break;
+                }
+
+                dataSource.push({
+                    certificateId: cert.id,
+                    certificateNumber: cert.certf_number,
+                    blankNumber: cert.form_number,
+                    issueDate: cert.date_of_issue,
+                    validDate: cert.valid_date,
+                    specialty: cert.training_direction_title,
+                    sailorId: cert.sailor_id,
+                    sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
+                    ntz: cert.trainigOrganisation_name,
+                    status: status,
+                });
+            });
+
+            let selected = (certificatesGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certificatesGrid.getSelectedRowKeys().length}` : '';
+
+            certificatesGrid.option('dataSource', dataSource);
+            certificatesGrid.option('pager.infoText', `Всього: ${certs.length}${selected}`);
+            certificatesGrid.endCustomLoading();
+        }
+    });
 }
