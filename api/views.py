@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from rest_framework import generics
 
 from mariner.models import Certificate, TrainigOrganisation, TrainigDirections, Sailor
-from .serializers import TrainigDirectionsSerializer
+from .serializers import TrainigDirectionsSerializer, CertificatesSerializer
 
 from django.http import HttpResponse
 
@@ -24,6 +24,10 @@ import datetime
 class ListTrainigDirectionsView(generics.ListAPIView):
 	queryset = TrainigDirections.objects.all()
 	serializer_class = TrainigDirectionsSerializer
+
+class ListCertificatesView(generics.ListAPIView):
+	queryset = Certificate.objects.all()
+	serializer_class = CertificatesSerializer
 
 @login_required(login_url="login/")
 def trainingOrganisationsInfo(request):
@@ -70,22 +74,43 @@ def trainingOrganisationsInfo(request):
 
 @login_required(login_url="login/")
 def certificates(request):
+	certs = Certificate()
+	certsDataArr = []
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		certs = list(Certificate.objects.filter(trainigOrganisation=trainigOrganisation).values())
-		data =  dict()
-		data['certificates'] = certs
-		return JsonResponse(data)
+		certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation)
 	elif request.user.groups.all()[0].name == 'Інспектор':
-		certs = list(Certificate.objects.exclude(status=0).values())
-		data =  dict()
-		data['certificates'] = certs
-		return JsonResponse(data)
+		certs = Certificate.objects.exclude(status=0)
 	else:
-		certs = list(Certificate.objects.all().values())
-		data =  dict()
-		data['certificates'] = certs
-		return JsonResponse(data)
+		certs = Certificate.objects.all()
+		
+	for cert in certs:
+		certData = {
+			'certf_number': cert.certf_number,
+			'form_number': cert.form_number,
+			'ntz_number': cert.ntz_number,
+			'first_name_en': cert.first_name_en,
+			'last_name_en': cert.last_name_en,
+			'last_name_ukr': cert.last_name_ukr,
+			'first_name_ukr': cert.first_name_ukr,
+			'second_name_ukr': cert.second_name_ukr,
+			'born': cert.born,
+			'inn': cert.inn,
+			'sailor_id': cert.sailor.id,
+			'trainigOrganisation_id': cert.trainigOrganisation.id,
+			'trainigOrganisation_name': cert.trainigOrganisation.organisation_name,
+			'date_of_issue': cert.date_of_issue,
+			'valid_date': cert.valid_date,
+			'valid_type': cert.valid_type,
+			'direction_level': cert.direction_level,
+			'direction_allow_functions': cert.direction_allow_functions,
+			'training_direction_id': cert.training_direction.id,
+			'training_direction_title': cert.training_direction.direction_title,
+			'status': cert.status,
+		}
+		certsDataArr.append(certData)
+	certificatesDict = {'certificates':certsDataArr,}
+	return JsonResponse(certificatesDict)
 
 @login_required(login_url="login/")
 def issuedCerts(request):
@@ -206,8 +231,9 @@ def exportXLS(request):
 		rows = Certificate.objects.filter(pk__in=certIDsList).values_list(
 		'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
 		'born', 'date_of_issue', 'valid_date')
+		fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
 		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = 'attachment; filename="certificates.xls"'
+		response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet('Сертифікати')
 		

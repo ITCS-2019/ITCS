@@ -355,6 +355,8 @@ class RangeNumberForm(forms.Form):
     rangeStart = forms.CharField(label='Початок діапазону')
     rangeEnd = forms.CharField(label='Кінець діапазону')
 
+    
+
 class UploadXLSForm(forms.Form):
     def __init__(self, user, *args, **kwargs):
         super(UploadXLSForm, self).__init__(*args, **kwargs)
