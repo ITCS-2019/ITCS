@@ -527,7 +527,8 @@ def exportToRegister(request, name):
 		'born', 'date_of_issue', 'valid_date')
 	#certsInReview = Certificate.objects.filter(status__startswith=1)
 	response = HttpResponse(content_type='application/ms-excel')
-	response['Content-Disposition'] = 'attachment; filename="certificates.xls"'
+	fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
+	response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
 	wb = xlwt.Workbook(encoding='utf-8')
 	ws = wb.add_sheet('Сертифікати')
 	# Sheet header, first row
@@ -618,6 +619,28 @@ def giveRageNumbers(request, orgId):
 		print('Direction ID: ', directionID)
 		print('Start From Number: ', startFromNumber)
 		print('End At Number: ', endAtNumber)
+		if not (startFromNumber.isdigit()):
+			print('rangeStartNumber not digit')
+			form = RangeNumberForm(orgId)
+			organisation = TrainigOrganisation.objects.get(id=orgId)
+			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeStartNumber not digit"})
+		if not (endAtNumber.isdigit()):
+			print('rangeEndNumber not digit')
+			form = RangeNumberForm(orgId)
+			organisation = TrainigOrganisation.objects.get(id=orgId)
+			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeEndNumber not digit"})
+		if int(endAtNumber) < int(startFromNumber):
+			print('endAtNumber < startFromNumber')
+			form = RangeNumberForm(orgId)
+			organisation = TrainigOrganisation.objects.get(id=orgId)
+			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "endAtNumber < startFromNumber"})
+		#organisation = TrainigOrganisation.objects.get(id=orgId)
+		for i in range(int(startFromNumber), int(endAtNumber)+1):
+			print(i, ' - current number')
+			#rangeNum,created = RangeNumber.objects.get_or_create(number=i, organisation_name=userMail, password=userPass)
+			#if created:
+				#rangeNum.save()
+
 		return render(request, 'crm_rangeNumber.html', {"error_message": "Номери добавлени"})
 
 @login_required(login_url="login/")
