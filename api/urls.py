@@ -4,6 +4,7 @@ from django.urls import path
 from . import views
 urlpatterns = [
     path('trainigDirections/', views.ListTrainigDirectionsView.as_view(), name="trainigDirections-all"),
+    path('certificates/', views.ListCertificatesView.as_view(), name="certificates-all"),
     path('allCerts/', views.certificates, name="api-allCerts"),
     path('trainingOrganisationsInfo/', views.trainingOrganisationsInfo, name="api-trainingOrganisationsInfo"),
     path('issuedCerts/', views.issuedCerts, name="api-issuedCerts"),

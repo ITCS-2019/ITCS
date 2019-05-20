@@ -619,6 +619,28 @@ def giveRageNumbers(request, orgId):
 		print('Direction ID: ', directionID)
 		print('Start From Number: ', startFromNumber)
 		print('End At Number: ', endAtNumber)
+		if not (startFromNumber.isdigit()):
+			print('rangeStartNumber not digit')
+			form = RangeNumberForm(orgId)
+			organisation = TrainigOrganisation.objects.get(id=orgId)
+			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeStartNumber not digit"})
+		if not (endAtNumber.isdigit()):
+			print('rangeEndNumber not digit')
+			form = RangeNumberForm(orgId)
+			organisation = TrainigOrganisation.objects.get(id=orgId)
+			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeEndNumber not digit"})
+		if int(endAtNumber) < int(startFromNumber):
+			print('endAtNumber < startFromNumber')
+			form = RangeNumberForm(orgId)
+			organisation = TrainigOrganisation.objects.get(id=orgId)
+			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "endAtNumber < startFromNumber"})
+		#organisation = TrainigOrganisation.objects.get(id=orgId)
+		for i in range(int(startFromNumber), int(endAtNumber)+1):
+			print(i, ' - current number')
+			#rangeNum,created = RangeNumber.objects.get_or_create(number=i, organisation_name=userMail, password=userPass)
+			#if created:
+				#rangeNum.save()
+
 		return render(request, 'crm_rangeNumber.html', {"error_message": "Номери добавлени"})
 
 @login_required(login_url="login/")
