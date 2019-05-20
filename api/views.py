@@ -86,6 +86,7 @@ def certificates(request):
 		
 	for cert in certs:
 		certData = {
+			'cert_id': cert.id,
 			'certf_number': cert.certf_number,
 			'form_number': cert.form_number,
 			'ntz_number': cert.ntz_number,
@@ -94,7 +95,7 @@ def certificates(request):
 			'last_name_ukr': cert.last_name_ukr,
 			'first_name_ukr': cert.first_name_ukr,
 			'second_name_ukr': cert.second_name_ukr,
-			'born': cert.born,
+			'born': cert.born.strftime("%m.%d.%Y"),
 			'inn': cert.inn,
 			'sailor_id': cert.sailor.id,
 			'trainigOrganisation_id': cert.trainigOrganisation.id,
