@@ -85,6 +85,11 @@ def certificates(request):
 		certs = Certificate.objects.all()
 		
 	for cert in certs:
+		organisationID = ''
+		organisationName = ''
+		if cert.trainigOrganisation is not None:
+			organisationID = cert.trainigOrganisation.id
+			organisationName = cert.trainigOrganisation.organisation_name
 		certData = {
 			'cert_id': cert.id,
 			'certf_number': cert.certf_number,
@@ -98,8 +103,8 @@ def certificates(request):
 			'born': cert.born.strftime("%m.%d.%Y"),
 			'inn': cert.inn,
 			'sailor_id': cert.sailor.id,
-			'trainigOrganisation_id': cert.trainigOrganisation.id,
-			'trainigOrganisation_name': cert.trainigOrganisation.organisation_name,
+			'trainigOrganisation_id': organisationID,
+			'trainigOrganisation_name': organisationName,
 			'date_of_issue': cert.date_of_issue,
 			'valid_date': cert.valid_date,
 			'valid_type': cert.valid_type,
