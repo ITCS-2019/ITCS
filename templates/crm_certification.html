@@ -207,6 +207,7 @@
 <script src="/static/js/templates/dev_extreme_grids/extraGridMethods.js">
 </script>
 <script>
+    console.log('certs template updated');
     var isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
         exportRoute = '{% url 'api-exportToPrint' %}',
         certOnHandle = '{% url 'api-changeToReviewStatus' %}',

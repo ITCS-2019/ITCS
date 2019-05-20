@@ -7,7 +7,6 @@ if ($('#certificates-grid').length > 0) {
         dataType: 'json',
         success: function (res) {
 
-            console.log(res);
             let certs = res.certificates,
                 dataSource = [];
 
@@ -117,7 +116,7 @@ if ($('#certificates-grid').length > 0) {
                     onSelectionChanged: function(e) {
                         let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
 
-                        e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+                        e.component.option('pager.infoText', `Всього: ${certs.length}${selected}`);
                     },
                     onCellClick: function (e) {
                         let component = e.component;
@@ -230,7 +229,7 @@ if ($('#certificates-grid').length > 0) {
 
                         let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
 
-                        e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+                        e.component.option('pager.infoText', `Всього: ${certs.length}${selected}`);
                     },
                     columns: [
                         {

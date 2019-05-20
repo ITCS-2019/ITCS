@@ -49,7 +49,7 @@ class RangeNumber(models.Model):
     number = models.IntegerField(null=True, blank=True)
     organisation_id = models.IntegerField(null=True, blank=True)
     organisation_name = models.CharField(max_length=200, null=True, blank=True)
-    direction__id = models.IntegerField(null=True, blank=True)
+    direction_id = models.IntegerField(null=True, blank=True)
     direction_name = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
