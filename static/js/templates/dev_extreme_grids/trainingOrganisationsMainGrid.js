@@ -160,6 +160,7 @@ $(function() {
                                             </div>`);
 
                             trainingOrganisationsMainGrid.beginCustomLoading();
+
                             // Get training organisations/directions certs info
                             $.ajax({
                                 url: organisationInfo,
