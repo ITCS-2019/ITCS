@@ -3,6 +3,7 @@ from django.urls import path
 #from .views import ListTrainigDirectionsView
 from . import views
 urlpatterns = [
+    path('dashInfo/', views.dashInfo, name="api-dashInfo"),
     path('trainigDirections/', views.ListTrainigDirectionsView.as_view(), name="trainigDirections-all"),
     path('certificates/', views.ListCertificatesView.as_view(), name="certificates-all"),
     path('allCerts/', views.certificates, name="api-allCerts"),
