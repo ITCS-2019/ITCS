@@ -1,0 +1,32 @@
+.c-cell__row {
+  display: flex;
+  flex-direction: row;
+  align-items: normal;
+  align-content: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  border-top: 1px solid #ddd;
+}
+
+.c-cell__row:first-child {
+  border-top: none;
+}
+
+.c-cell__text {
+  flex: 1;
+  padding: 5px 0px;
+}
+
+.c-cell__amount {
+  width: 60px;
+  text-align: center;
+  font-size: 11px;
+  border-left: 1px solid #ddd;
+  padding: 5px 0px;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}

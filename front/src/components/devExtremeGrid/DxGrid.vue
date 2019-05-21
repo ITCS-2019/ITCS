@@ -1,5 +1,23 @@
 <template>
-    <div id="dev-extreme-grid"></div>
+    <div>
+        <div class="custom-pagination custom-pagination--grid" style="display: none;">
+            <button class="custom-pagination__btn custom-pagination__btn--first-page">
+                Перша
+            </button>
+            <button class="custom-pagination__btn custom-pagination__btn--prev">
+                &laquo;
+            </button>
+            <select name="certificates-select" class="custom-pagination__select">
+            </select>
+            <button class="custom-pagination__btn custom-pagination__btn--next">
+                &raquo;
+            </button>
+            <button class="custom-pagination__btn custom-pagination__btn--last-page">
+                Остання
+            </button>
+        </div>
+        <div id="dev-extreme-grid"></div>
+    </div>
 </template>
 
 <script>
@@ -29,6 +47,7 @@ export default {
             DevExpress.localization.locale('ru');
             _this.$nextTick(()=>{
                 _this.tableInstance = $('#dev-extreme-grid').dxDataGrid(_this.tableConfig).dxDataGrid('instance');
+                _this.tableInstance.beginCustomLoading();
             })
         });
     }

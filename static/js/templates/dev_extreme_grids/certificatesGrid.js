@@ -306,11 +306,9 @@ if ($('#certificates-grid').length > 0) {
                     sailorId: cert.sailor_id,
                     sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
                     ntz: cert.trainigOrganisation_name,
-                    status: status,
+                    status: status
                 });
             });
-
-            console.log(dataSource);
 
             let selected = (certificatesGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certificatesGrid.getSelectedRowKeys().length}` : '';
 

@@ -25,6 +25,7 @@
 
 export default {
   data: () => ({
+    clickDelay: undefined,
     dataSource: [],
     tableConfig: {
       dataSource: [],
@@ -43,11 +44,11 @@ export default {
       },
       paging: {
         enabled: true,
-        pageSize: 10
+        pageSize: 2
       },
       pager: {
         showPageSizeSelector: true,
-        allowedPageSizes: [10, 20, 50, 100],
+        allowedPageSizes: [2, 10, 20, 50, 100],
         showInfo: true,
         visible: true
       },
@@ -96,34 +97,36 @@ export default {
       wordWrapEnabled: true,
       columnAutoWidth: true,
       onSelectionChanged: function(e) {
-        let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+        let certsGrid = e.component,
+            selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
-        // e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+        certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
       },
       onCellClick: function (e) {
-        let component = e.component;
+        let certsGrid = e.component,
+            _this = this;
 
         function initialClick() {
-          component.clickCount = 1;
-          component.clickKey = e.key;
-          component.clickDate = new Date();
-          clickDelay = setTimeout(() => {
+          certsGrid.clickCount = 1;
+          certsGrid.clickKey = e.key;
+          certsGrid.clickDate = new Date();
+          _this.clickDelay = setTimeout(() => {
             if (e.column.dataField) {
               if (e.row.isSelected) {
-                certificatesGrid.deselectRows([e.key]);
+                certsGrid.deselectRows([e.key]);
               }
               else {
-                certificatesGrid.selectRows([e.key], true);
+                certsGrid.selectRows([e.key], true);
               }
             }
           }, 300);
         }
 
         function doubleClick() {
-          clearTimeout(clickDelay);
-          component.clickCount = 0;
-          component.clickKey = 0;
-          component.clickDate = null;
+          clearTimeout(_this.clickDelay);
+          certsGrid.clickCount = 0;
+          certsGrid.clickKey = 0;
+          certsGrid.clickDate = null;
           switch (e.column.dataField) {
             case 'certificateNumber':
               window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
@@ -141,11 +144,11 @@ export default {
           }
         }
 
-        if ((!component.clickCount) || (component.clickCount != 1) || (component.clickKey != e.key) ) {
+        if ((!certsGrid.clickCount) || (certsGrid.clickCount != 1) || (certsGrid.clickKey != e.key) ) {
           initialClick();
         }
-        else if (component.clickKey == e.key) {
-          if (((new Date()) - component.clickDate) <= 300) {
+        else if (certsGrid.clickKey == e.key) {
+          if (((new Date()) - certsGrid.clickDate) <= 300) {
             doubleClick();
           }
           else {
@@ -158,18 +161,18 @@ export default {
           e.component.pageIndex(page);
         }
 
-        let $customPagination = $('.custom-pagination.custom-pagination--certificates'),
-                $select = $('.custom-pagination__select', $customPagination),
-                pageCount = e.component.pageCount(),
-                currentPage = e.component.pageIndex(),
-                $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
-                $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
-                $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
-                $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
-                $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
-                        ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
-                        : e.element.find('.dx-datagrid-header-panel'),
-                $appendedPagination = $('.custom-pagination.custom-pagination--certificates', $gridToolbar);
+        let $customPagination = $('.custom-pagination.custom-pagination--grid'),
+            $select = $('.custom-pagination__select', $customPagination),
+            pageCount = e.component.pageCount(),
+            currentPage = e.component.pageIndex(),
+            $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+            $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+            $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+            $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+            $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                    ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                    : e.element.find('.dx-datagrid-header-panel'),
+            $appendedPagination = $('.custom-pagination.custom-pagination--grid', $gridToolbar);
 
         if (pageCount > 1) {
           $select.empty();
@@ -208,10 +211,6 @@ export default {
 
           $customPagination.fadeIn('fast');
         }
-
-        let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
-
-        // e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
       },
       columns: [
         {
@@ -249,7 +248,7 @@ export default {
           dataField: 'certificateNumberGenerated',
           caption: '№ сертифіката(сген.)',
           allowEditing: false,
-          visible: gUserRole !== 'НТЗ'
+          visible: false
         },
         {
           dataField: 'trainingDirection',
@@ -288,8 +287,6 @@ export default {
       .then(res => {
         let certs = res.data.certificates;
 
-        console.log(certs);
-
         certs.forEach((cert) => {
           let status;
 
@@ -309,23 +306,25 @@ export default {
           }
 
           this.dataSource.push({
-            certificateId: cert.id,
+            certificateId: cert.cert_id,
             certificateNumber: cert.certf_number,
             blankNumber: cert.form_number,
             issueDate: cert.date_of_issue,
             validDate: cert.valid_date,
-            trainingDirection: cert.training_direction,
+            trainingDirection: cert.training_direction_title,
             sailorId: cert.sailor_id,
             sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
-            trainigOrganisation: cert.trainigOrganisation,
-            status: status,
+            trainigOrganisation: cert.trainigOrganisation_name,
+            status: status
           });
         });
 
-        let certsGrid = this.$refs.certsGrid.tableInstance;
+        let certsGrid = this.$refs.certsGrid.tableInstance,
+            selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
-        console.log(this.dataSource);
-        certsGrid.option("dataSource", this.dataSource);
+        certsGrid.option('dataSource', this.dataSource);
+        certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+        certsGrid.endCustomLoading();
       })
       .catch((err) => {
         console.log(err);
