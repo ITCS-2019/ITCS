@@ -297,7 +297,7 @@ if ($('#certificates-grid').length > 0) {
                 }
 
                 dataSource.push({
-                    certificateId: cert.id,
+                    certificateId: cert.cert_id,
                     certificateNumber: cert.certf_number,
                     blankNumber: cert.form_number,
                     issueDate: cert.date_of_issue,
@@ -309,6 +309,8 @@ if ($('#certificates-grid').length > 0) {
                     status: status,
                 });
             });
+
+            console.log(dataSource);
 
             let selected = (certificatesGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certificatesGrid.getSelectedRowKeys().length}` : '';
 
