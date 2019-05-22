@@ -103,14 +103,15 @@ def trainingOrganisationsInfo(request):
 		for direction in organisation.directions.all():
 			reviewCertCount = reviewCertIDs.count(direction.id)
 			issuedCertCount = issuedCertIDs.count(direction.id)
+			certsLeftCount = direction.range_numbers.count()
 			directionData = {
 			'direction_id': direction.id,
 			'dirction_name': direction.direction_title,
 			'direction_reviewCertCount': reviewCertCount,
 			'direction_issuedCertCount': issuedCertCount,
 			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
-			'direction_certsLeftCount': 0,
-			'direction_allCertsCount': reviewCertCount + issuedCertCount,
+			'direction_certsLeftCount': certsLeftCount,
+			'direction_allCertsCount': reviewCertCount + issuedCertCount + certsLeftCount,
 			}
 			directionsDataArr.append(directionData)
 		organisationData = {
