@@ -73,6 +73,20 @@ def dashInfo(request):
 		return JsonResponse(dashInfoDict)
 
 @login_required(login_url="login/")
+def trainingDirectionsInfo(request):
+	if request.user.groups.all()[0].name == 'НТЗ':
+		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		trainigDirections = list(trainigOrganisation.directions.all().values())
+		data =  dict()
+		data['trainigDirections'] = trainigDirections
+		return JsonResponse(data)
+	else:
+		trainigDirections = list(TrainigDirections.objects.all().values())
+		data =  dict()
+		data['trainigDirections'] = trainigDirections
+		return JsonResponse(data)
+
+@login_required(login_url="login/")
 def trainingOrganisationsInfo(request):
 	trainigOrganisations = TrainigOrganisation.objects.all()
 	organisationDataArr = []
