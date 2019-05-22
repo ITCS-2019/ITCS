@@ -3,6 +3,7 @@
     fill-height
     fluid
     grid-list-xl
+    pt-0
   >
     <v-layout
       justify-center
@@ -11,6 +12,7 @@
       <v-flex
         md12
       >
+
         <material-card color="info"
           title="Сертифiкати"
           text="">
@@ -44,11 +46,11 @@ export default {
       },
       paging: {
         enabled: true,
-        pageSize: 2
+        pageSize: 10
       },
       pager: {
         showPageSizeSelector: true,
-        allowedPageSizes: [2, 10, 20, 50, 100],
+        allowedPageSizes: [10, 20, 50, 100],
         showInfo: true,
         visible: true
       },

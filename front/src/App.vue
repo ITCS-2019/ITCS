@@ -2,7 +2,7 @@
   <v-app>
     <core-filter />
 
-    <core-toolbar />
+    <core-toolbar/>
 
     <core-drawer />
 

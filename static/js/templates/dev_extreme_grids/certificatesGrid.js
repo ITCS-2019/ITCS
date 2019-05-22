@@ -274,7 +274,6 @@ if ($('#certificates-grid').length > 0) {
         method: 'GET',
         dataType: 'json',
         success: function (res) {
-
             let dataSource = [];
 
             certs = res.certificates;

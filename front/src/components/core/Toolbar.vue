@@ -1,10 +1,9 @@
 <template>
   <v-toolbar
     id="core-toolbar"
-
+    color="bg-info"
     flat
     prominent
-    style="background: #eee;"
   >
     <div class="v-toolbar-title">
       <v-toolbar-title
@@ -99,6 +98,13 @@ import {
 } from 'vuex'
 
 export default {
+  props: {
+    allah: {
+      type: String,
+      required: false
+    }
+  },
+
   data: () => ({
     notifications: [
       'Mike, John responded to your email',

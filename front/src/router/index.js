@@ -30,9 +30,13 @@ Vue.use(Router)
 // Create a new router
 const router = new Router({
   mode: 'history',
-  routes: paths.map(path => route(path.path, path.view, path.name)).concat([
-    { path: '*', redirect: '/dashboard' }
-  ]),
+  routes: paths.map(path => route(path.path, path.view, path.name))
+      .concat([
+        {
+          path: '*',
+          redirect: '/dashboard'
+        }
+      ]),
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition
