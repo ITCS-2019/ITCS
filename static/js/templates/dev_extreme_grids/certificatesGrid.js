@@ -192,10 +192,6 @@ if ($('#certificates-grid').length > 0) {
 
                     $customPagination.fadeIn('fast');
                 }
-
-                // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
-
-                // e.component.option('pager.infoText', `Всього: ${certs.length}${selected}`);
             },
             columns: [
                 {
