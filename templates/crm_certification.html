@@ -2,9 +2,7 @@
 {% block title %} Сертифiкати {% endblock %}
 
 {% block styles %}
-<link href="/static/css/plugins/dataTables/datatables.min.css" rel="stylesheet">
 {% endblock %}
-
 
 {% block leftMenu %}
     <li>
@@ -194,21 +192,16 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- Add in any FooTable dependencies we may need -->
-<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script> -->
-<!-- FooTable -->
-<!-- <script src="/static/js/plugins/footable/footable.js"></script> -->
-
-<script src="/static/js/plugins/dataTables/datatables.min.js"></script>
 
 <!--Custom scripts-->
 <script src="/static/js/templates/dev_extreme_grids/exportGrid.js">
 </script>
 <script src="/static/js/templates/dev_extreme_grids/extraGridMethods.js">
 </script>
+
 <script>
-    console.log('certs template updated');
-    var isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
+    var certifications = [];
+        isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
         exportRoute = '{% url 'api-exportToPrint' %}',
         certOnHandle = '{% url 'api-changeToReviewStatus' %}',
         certRemove = '{% url 'api-removeDraftCerts' %}';
