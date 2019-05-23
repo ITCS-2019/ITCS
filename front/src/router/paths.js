@@ -5,7 +5,7 @@
  */
 export default [
   {
-    path: '/dashboard',
+    path: '/mariner/app',
     // Relative to /src/views
     view: 'Dashboard'
   },

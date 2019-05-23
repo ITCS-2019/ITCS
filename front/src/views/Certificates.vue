@@ -13,9 +13,8 @@
         md12
       >
 
-        <material-card color="info"
-          title="Сертифiкати"
-          text="">
+        <material-card>
+
           <DxGrid :tableConfig="tableConfig" ref="certsGrid"/>
         </material-card>
       </v-flex>

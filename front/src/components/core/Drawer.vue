@@ -89,14 +89,14 @@ export default {
     logo: '/static/img/avatar_empty.jpg',
     links: [
       {
+        to: '/mariner/app',
+        icon: 'mdi-view-dashboard',
+        text: 'Dashboard'
+      },
+      {
         to: '/certificates',
         icon: 'mdi-account-card-details',
         text: 'Сертифiкати'
-      },
-      {
-        to: '/dashboard',
-        icon: 'mdi-view-dashboard',
-        text: 'Dashboard'
       },
       {
         to: '/user-profile',
