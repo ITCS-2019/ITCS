@@ -634,12 +634,22 @@ def giveRageNumbers(request, orgId):
 			form = RangeNumberForm(orgId)
 			organisation = TrainigOrganisation.objects.get(id=orgId)
 			return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "endAtNumber < startFromNumber"})
-		#organisation = TrainigOrganisation.objects.get(id=orgId)
+		print('--------------------')
+		organisation = TrainigOrganisation.objects.get(id=orgId)
+		direction = organisation.directions.get(id=directionID)
+		print(organisation)
+		print(direction)
+		print('--------------------')
 		for i in range(int(startFromNumber), int(endAtNumber)+1):
 			print(i, ' - current number')
-			#rangeNum,created = RangeNumber.objects.get_or_create(number=i, organisation_name=userMail, password=userPass)
-			#if created:
-				#rangeNum.save()
+			rangeNum,created = RangeNumber.objects.get_or_create(number=i, organisation_id=orgId , organisation_name=organisation.organisation_name, direction_id=directionID, direction_name=direction.direction_title)
+			if created:
+				rangeNum.save()
+				print('Created')
+				direction.range_numbers.add(rangeNum)
+				print('Add to ranges')
+			else:
+				print('already created')
 
 		return render(request, 'crm_rangeNumber.html', {"error_message": "Номери добавлени"})
 
