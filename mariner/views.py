@@ -300,15 +300,16 @@ def crm_editRegulation(request, number, template_name='crm_editRegulation.html')
 def crm_certification(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		certifications = Certificate.objects.filter(trainigOrganisation=trainigOrganisation)
+		certifications = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		context = {'certifications': certifications,}
 		return render(request, "crm_certification.html", context)
 	elif request.user.groups.all()[0].name == 'Інспектор':
-		certs = Certificate.objects.exclude(status=0)
+		certs = Certificate.objects.exclude(status=0).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		context = {'certifications': certs,}
 		return render(request, "crm_certification.html", context)
 	else:
-		certs = Certificate.objects.all()
+		#certs = Certificate.objects.all()
+		certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		context = {'certifications': certs,}
 		return render(request, "crm_certification.html", context)
 

@@ -11,6 +11,7 @@ urlpatterns = [
     path('trainingOrganisationsInfo/', views.trainingOrganisationsInfo, name="api-trainingOrganisationsInfo"),
     path('issuedCerts/', views.issuedCerts, name="api-issuedCerts"),
     path('changeCertNumber/', views.changeCertNumber, name="api-changeCertNumber"),
+    path('giveCertNumber/', views.giveCertNumber, name="api-giveCertNumber"),
     path('changeTrainigDirectionStatus/', views.changeTrainigDirectionStatus, name="api-changeTrainigDirectionStatus"),
     path('changeToReviewStatus/', views.changeToReviewStatus, name="api-changeToReviewStatus"),
     path('removeDraftCerts/', views.removeDraftCerts, name="api-removeDraftCerts"),

@@ -241,6 +241,25 @@ def changeCertNumber(request):
 	}
 	return JsonResponse(data)
 
+@login_required(login_url="login/")
+def giveCertNumber(request):
+	certIDsList = request.GET.get('certIDs').split(',')
+	hasError = False
+	errorMessage = "No Error"
+	if certIDsList != '':
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
+	else:
+		hasError = True
+		errorMessage = "Empty certIDs"
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
 
 @login_required(login_url="login/")
 def changeToReviewStatus(request):
