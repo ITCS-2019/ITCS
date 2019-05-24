@@ -64,30 +64,57 @@ if ($('#certificates-on-review-grid').length > 0) {
                     exportType = $clickedItem.attr('data-type');
 
                 if (rows.length > 0) {
-                    let specialty = rows[0].data.specialty,
-                        isSameSpecialties = true;
 
-                    rows.some((row) => {
-                        if (row.data.specialty === specialty) {
-                            certIDs.push(row.data.certificateId);
+                    // Assign certs
+                    if (exportType === 'Assign') {
+                        rows.forEach(row => certIDs.push(row.data.certificateId));
+
+                        $.ajax({
+                            url: assignRoute,
+                            method: 'GET',
+                            data: {
+                                certIDs: certIDs.join(',')
+                            },
+                            dataType: 'json',
+                            success: function (res) {
+                                if (!res.error) {
+                                    // window.location.reload();
+                                }
+                                else {
+                                    $modalText.html(res.error_message);
+                                    $('#error-grid-popup').modal('show');
+                                }
+                            }
+                        });
+                    }
+
+                    // Upload to register/issue certs
+                    else {
+                        let specialty = rows[0].data.specialty,
+                            isSameSpecialties = true;
+
+                        rows.some((row) => {
+                            if (row.data.specialty === specialty) {
+                                certIDs.push(row.data.certificateId);
+                            }
+                            else {
+                                isSameSpecialties = false;
+                                return true;
+                            }
+                        });
+
+                        if (isSameSpecialties) {
+                            let element = document.createElement('a');
+                            element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
+                            element.style.display = 'none';
+                            document.body.appendChild(element);
+                            element.click();
+                            document.body.removeChild(element);
                         }
                         else {
-                            isSameSpecialties = false;
-                            return true;
+                            $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
+                            $('#error-grid-popup').modal('show');
                         }
-                    });
-
-                    if (isSameSpecialties) {
-                        let element = document.createElement('a');
-                        element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-                        element.style.display = 'none';
-                        document.body.appendChild(element);
-                        element.click();
-                        document.body.removeChild(element);
-                    }
-                    else {
-                        $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
-                        $('#error-grid-popup').modal('show');
                     }
                 }
 
