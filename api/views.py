@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from accounts.models import Profile
 from django.http import JsonResponse
 
 from rest_framework import generics
@@ -30,6 +31,62 @@ class ListCertificatesView(generics.ListAPIView):
 	serializer_class = CertificatesSerializer
 
 @login_required(login_url="login/")
+def dashInfo(request):
+	profile, created = Profile.objects.get_or_create(user=request.user)
+	dashDataArr = []
+	if request.user.groups.all()[0].name == 'НТЗ':
+		if request.user.profile.organization_name == '':
+			return redirect('update_profile')
+		else:
+			sailorsCount = Sailor.objects.all().count()
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			trainigDirectionsCount = trainigOrganisation.directions.count()
+			certCount = trainigOrganisation.trained.filter(status__startswith=2).count()
+			certsInDraftCount = trainigOrganisation.trained.filter(status__startswith=0).count()
+			certsInReviewCount = trainigOrganisation.get_certInReview().count()
+			dashData = {
+			'sailorsCount': sailorsCount,
+			'certCount': certCount,
+			'trainigDirectionsCount': trainigDirectionsCount,
+			'certsInDraftCount': certsInDraftCount,
+			'certsInReviewCount': certsInReviewCount,
+			}
+			dashDataArr.append(dashData)
+			dashInfoDict = {'dashInfo': dashDataArr,}
+			return JsonResponse(dashInfoDict)
+	else:
+		sailorsCount = Sailor.objects.all().count()
+		certCount = Certificate.objects.filter(status__startswith=2).count()
+		certsInReviewCount = Certificate.objects.filter(status__startswith=1).count()
+		trainigDirectionsCount = TrainigDirections.objects.all().count()
+		trainigOrganisations = list(TrainigOrganisation.objects.all().values())
+		dashData = {
+			'sailorsCount': sailorsCount,
+			'certCount': certCount,
+			'trainigDirectionsCount': trainigDirectionsCount,
+			'certsInReviewCount': certsInReviewCount,
+			'trainigOrganisations': trainigOrganisations,
+		}
+		dashDataArr.append(dashData)
+		dashInfoDict = {'dashInfo': dashDataArr,}
+		# dashInfoDict = {'dashInfo': dashData,}#'trainigOrganisations': trainigOrganisations,}
+		return JsonResponse(dashInfoDict)
+
+@login_required(login_url="login/")
+def trainingDirectionsInfo(request):
+	if request.user.groups.all()[0].name == 'НТЗ':
+		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		trainigDirections = list(trainigOrganisation.directions.all().values())
+		data =  dict()
+		data['trainigDirections'] = trainigDirections
+		return JsonResponse(data)
+	else:
+		trainigDirections = list(TrainigDirections.objects.all().values())
+		data =  dict()
+		data['trainigDirections'] = trainigDirections
+		return JsonResponse(data)
+
+@login_required(login_url="login/")
 def trainingOrganisationsInfo(request):
 	trainigOrganisations = TrainigOrganisation.objects.all()
 	organisationDataArr = []
@@ -46,14 +103,15 @@ def trainingOrganisationsInfo(request):
 		for direction in organisation.directions.all():
 			reviewCertCount = reviewCertIDs.count(direction.id)
 			issuedCertCount = issuedCertIDs.count(direction.id)
+			certsLeftCount = direction.range_numbers.count()
 			directionData = {
 			'direction_id': direction.id,
 			'dirction_name': direction.direction_title,
 			'direction_reviewCertCount': reviewCertCount,
 			'direction_issuedCertCount': issuedCertCount,
 			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
-			'direction_certsLeftCount': 0,
-			'direction_allCertsCount': reviewCertCount + issuedCertCount,
+			'direction_certsLeftCount': certsLeftCount,
+			'direction_allCertsCount': reviewCertCount + issuedCertCount + certsLeftCount,
 			}
 			directionsDataArr.append(directionData)
 		organisationData = {
@@ -87,9 +145,14 @@ def certificates(request):
 	for cert in certs:
 		organisationID = ''
 		organisationName = ''
+		directionID = ''
+		directionName = ''
 		if cert.trainigOrganisation is not None:
 			organisationID = cert.trainigOrganisation.id
 			organisationName = cert.trainigOrganisation.organisation_name
+		if cert.training_direction is not None:
+			directionID = cert.training_direction.id
+			directionName = cert.training_direction.direction_title
 		certData = {
 			'cert_id': cert.id,
 			'certf_number': cert.certf_number,
@@ -110,8 +173,8 @@ def certificates(request):
 			'valid_type': cert.valid_type,
 			'direction_level': cert.direction_level,
 			'direction_allow_functions': cert.direction_allow_functions,
-			'training_direction_id': cert.training_direction.id,
-			'training_direction_title': cert.training_direction.direction_title,
+			'training_direction_id': directionID,
+			'training_direction_title': directionName,
 			'status': cert.status,
 		}
 		certsDataArr.append(certData)
@@ -178,6 +241,25 @@ def changeCertNumber(request):
 	}
 	return JsonResponse(data)
 
+@login_required(login_url="login/")
+def giveCertNumber(request):
+	certIDsList = request.GET.get('certIDs').split(',')
+	hasError = False
+	errorMessage = "No Error"
+	if certIDsList != '':
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
+	else:
+		hasError = True
+		errorMessage = "Empty certIDs"
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
 
 @login_required(login_url="login/")
 def changeToReviewStatus(request):

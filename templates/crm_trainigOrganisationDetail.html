@@ -143,10 +143,27 @@
 
                         {% if trainigOrganisation.get_certInReview.count > 0 %}
                             <div id="export-type-group">
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
+                                        Присвоїти номери
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="Assign" data-selection="all">
+                                                Присвоїти всi
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item dropdown-item--export" href="#" data-type="Assign" data-selection="checked">
+                                                Присвоїти обраним
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <a href="http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert"
                                 target="_blank"
                                 class="btn btn-primary" type="button">
-                                    Замолвленная сертифікатів
+                                    Замовлення сертифікатів
                                 </a>
                                 <div class="btn-group">
                                     <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">
@@ -155,7 +172,7 @@
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a class="dropdown-item dropdown-item--export" href="#" data-type="Register" data-selection="all">
-                                                Вигрузити все
+                                                Вигрузити всi
                                             </a>
                                         </li>
                                         <li>
@@ -177,12 +194,12 @@
                                     <ul class="dropdown-menu">
                                         <li>
                                             <a class="dropdown-item dropdown-item--export" href="#" data-type="GiveCerts" data-selection="all">
-                                                Експортувати все
+                                                Видати всi
                                             </a>
                                         </li>
                                         <li>
                                             <a class="dropdown-item dropdown-item--export" href="#" data-type="GiveCerts" data-selection="checked">
-                                                Експортувати обране
+                                                Видати обране
                                             </a>
                                         </li>
                                     </ul>
@@ -229,7 +246,8 @@
 <script>
     var certifications = [],
         editCellRoute = '{% url 'api-changeCertNumber' %}',
-        exportRoute = '{% url 'api-exportXLS' %}';
+        exportRoute = '{% url 'api-exportXLS' %}',
+        assignRoute = '{% url 'api-giveCertNumber' %}';
 
     let status;
     {% for certificate in trainigOrganisation.get_certInReview %}
