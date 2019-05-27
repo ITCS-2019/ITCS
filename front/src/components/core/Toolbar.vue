@@ -31,7 +31,7 @@
         layout
         py-2
       >
-        <v-btn color="success" small depressed="true"
+        <v-btn color="success" small :depressed="true"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-plus-box
@@ -40,7 +40,7 @@
             Додати
           </span>
         </v-btn>
-        <v-btn color="warning" small class="ml-1" depressed="true"
+        <v-btn color="warning" small class="ml-1" :depressed="true"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-trash-can

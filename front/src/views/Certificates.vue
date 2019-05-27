@@ -14,6 +14,76 @@
       >
 
         <material-card>
+          <v-layout justify-space-between wrap>
+
+            <!--Grid btns row left side-->
+            <div>
+              <v-menu offset-y
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
+                <v-btn slot="activator"
+                color="success"
+                small>
+                  <v-icon left>
+                    mdi-file-excel
+                  </v-icon>
+                  Excel
+                </v-btn>
+                <v-card>
+                  <v-list dense>
+                    <v-list-tile key="all">
+                      <v-list-tile-title v-text="`Експортувати все`"/>
+                    </v-list-tile>
+                    <v-list-tile key="checked">
+                      <v-list-tile-title v-text="`Експортувати обране`"/>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-menu>
+              <v-menu offset-y
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
+                <v-btn slot="activator"
+                color="success"
+                small>
+                  <v-icon left>
+                    mdi-file-pdf
+                  </v-icon>
+                  PDF
+                </v-btn>
+                <v-card>
+                  <v-list dense>
+                    <v-list-tile key="all">
+                      <v-list-tile-title v-text="`Експортувати все`"/>
+                    </v-list-tile>
+                    <v-list-tile key="checked">
+                      <v-list-tile-title v-text="`Експортувати обране`"/>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-menu>
+              <v-btn color="success" small>
+                <v-icon>
+                  mdi-printer
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Друкувати
+                </span>
+              </v-btn>
+            </div>
+
+            <!--Grid btns row right side-->
+            <div>
+              <v-btn color="success" small>
+                <v-icon>
+                  mdi-file-move
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  В обробку
+                </span>
+              </v-btn>
+            </div>
+          </v-layout>
 
           <DxGrid :tableConfig="tableConfig" ref="certsGrid"/>
         </material-card>
