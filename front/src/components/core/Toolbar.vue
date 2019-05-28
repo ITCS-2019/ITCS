@@ -80,6 +80,9 @@ export default {
         case 'Dashboard':
           this.title = 'Головна сторінка'
           break
+        case 'Training Directions':
+          this.title = 'Напрямки пiдготовки'
+          break
       }
     }
   },

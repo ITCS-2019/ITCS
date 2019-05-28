@@ -98,8 +98,11 @@ export default {
       .then(res => {
         let dashInfo = res.data.dashInfo[0];
 
+        if (this.role === 'Адміністратор') {
+          this.organisationsCount = dashInfo.trainigOrganisations.length;
+        }
+
         this.directionsCount = dashInfo.trainigDirectionsCount;
-        this.organisationsCount = dashInfo.trainigOrganisations.length;
         this.certsInReviewCount = dashInfo.certsInReviewCount;
         this.issuedCertCount = dashInfo.certCount;
       })

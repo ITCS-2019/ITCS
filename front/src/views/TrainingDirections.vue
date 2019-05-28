@@ -1,91 +1,12 @@
 <template>
-  <v-container
-    fill-height
-    fluid
-    grid-list-xl
-    pt-0
-  >
-    <v-layout
-      justify-center
-      wrap
-    >
-      <v-flex
-        md12
-      >
-
+  <v-container fill-height
+  fluid
+  grid-list-xl
+  pt-0>
+    <v-layout justify-center wrap>
+      <v-flex md12>
         <material-card>
-          <v-layout justify-space-between wrap>
-
-            <!--Grid btns row left side-->
-            <div>
-              <v-menu offset-y
-              content-class="dropdown-menu"
-              transition="slide-y-transition">
-                <v-btn slot="activator"
-                color="success"
-                small>
-                  <v-icon left>
-                    mdi-file-excel
-                  </v-icon>
-                  Excel
-                </v-btn>
-                <v-card>
-                  <v-list dense>
-                    <v-list-tile key="all">
-                      <v-list-tile-title v-text="`Експортувати все`"/>
-                    </v-list-tile>
-                    <v-list-tile key="checked">
-                      <v-list-tile-title v-text="`Експортувати обране`"/>
-                    </v-list-tile>
-                  </v-list>
-                </v-card>
-              </v-menu>
-              <v-menu offset-y
-              content-class="dropdown-menu"
-              transition="slide-y-transition">
-                <v-btn slot="activator"
-                color="success"
-                small>
-                  <v-icon left>
-                    mdi-file-pdf
-                  </v-icon>
-                  PDF
-                </v-btn>
-                <v-card>
-                  <v-list dense>
-                    <v-list-tile key="all">
-                      <v-list-tile-title v-text="`Експортувати все`"/>
-                    </v-list-tile>
-                    <v-list-tile key="checked">
-                      <v-list-tile-title v-text="`Експортувати обране`"/>
-                    </v-list-tile>
-                  </v-list>
-                </v-card>
-              </v-menu>
-              <v-btn color="success" small>
-                <v-icon>
-                  mdi-printer
-                </v-icon>
-                <span class="font-weight-bold ml-1">
-                  Друкувати
-                </span>
-              </v-btn>
-            </div>
-
-            <!--Grid btns row right side-->
-            <div>
-              <v-btn color="success" small>
-                <v-icon>
-                  mdi-file-move
-                </v-icon>
-                <span class="font-weight-bold ml-1">
-                  В обробку
-                </span>
-              </v-btn>
-            </div>
-          </v-layout>
-
-          <DxGrid :tableConfig="tableConfig" ref="certsGrid"/>
+          <DxGrid :tableConfig="tableConfig" ref="directionsGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
@@ -96,7 +17,6 @@
 
 export default {
   data: () => ({
-    clickDelay: undefined,
     dataSource: [],
     tableConfig: {
       dataSource: [],
@@ -105,14 +25,6 @@ export default {
       columnAutoWidth: false,
       showBorders: true,
       showRowLines: true,
-      editing: {
-        mode: "cell",
-        allowUpdating: true
-      },
-      selection: {
-        mode: "multiple",
-        showCheckBoxesMode: 'always'
-      },
       paging: {
         enabled: true,
         pageSize: 10
@@ -133,30 +45,6 @@ export default {
         fileName: "certificates",
         allowExportSelectedData: true
       },
-      rowAlternationEnabled: true,
-      customizeExportData: function(cols, rows) {
-        let certIDs = [],
-                $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
-                exportType = $clickedItem.attr('data-type');
-
-        if (rows.length > 0) {
-          rows.forEach((row) => {
-            certIDs.push(row.data.certificateId);
-          });
-
-          let element = document.createElement('a');
-          element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-          element.style.display = 'none';
-          document.body.appendChild(element);
-          element.click();
-          document.body.removeChild(element);
-        }
-
-        $clickedItem.removeClass('dropdown-item--clicked');
-      },
-      onFileSaving: function (e) {
-        e.cancel = true;
-      },
       headerFilter: {
         visible: true
       },
@@ -167,64 +55,41 @@ export default {
       hoverStateEnabled: true,
       wordWrapEnabled: true,
       columnAutoWidth: true,
+      rowAlternationEnabled: true,
       onSelectionChanged: function(e) {
-        let certsGrid = e.component,
-            selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+        let grid = e.component,
+            selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
-        certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+        grid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
       },
-      onCellClick: function (e) {
-        let certsGrid = e.component,
-            _this = this;
+      onCellClick: function (data) {
+        let grid = data.component,
+            dataSource = grid.option('dataSource');
 
-        function initialClick() {
-          certsGrid.clickCount = 1;
-          certsGrid.clickKey = e.key;
-          certsGrid.clickDate = new Date();
-          _this.clickDelay = setTimeout(() => {
-            if (e.column.dataField) {
-              if (e.row.isSelected) {
-                certsGrid.deselectRows([e.key]);
+        switch (data.column.dataField) {
+          case 'status':
+            let newStatus = (data.data.status === '0') ? '1' : '0';
+
+            $.ajax({
+              url: '/mariner/api/changeTrainigDirectionStatus/',
+              method: 'GET',
+              data: {
+                certID: data.data.id,
+                dirStatus: newStatus
+              },
+              dataType: 'json',
+              success: function (res) {
+                dataSource.some((direction) => {
+                  if (direction.id === data.data.id) {
+                    direction.status = newStatus;
+                    return true;
+                  }
+                });
+
+                grid.option('dataSource', dataSource);
               }
-              else {
-                certsGrid.selectRows([e.key], true);
-              }
-            }
-          }, 300);
-        }
-
-        function doubleClick() {
-          clearTimeout(_this.clickDelay);
-          certsGrid.clickCount = 0;
-          certsGrid.clickKey = 0;
-          certsGrid.clickDate = null;
-          switch (e.column.dataField) {
-            case 'certificateNumber':
-              window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-              return;
-            case 'sailor':
-              window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-              return;
-            case 'trainigOrganisation':
-              window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
-              return;
-          }
-
-          if (e.column.dataField) {
-            window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-          }
-        }
-
-        if ((!certsGrid.clickCount) || (certsGrid.clickCount != 1) || (certsGrid.clickKey != e.key) ) {
-          initialClick();
-        }
-        else if (certsGrid.clickKey == e.key) {
-          if (((new Date()) - certsGrid.clickDate) <= 300) {
-            doubleClick();
-          }
-          else {
-            initialClick();
-          }
+            });
+            return;
         }
       },
       onContentReady: function(e) {
@@ -232,18 +97,18 @@ export default {
           e.component.pageIndex(page);
         }
 
-        let $customPagination = $('.custom-pagination.custom-pagination--grid'),
-            $select = $('.custom-pagination__select', $customPagination),
-            pageCount = e.component.pageCount(),
-            currentPage = e.component.pageIndex(),
-            $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
-            $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
-            $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
-            $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
-            $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
-                    ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
-                    : e.element.find('.dx-datagrid-header-panel'),
-            $appendedPagination = $('.custom-pagination.custom-pagination--grid', $gridToolbar);
+        let $customPagination = $('.custom-pagination.custom-pagination--certificates'),
+                $select = $('.custom-pagination__select', $customPagination),
+                pageCount = e.component.pageCount(),
+                currentPage = e.component.pageIndex(),
+                $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+                $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+                $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+                $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+                $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                        ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                        : e.element.find('.dx-datagrid-header-panel'),
+                $appendedPagination = $('.custom-pagination.custom-pagination--certificates', $gridToolbar);
 
         if (pageCount > 1) {
           $select.empty();
@@ -285,117 +150,85 @@ export default {
       },
       columns: [
         {
-          dataField: 'certificateId',
-          visible: false,
-          allowExporting: false
-        },
-        {
-          dataField: 'certificateNumber',
-          caption: '№ Сертифіката',
-          allowEditing: false,
-          allowFiltering: true,
-        },
-        {
-          dataField: 'blankNumber',
-          caption: '№ Бланку',
-          allowEditing: false,
-          allowFiltering: true,
-        },
-        {
-          dataField: 'issueDate',
-          caption: 'Дата видачі',
-          dataType: 'date',
-          allowEditing: false,
-          format: 'dd.MM.yyyy',
-        },
-        {
-          dataField: 'validDate',
-          caption: 'Дійсний до',
-          dataType: 'date',
-          allowEditing: false,
-          format: 'dd.MM.yyyy',
-        },
-        {
-          dataField: 'certificateNumberGenerated',
-          caption: '№ сертифіката(сген.)',
-          allowEditing: false,
+          dataField: 'id',
           visible: false
         },
         {
-          dataField: 'trainingDirection',
+          dataField: 'price_id',
+          caption: 'Код',
+          allowEditing: false,
+          allowFiltering: true,
+          sortOrder: 'asc'
+        },
+        {
+          dataField: 'direction_title',
           caption: 'Напрямок підготовки',
           allowEditing: false,
-          allowFiltering: true,
+          allowFiltering: true
         },
         {
-          dataField: 'sailorId',
-          visible: false,
-        },
-        {
-          dataField: 'sailor',
-          caption: 'Моряк',
+          dataField: 'allow_functions',
+          caption: 'Рівень функцій',
           allowEditing: false,
-          allowFiltering: true,
+          allowFiltering: true
         },
         {
-          dataField: 'trainigOrganisation',
-          caption: 'НТЗ',
+          dataField: 'level',
+          caption: 'Рівень кваліфікації',
           allowEditing: false,
-          allowFiltering: true,
-          visible: gUserRole !== 'НТЗ',
+          allowFiltering: true
         },
         {
           dataField: 'status',
           caption: 'Статус',
           allowEditing: false,
+          allowFiltering: false,
+          cssClass: 'center-vertical',
+          cellTemplate: function(element, data) {
+            element.append(`<div style="text-align: center; color: green;">
+                                ${(data.value === '0') ? '&#10004;' : '&#x274C;'}
+                            </div>`);
+          }
+        },
+        {
+          type: "buttons",
+          width: 110,
+          visible: gUserRole !== 'НТЗ',
+          cssClass: 'center-vertical',
+          buttons: [{
+            hint: 'Редагувати',
+            icon: 'edit',
+            onClick: function(e) {
+              window.location.replace(`/mariner/editDirection/${e.row.data.id}`);
+            }
+          }]
         }
       ]
     }
   }),
 
   created() {
-    axios.get(`/mariner/api/allCerts/`)
+    axios.get(`/mariner/api/trainigDirections/`)
       .then(res => {
-        let certs = res.data.certificates;
+        let directions = res.data;
 
-        certs.forEach((cert) => {
-          let status;
-
-          switch (cert.status) {
-            case 0:
-              status = 'Чернетка';
-              break;
-            case 1:
-              status = 'Обробка';
-              break;
-            case 2:
-              status = 'Видан';
-              break;
-            case 3:
-              status = 'Анульований';
-              break;
-          }
-
+        directions.forEach((direction) => {
           this.dataSource.push({
-            certificateId: cert.cert_id,
-            certificateNumber: cert.certf_number,
-            blankNumber: cert.form_number,
-            issueDate: cert.date_of_issue,
-            validDate: cert.valid_date,
-            trainingDirection: cert.training_direction_title,
-            sailorId: cert.sailor_id,
-            sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
-            trainigOrganisation: cert.trainigOrganisation_name,
-            status: status
+            id: direction.price_id,
+            price_id: direction.price_id,
+            direction_title: direction.direction_title,
+            allow_functions: direction.allow_functions,
+            level: direction.level,
+            status: '0'
           });
         });
 
-        let certsGrid = this.$refs.certsGrid.tableInstance,
-            selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+        let grid = this.$refs.directionsGrid.tableInstance,
+            selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
-        certsGrid.option('dataSource', this.dataSource);
-        certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
-        certsGrid.endCustomLoading();
+        grid.option('dataSource', this.dataSource);
+        grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+        grid.endCustomLoading();
       })
       .catch((err) => {
         console.log(err);

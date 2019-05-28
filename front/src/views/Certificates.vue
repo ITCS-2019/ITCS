@@ -1,3 +1,4 @@
+<!--TODO change certsGrid to grid-->
 <template>
   <v-container
     fill-height
@@ -12,7 +13,6 @@
       <v-flex
         md12
       >
-
         <material-card>
           <v-layout justify-space-between wrap>
 
