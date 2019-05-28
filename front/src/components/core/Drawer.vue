@@ -90,8 +90,13 @@ export default {
     links: [
       {
         to: '/mariner/app',
-        icon: 'mdi-view-dashboard',
-        text: 'Dashboard'
+        icon: 'mdi-home',
+        text: 'Головна'
+      },
+      {
+        to: '/training-directions',
+        icon: 'mdi-file-tree',
+        text: 'Напрямки Підготовки'
       },
       {
         to: '/certificates',

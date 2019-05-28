@@ -76,7 +76,9 @@ export default {
       switch(val.name) {
         case 'Certificates':
           this.title = 'Сертифiкати'
-
+          break
+        case 'Dashboard':
+          this.title = 'Головна сторінка'
           break
       }
     }
