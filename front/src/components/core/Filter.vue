@@ -8,6 +8,7 @@
     nudge-left="12"
     offset-x
     transition="slide-y-transition"
+    style="display: none;"
   >
     <v-btn
       slot="activator"

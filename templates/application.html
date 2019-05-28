@@ -16,7 +16,8 @@
         <app></app>
     </div>
     <script>
-        var gUserRole = '{{user.groups.all.0.name}}';
+        var gUserRole = '{{user.groups.all.0.name}}',
+            gUserName = '{{user.username}}';
     </script>
     {% render_bundle 'app' %}
 </body>
