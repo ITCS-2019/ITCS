@@ -22,6 +22,7 @@
 
 <script>
 window.$ = window.jQuery = require('jquery')
+window.JSZip = require('jszip')
 require('devextreme/dist/js/dx.all.js')
 
 export default {

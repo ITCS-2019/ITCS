@@ -14,7 +14,9 @@
         md12
       >
         <material-card>
-          <v-layout justify-space-between wrap>
+          <v-layout id="grid-controls"
+          justify-space-between
+          wrap>
 
             <!--Grid btns row left side-->
             <div>
@@ -27,14 +29,18 @@
                   <v-icon left>
                     mdi-file-excel
                   </v-icon>
-                  Excel
+                  <span class="font-weight-bold ml-1">
+                    Excel
+                  </span>
                 </v-btn>
                 <v-card>
                   <v-list dense>
-                    <v-list-tile key="all">
+                    <v-list-tile key="all"
+                    v-on:click="e => exportGrid(false, 'XLSExp')">
                       <v-list-tile-title v-text="`Експортувати все`"/>
                     </v-list-tile>
-                    <v-list-tile key="checked">
+                    <v-list-tile key="checked"
+                    v-on:click="e => exportGrid(true, 'XLSExp')">
                       <v-list-tile-title v-text="`Експортувати обране`"/>
                     </v-list-tile>
                   </v-list>
@@ -49,20 +55,25 @@
                   <v-icon left>
                     mdi-file-pdf
                   </v-icon>
-                  PDF
+                  <span class="font-weight-bold ml-1">
+                    PDF
+                  </span>
                 </v-btn>
                 <v-card>
                   <v-list dense>
-                    <v-list-tile key="all">
+                    <v-list-tile key="all"
+                    v-on:click="e => exportGrid(false, 'PdfExp')">
                       <v-list-tile-title v-text="`Експортувати все`"/>
                     </v-list-tile>
-                    <v-list-tile key="checked">
+                    <v-list-tile key="checked"
+                    v-on:click="e => exportGrid(true, 'PdfExp')">
                       <v-list-tile-title v-text="`Експортувати обране`"/>
                     </v-list-tile>
                   </v-list>
                 </v-card>
               </v-menu>
-              <v-btn color="success" small>
+              <v-btn color="success" small
+              v-on:click="printGrid('certsGrid')">
                 <v-icon>
                   mdi-printer
                 </v-icon>
@@ -93,265 +104,264 @@
 </template>
 
 <script>
-
 export default {
-  data: () => ({
-    clickDelay: undefined,
-    dataSource: [],
-    tableConfig: {
+  data() {
+    return {
+      exportType: null,
+      clickDelay: undefined,
       dataSource: [],
-      allowColumnReordering: false,
-      allowColumnResizing: true,
-      columnAutoWidth: false,
-      showBorders: true,
-      showRowLines: true,
-      editing: {
-        mode: "cell",
-        allowUpdating: true
-      },
-      selection: {
-        mode: "multiple",
-        showCheckBoxesMode: 'always'
-      },
-      paging: {
-        enabled: true,
-        pageSize: 10
-      },
-      pager: {
-        showPageSizeSelector: true,
-        allowedPageSizes: [10, 20, 50, 100],
-        showInfo: true,
-        visible: true
-      },
-      searchPanel: {
-        visible: true,
-        width: 240,
-        placeholder: "Шукати..."
-      },
-      export: {
-        enabled: false,
-        fileName: "certificates",
-        allowExportSelectedData: true
-      },
-      rowAlternationEnabled: true,
-      customizeExportData: function(cols, rows) {
-        let certIDs = [],
-                $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
-                exportType = $clickedItem.attr('data-type');
+      tableConfig: {
+        dataSource: [],
+        allowColumnReordering: false,
+        allowColumnResizing: true,
+        columnAutoWidth: false,
+        showBorders: true,
+        showRowLines: true,
+        editing: {
+          mode: "cell",
+          allowUpdating: true
+        },
+        selection: {
+          mode: "multiple",
+          showCheckBoxesMode: 'always'
+        },
+        paging: {
+          enabled: true,
+          pageSize: 10
+        },
+        pager: {
+          showPageSizeSelector: true,
+          allowedPageSizes: [10, 20, 50, 100],
+          showInfo: true,
+          visible: true
+        },
+        searchPanel: {
+          visible: true,
+          width: 240,
+          placeholder: "Шукати..."
+        },
+        export: {
+          enabled: false,
+          fileName: "certificates",
+          allowExportSelectedData: true
+        },
+        rowAlternationEnabled: true,
+        customizeExportData: (cols, rows) => {
+          let certIDs = [];
 
-        if (rows.length > 0) {
-          rows.forEach((row) => {
-            certIDs.push(row.data.certificateId);
-          });
+          if (rows.length > 0) {
+            rows.forEach((row) => {
+              certIDs.push(row.data.certificateId);
+            });
 
-          let element = document.createElement('a');
-          element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-          element.style.display = 'none';
-          document.body.appendChild(element);
-          element.click();
-          document.body.removeChild(element);
-        }
+            let element = document.createElement('a');
+            element.setAttribute('href', `/mariner/api/exportToPrint/?exportType=${this.exportType}&certIDs=${certIDs.join(',')}`);
+            element.setAttribute('target', '_blank');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+          }
+        },
+        onFileSaving: function (e) {
+          e.cancel = true;
+        },
+        headerFilter: {
+          visible: true
+        },
+        filterRow: {
+          visible: true,
+          applyFilter: "auto"
+        },
+        hoverStateEnabled: true,
+        wordWrapEnabled: true,
+        columnAutoWidth: true,
+        onSelectionChanged: function(e) {
+          let certsGrid = e.component,
+              selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
-        $clickedItem.removeClass('dropdown-item--clicked');
-      },
-      onFileSaving: function (e) {
-        e.cancel = true;
-      },
-      headerFilter: {
-        visible: true
-      },
-      filterRow: {
-        visible: true,
-        applyFilter: "auto"
-      },
-      hoverStateEnabled: true,
-      wordWrapEnabled: true,
-      columnAutoWidth: true,
-      onSelectionChanged: function(e) {
-        let certsGrid = e.component,
-            selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+          certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+        },
+        onCellClick: function (e) {
+          let certsGrid = e.component,
+              _this = this;
 
-        certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
-      },
-      onCellClick: function (e) {
-        let certsGrid = e.component,
-            _this = this;
-
-        function initialClick() {
-          certsGrid.clickCount = 1;
-          certsGrid.clickKey = e.key;
-          certsGrid.clickDate = new Date();
-          _this.clickDelay = setTimeout(() => {
-            if (e.column.dataField) {
-              if (e.row.isSelected) {
-                certsGrid.deselectRows([e.key]);
+          function initialClick() {
+            certsGrid.clickCount = 1;
+            certsGrid.clickKey = e.key;
+            certsGrid.clickDate = new Date();
+            _this.clickDelay = setTimeout(() => {
+              if (e.column.dataField) {
+                if (e.row.isSelected) {
+                  certsGrid.deselectRows([e.key]);
+                }
+                else {
+                  certsGrid.selectRows([e.key], true);
+                }
               }
-              else {
-                certsGrid.selectRows([e.key], true);
-              }
+            }, 300);
+          }
+
+          function doubleClick() {
+            clearTimeout(_this.clickDelay);
+            certsGrid.clickCount = 0;
+            certsGrid.clickKey = 0;
+            certsGrid.clickDate = null;
+            switch (e.column.dataField) {
+              case 'certificateNumber':
+                window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                return;
+              case 'sailor':
+                window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                return;
+              case 'trainigOrganisation':
+                window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
+                return;
             }
-          }, 300);
-        }
 
-        function doubleClick() {
-          clearTimeout(_this.clickDelay);
-          certsGrid.clickCount = 0;
-          certsGrid.clickKey = 0;
-          certsGrid.clickDate = null;
-          switch (e.column.dataField) {
-            case 'certificateNumber':
+            if (e.column.dataField) {
               window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-              return;
-            case 'sailor':
-              window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-              return;
-            case 'trainigOrganisation':
-              window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
-              return;
+            }
           }
 
-          if (e.column.dataField) {
-            window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
-          }
-        }
-
-        if ((!certsGrid.clickCount) || (certsGrid.clickCount != 1) || (certsGrid.clickKey != e.key) ) {
-          initialClick();
-        }
-        else if (certsGrid.clickKey == e.key) {
-          if (((new Date()) - certsGrid.clickDate) <= 300) {
-            doubleClick();
-          }
-          else {
+          if ((!certsGrid.clickCount) || (certsGrid.clickCount != 1) || (certsGrid.clickKey != e.key) ) {
             initialClick();
           }
-        }
-      },
-      onContentReady: function(e) {
-        function changePage(page) {
-          e.component.pageIndex(page);
-        }
-
-        let $customPagination = $('.custom-pagination.custom-pagination--grid'),
-            $select = $('.custom-pagination__select', $customPagination),
-            pageCount = e.component.pageCount(),
-            currentPage = e.component.pageIndex(),
-            $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
-            $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
-            $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
-            $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
-            $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
-                    ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
-                    : e.element.find('.dx-datagrid-header-panel'),
-            $appendedPagination = $('.custom-pagination.custom-pagination--grid', $gridToolbar);
-
-        if (pageCount > 1) {
-          $select.empty();
-          for (let i = 0; i < pageCount; i++) {
-            (i === currentPage)
-                    ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
-                    : $select.append(`<option value="${i}">${i + 1}</option>>`);
+          else if (certsGrid.clickKey == e.key) {
+            if (((new Date()) - certsGrid.clickDate) <= 300) {
+              doubleClick();
+            }
+            else {
+              initialClick();
+            }
+          }
+        },
+        onContentReady: function(e) {
+          function changePage(page) {
+            e.component.pageIndex(page);
           }
 
-          $appendedPagination.remove();
-          $gridToolbar.append($customPagination);
+          let $customPagination = $('.custom-pagination.custom-pagination--grid'),
+              $select = $('.custom-pagination__select', $customPagination),
+              pageCount = e.component.pageCount(),
+              currentPage = e.component.pageIndex(),
+              $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+              $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+              $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+              $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+              $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                      ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                      : e.element.find('.dx-datagrid-header-panel'),
+              $appendedPagination = $('.custom-pagination.custom-pagination--grid', $gridToolbar);
 
-          if (currentPage === 0) {
-            $firstPageBtn.attr('disabled', true);
-            $prevPageBtn.attr('disabled', true);
-          }
-          else {
-            $firstPageBtn.attr('disabled', false);
-            $prevPageBtn.attr('disabled', false);
-          }
+          if (pageCount > 1) {
+            $select.empty();
+            for (let i = 0; i < pageCount; i++) {
+              (i === currentPage)
+                      ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
+                      : $select.append(`<option value="${i}">${i + 1}</option>>`);
+            }
 
-          if ((currentPage + 1) === pageCount) {
-            $lastPageBtn.attr('disabled', true);
-            $nextPageBtn.attr('disabled', true);
-          }
-          else {
-            $lastPageBtn.attr('disabled', false);
-            $nextPageBtn.attr('disabled', false);
-          }
+            $appendedPagination.remove();
+            $gridToolbar.append($customPagination);
 
-          $select.on('change', function() {changePage($(this).val(), pageCount)});
-          $firstPageBtn.on('click', function() {changePage(0, pageCount)});
-          $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
-          $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
-          $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
+            if (currentPage === 0) {
+              $firstPageBtn.attr('disabled', true);
+              $prevPageBtn.attr('disabled', true);
+            }
+            else {
+              $firstPageBtn.attr('disabled', false);
+              $prevPageBtn.attr('disabled', false);
+            }
 
-          $customPagination.fadeIn('fast');
-        }
-      },
-      columns: [
-        {
-          dataField: 'certificateId',
-          visible: false,
-          allowExporting: false
+            if ((currentPage + 1) === pageCount) {
+              $lastPageBtn.attr('disabled', true);
+              $nextPageBtn.attr('disabled', true);
+            }
+            else {
+              $lastPageBtn.attr('disabled', false);
+              $nextPageBtn.attr('disabled', false);
+            }
+
+            $select.on('change', function() {changePage($(this).val(), pageCount)});
+            $firstPageBtn.on('click', function() {changePage(0, pageCount)});
+            $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
+            $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
+            $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
+
+            $customPagination.fadeIn('fast');
+          }
         },
-        {
-          dataField: 'certificateNumber',
-          caption: '№ Сертифіката',
-          allowEditing: false,
-          allowFiltering: true,
-        },
-        {
-          dataField: 'blankNumber',
-          caption: '№ Бланку',
-          allowEditing: false,
-          allowFiltering: true,
-        },
-        {
-          dataField: 'issueDate',
-          caption: 'Дата видачі',
-          dataType: 'date',
-          allowEditing: false,
-          format: 'dd.MM.yyyy',
-        },
-        {
-          dataField: 'validDate',
-          caption: 'Дійсний до',
-          dataType: 'date',
-          allowEditing: false,
-          format: 'dd.MM.yyyy',
-        },
-        {
-          dataField: 'certificateNumberGenerated',
-          caption: '№ сертифіката(сген.)',
-          allowEditing: false,
-          visible: false
-        },
-        {
-          dataField: 'trainingDirection',
-          caption: 'Напрямок підготовки',
-          allowEditing: false,
-          allowFiltering: true,
-        },
-        {
-          dataField: 'sailorId',
-          visible: false,
-        },
-        {
-          dataField: 'sailor',
-          caption: 'Моряк',
-          allowEditing: false,
-          allowFiltering: true,
-        },
-        {
-          dataField: 'trainigOrganisation',
-          caption: 'НТЗ',
-          allowEditing: false,
-          allowFiltering: true,
-          visible: gUserRole !== 'НТЗ',
-        },
-        {
-          dataField: 'status',
-          caption: 'Статус',
-          allowEditing: false,
-        }
-      ]
+        columns: [
+          {
+            dataField: 'certificateId',
+            visible: false,
+            allowExporting: false
+          },
+          {
+            dataField: 'certificateNumber',
+            caption: '№ Сертифіката',
+            allowEditing: false,
+            allowFiltering: true,
+          },
+          {
+            dataField: 'blankNumber',
+            caption: '№ Бланку',
+            allowEditing: false,
+            allowFiltering: true,
+          },
+          {
+            dataField: 'issueDate',
+            caption: 'Дата видачі',
+            dataType: 'date',
+            allowEditing: false,
+            format: 'dd.MM.yyyy',
+          },
+          {
+            dataField: 'validDate',
+            caption: 'Дійсний до',
+            dataType: 'date',
+            allowEditing: false,
+            format: 'dd.MM.yyyy',
+          },
+          {
+            dataField: 'certificateNumberGenerated',
+            caption: '№ сертифіката(сген.)',
+            allowEditing: false,
+            visible: false
+          },
+          {
+            dataField: 'trainingDirection',
+            caption: 'Напрямок підготовки',
+            allowEditing: false,
+            allowFiltering: true,
+          },
+          {
+            dataField: 'sailorId',
+            visible: false,
+          },
+          {
+            dataField: 'sailor',
+            caption: 'Моряк',
+            allowEditing: false,
+            allowFiltering: true,
+          },
+          {
+            dataField: 'trainigOrganisation',
+            caption: 'НТЗ',
+            allowEditing: false,
+            allowFiltering: true,
+            visible: gUserRole !== 'НТЗ',
+          },
+          {
+            dataField: 'status',
+            caption: 'Статус',
+            allowEditing: false,
+          }
+        ]
+      }
     }
-  }),
+  },
 
   created() {
     axios.get(`/mariner/api/allCerts/`)
@@ -400,6 +410,37 @@ export default {
       .catch((err) => {
         console.log(err);
       });
+  },
+
+  methods: {
+    exportGrid(isSelection, exportType) {
+      let grid = this.$refs.certsGrid.tableInstance;
+
+      this.exportType = exportType;
+      grid.exportToExcel((typeof isSelection === 'boolean') ? isSelection : false);
+    },
+
+    printGrid(gridRef) {
+      // TODO: Refactor to pure js
+      let $grid = this.$refs[`${gridRef}`].tableInstance._$element,
+          $head = $('.dx-datagrid-headers', $grid),
+          $rows = $('.dx-datagrid-rowsview', $grid),
+          mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+      mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+      mywindow.document.write('</head><body >');
+      mywindow.document.write('<h1>' + document.title  + '</h1>');
+      mywindow.document.write(`${$head.html()}${$rows.html()}`);
+      mywindow.document.write('</body></html>');
+
+      mywindow.document.close();
+      mywindow.focus();
+
+      mywindow.print();
+      mywindow.close();
+
+      return true;
+    }
   }
 }
 </script>

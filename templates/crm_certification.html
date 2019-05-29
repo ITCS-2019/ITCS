@@ -200,7 +200,6 @@
 </script>
 
 <script>
-    console.log('grid data from context');
     var certifications = [];
         isNotNtz = ('{{user.groups.all.0.name}}' !== 'НТЗ') ? true : false,
         exportRoute = '{% url 'api-exportToPrint' %}',
