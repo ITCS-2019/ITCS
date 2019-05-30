@@ -153,4 +153,23 @@ $(function() {
     $('#id_orgnisation_email').on('keyup', function() {
         denyCyrilic($(this));
     });
+
+    // Range numbers
+    $('#id_rangeStart').on('keyup', function() {
+        numbersValid($(this));
+        if (~~$(this).val() >= ~~$('#id_rangeEnd').val()
+        && $('#id_rangeEnd').val().length > 0) {
+            $(this).val($(this).val().slice(0, -1));
+        }
+    });
+
+    $('#id_rangeEnd').on('keyup', function() {
+        numbersValid($(this));
+    });
+
+    $('#id_rangeEnd').on('blur', function() {
+        if (~~$(this).val() <= ~~$('#id_rangeStart').val()) {
+            $(this).val('');
+        }
+    });
 });
