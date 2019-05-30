@@ -409,30 +409,35 @@
                     
 
                     <div class="row">
-                        <!-- <div class="col-md-3">
-                            <label class="font-normal">{{ form.direction_level.label_tag }}</label>
-                            <div>
-                                {{ form.direction_level|add_class:"selectpicker form-control" }}
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="font-normal">{{ form.direction_allow_functions.label_tag }}</label>
-                            <div>
-                                {{ form.direction_allow_functions|add_class:"selectpicker form-control" }}
-                            </div>
-                        </div> -->
-
                         <div class="col-md-12">
                             <label class="font-normal">{{ form.training_direction.label_tag }}</label>
-                            <div>
-                                {% if statusNum == 0 %}
-                                {{ form.training_direction|add_class:"selectpicker form-control"|append_attr:"data-live-search:true" }}
-                                {% endif %}
-                                {% if statusNum > 0 %}
-                                {{ form.training_direction|add_class:"form-control" }}
-                                {% endif %}
-                            </div>    
+                            {% if form.is_bound %}
+                                    {% if form.training_direction.errors %}
+                                    <div>
+                                        <div>
+                                            {% render_field form.training_direction class="form-control is-invalid" %}
+                                        </div>
+                                    </div>
+                                        {% for error in form.training_direction.errors %}
+                                            <div class="invalid-feedback">
+                                                <p class="text-warning">{{ error }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div>
+                                            {% render_field form.training_direction class="form-control is-valid" %}
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div>
+                                        {% if statusNum == 0 %}
+                                            {{ form.training_direction|add_class:"selectpicker form-control"|append_attr:"data-live-search:true" }}
+                                        {% endif %}
+                                        {% if statusNum > 0 %}
+                                            {{ form.training_direction|add_class:"form-control" }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}   
                         </div>
 
                     </div>

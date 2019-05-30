@@ -76,13 +76,34 @@ def dashInfo(request):
 def trainingDirectionsInfo(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		trainigDirections = list(trainigOrganisation.directions.all().values())
-		data =  dict()
-		data['trainigDirections'] = trainigDirections
+		reviewCertIDs = []
+		for reviewCert in trainigOrganisation.get_certInReview():
+			reviewCertIDs.append(reviewCert.training_direction.id)
+		issuedCertIDs = []
+		for issuedCert in trainigOrganisation.get_issuedCerts():
+			issuedCertIDs.append(issuedCert.training_direction.id)
+		directionsDataArr = []
+		for direction in trainigOrganisation.directions.all():
+			reviewCertCount = reviewCertIDs.count(direction.id)
+			issuedCertCount = issuedCertIDs.count(direction.id)
+			certsLeftCount = direction.range_numbers.count()
+			directionData = {
+			'direction_id': direction.id,
+			'dirction_name': direction.direction_title,
+			'price_id':direction.price_id,
+			'level':direction.level,
+			'allow_functions':direction.allow_functions,
+			'status':direction.status,
+			'direction_reviewCertCount': reviewCertCount,
+			'direction_issuedCertCount': issuedCertCount,
+			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
+			}
+			directionsDataArr.append(directionData)
+		data = {'trainigDirections': directionsDataArr,}
 		return JsonResponse(data)
 	else:
 		trainigDirections = list(TrainigDirections.objects.all().values())
-		data =  dict()
+		data = dict()
 		data['trainigDirections'] = trainigDirections
 		return JsonResponse(data)
 
@@ -247,6 +268,11 @@ def giveCertNumber(request):
 	hasError = False
 	errorMessage = "No Error"
 	if certIDsList != '':
+		# certsInChange = Certificate.objects.filter(pk__in=certIDsList)
+		# for cert in certsInChange:
+		# 	if cert.certf_number is None or cert.certf_number is '':
+		# 		cert.certf_number = ""
+		# 		cert.save()
 		data = {
 			'error' : hasError,
 			'error_message' : errorMessage,
