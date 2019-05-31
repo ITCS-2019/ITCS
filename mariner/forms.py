@@ -331,11 +331,11 @@ class CertificationForm(forms.ModelForm):
             if issueDate > isuDateMax:
                 self._errors['date_of_issue'] = self.error_class([
                     'Будь ласка, перевірте.'])
-        directionTitle = self.cleaned_data.get('training_direction')
-        cert = Certificate.objects.filter(last_name_ukr=lastNameUkr, first_name_ukr=firstNameUkr, second_name_ukr=secondNameUkr, born=sialorBirthday, training_direction=directionTitle).first()
-        if cert is not None:
-            self._errors['training_direction'] = self.error_class([
-                    'Перевірте, вже існує схожий сертифікат з таким напрямком'])
+        # directionTitle = self.cleaned_data.get('training_direction')
+        # cert = Certificate.objects.filter(last_name_ukr=lastNameUkr, first_name_ukr=firstNameUkr, second_name_ukr=secondNameUkr, born=sialorBirthday, training_direction=directionTitle).first()
+        # if cert is not None:
+            # self._errors['training_direction'] = self.error_class([
+            #         'Перевірте, вже існує схожий сертифікат з таким напрямком'])
         return self.cleaned_data
 
 class CertificationFormPDF(forms.Form):
