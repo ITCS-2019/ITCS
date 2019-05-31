@@ -161,7 +161,7 @@ def certificates(request):
 	elif request.user.groups.all()[0].name == 'Інспектор':
 		certs = Certificate.objects.exclude(status=0)
 	else:
-		certs = Certificate.objects.all()
+		certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		
 	for cert in certs:
 		organisationID = ''
@@ -220,14 +220,14 @@ def issuedCerts(request):
 def changeTrainigDirectionStatus(request):
 	trainingDirID = request.GET.get('certID')
 	dirStatus = request.GET.get('dirStatus')
-	print(trainingDirID)
-	print(dirStatus)
+	#print(trainingDirID)
+	#rint(dirStatus)
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		print(trainigOrganisation.directions.object.get(id=certID))
-		direction = trainigOrganisation.directions.object.get(id=certID)
-		print('Direction Status:')
-		print(direction.status)
+		#print(trainigOrganisation.directions.get(id=trainingDirID))
+		direction = trainigOrganisation.directions.get(id=trainingDirID)
+		#print('Direction Status:')
+		#print(direction.status)
 		data = {
 			'error' : False,
 			'error_message' : "Test MODE",
