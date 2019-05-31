@@ -1,7 +1,8 @@
 const BundleTracker = require("webpack-bundle-tracker");
 
 module.exports = {
-  publicPath: "http://0.0.0.0:8080",
+  // publicPath: "http://10.10.10.102:8000", // for dev server 10.10.10.102:8000
+  publicPath: "http://0.0.0.0:8080", // for localhost
   outputDir: './dist/',
 
   chainWebpack: config => {
