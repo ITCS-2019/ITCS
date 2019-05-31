@@ -73,6 +73,12 @@ def update_profile(request):
     })
 
 @login_required(login_url="login/")
+def crm_users(request):
+	users = User.objects.all()
+	context = {'users': users,}
+	return render(request, "crm_users.html", context)
+
+@login_required(login_url="login/")
 def crm_createUser(request):
 	if "GET" == request.method:
 		form = CreateUserForm()
@@ -95,7 +101,7 @@ def crm_createUser(request):
 				print('User Created')
 				u.first_name = userFirstName
 				u.last_name = userFirstName
-				u.groups.add(1)
+				u.groups.add(1)#!!!!Rewrite and get from list
 				profile, created = Profile.objects.get_or_create(user=u)
 				u.profile.organization_name = userNTZName
 				print('User Profile Created')
@@ -107,6 +113,23 @@ def crm_createUser(request):
 		#return redirect('crm_trainigOrganisations')
 		return HttpResponse(status=204)
 
+@login_required(login_url="login/")
+def update_user(request, userID):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=User.objects.filter(id=userID).first())
+        profile_form = ProfileForm(request.POST, instance=User.objects.filter(id=userID).first())
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('crm_profile')
+    else:
+        print('USER ID: ', userID)
+        user_form = UserForm(instance=User.objects.filter(id=userID).first())
+        profile_form = ProfileForm(instance=User.objects.filter(id=userID).first())
+    return render(request, 'crm_editProfile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
 #/////////////////Vue Application//////////////////////
 @login_required(login_url="login/")
 def application(request):
@@ -163,6 +186,8 @@ def crm_editTrainigOrganisation(request, name, template_name='crm_editTrainigOrg
         return redirect('crm_trainigOrganisations')
     context = {'form': form,}
     return render(request, template_name, context)
+
+
 #//////////////////////////////////////////////////////////
 @login_required(login_url="login/")
 def crm_sailors(request):
@@ -363,6 +388,11 @@ def new_certification(request):
 				organisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 				certification.trainigOrganisation = organisation
 			certification, created = Certificate.objects.get_or_create(
+				first_name_en = certification.first_name_en,
+				last_name_en = certification.last_name_en,
+				last_name_ukr = certification.last_name_ukr,
+				first_name_ukr = certification.first_name_ukr,
+				second_name_ukr = certification.second_name_ukr,
 				born = certification.born,
 				sailor = sailor,
 				trainigOrganisation = certification.trainigOrganisation,
@@ -370,6 +400,7 @@ def new_certification(request):
 				valid_date = certification.valid_date,
 				valid_type = certification.valid_type,
 				training_direction = certification.training_direction,
+				status=certification.status,
 				)#.first()
 			if created:
 				certification.save()
@@ -410,6 +441,22 @@ def crm_editCertification(request, id, template_name='crm_editCertificate.html')
 	context = {'form': form, 'sailors': sailors, 'statusNum': certificate.status,}
 	return render(request, template_name, context)
 
+@login_required(login_url="login/")
+def certs_corrector(request):
+	certs = Certificate.objects.all()
+	for cert in certs:
+		cert.first_name_en=cert.sailor.first_name_en
+		cert.last_name_en=cert.sailor.last_name_en
+		cert.last_name_ukr=cert.sailor.last_name_ukr
+		cert.first_name_ukr=cert.sailor.first_name_ukr
+		cert.second_name_ukr=cert.sailor.second_name_ukr
+		cert.save()
+	cerrectStat={
+		'Status': 'ok',
+		'Info': 'ok',
+	}
+	return JsonResponse(cerrectStat)
+	
 #//////////////////////////////////////////////////////////
 @login_required(login_url="login/")
 def crm_exportCertifsForm(request):
