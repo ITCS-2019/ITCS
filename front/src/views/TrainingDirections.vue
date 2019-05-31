@@ -208,18 +208,21 @@ export default {
   }),
 
   created() {
-    axios.get(`/mariner/api/trainigDirections/`)
+    // axios.get(`/mariner/api/trainigDirections/`)
+    axios.get(`/mariner/api/directionsInfo/`)
       .then(res => {
-        let directions = res.data;
+        console.log(res);
+
+        let directions = res.data.trainigDirections;
 
         directions.forEach((direction) => {
           this.dataSource.push({
-            id: direction.price_id,
+            id: direction.id,
             price_id: direction.price_id,
             direction_title: direction.direction_title,
             allow_functions: direction.allow_functions,
             level: direction.level,
-            status: '0'
+            status: direction.status
           });
         });
 
