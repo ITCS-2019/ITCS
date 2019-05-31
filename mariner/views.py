@@ -300,16 +300,16 @@ def crm_editRegulation(request, number, template_name='crm_editRegulation.html')
 def crm_certification(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		certifications = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+		certifications = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		context = {'certifications': certifications,}
 		return render(request, "crm_certification.html", context)
 	elif request.user.groups.all()[0].name == 'Інспектор':
-		certs = Certificate.objects.exclude(status=0).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+		certs = Certificate.objects.exclude(status=0).order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		context = {'certifications': certs,}
 		return render(request, "crm_certification.html", context)
 	else:
 		#certs = Certificate.objects.all()
-		certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+		certs = Certificate.objects.all().order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 		context = {'certifications': certs,}
 		return render(request, "crm_certification.html", context)
 
@@ -362,16 +362,17 @@ def new_certification(request):
 			if request.user.groups.all()[0].name == 'НТЗ':
 				organisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 				certification.trainigOrganisation = organisation
-			#certification, created = Certificate.objects.get_or_create(
-				#sailor = certification.sailor,
-				#trainigOrganisation = certification.trainigOrganisation,
-				#date_of_issue = certification.date_of_issue,
-				#valid_date = certification.valid_date,
-				#valid_type = certification.valid_type,
-				#training_direction = certification.training_direction,
-				#).first()
-			#if created:
-			certification.save()
+			certification, created = Certificate.objects.get_or_create(
+				born = certification.born,
+				sailor = sailor,
+				trainigOrganisation = certification.trainigOrganisation,
+				date_of_issue = certification.date_of_issue,
+				valid_date = certification.valid_date,
+				valid_type = certification.valid_type,
+				training_direction = certification.training_direction,
+				)#.first()
+			if created:
+				certification.save()
 			return redirect('crm_certification')
 	else:
 		certifStatus = 0
@@ -382,20 +383,32 @@ def new_certification(request):
 
 @login_required(login_url="login/")
 def crm_editCertification(request, id, template_name='crm_editCertificate.html'):
-    certificate = Certificate.objects.get(id=id)
-    form = CertificationForm(request.user, certificate.status, request.POST or None, instance=certificate)
-    if form.is_valid():
-        form.save()
-        if request.user.groups.all()[0].name == 'НТЗ':
-        	organisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-        	certificate.trainigOrganisation = organisation
-        	certificate.save()
-        	return redirect('crm_certification')
-        else:
-        	return redirect('crm_home')
-    sailors = Sailor.objects.all()
-    context = {'form': form, 'sailors': sailors, 'statusNum': certificate.status,}
-    return render(request, template_name, context)
+	certificate = Certificate.objects.get(id=id)
+	form = CertificationForm(request.user, certificate.status, request.POST or None, instance=certificate)
+	if form.is_valid():
+		form.save()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			organisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			certificate.trainigOrganisation = organisation
+			#certificate.save()
+			#return redirect('crm_certification')
+		#else:
+		sailor, created = Sailor.objects.get_or_create(
+				first_name_en = certificate.first_name_en,
+				last_name_en = certificate.last_name_en,
+				last_name_ukr = certificate.last_name_ukr,
+				first_name_ukr = certificate.first_name_ukr,
+				second_name_ukr = certificate.second_name_ukr,
+				born = certificate.born,
+			)
+		if created:
+			sailor.save()
+		certificate.sailor = sailor
+		certificate.save()
+		return redirect('crm_certification')
+	sailors = Sailor.objects.all()
+	context = {'form': form, 'sailors': sailors, 'statusNum': certificate.status,}
+	return render(request, template_name, context)
 
 #//////////////////////////////////////////////////////////
 @login_required(login_url="login/")
