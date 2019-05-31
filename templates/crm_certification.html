@@ -71,7 +71,11 @@
                             </a>
                         {% endif %}
                         {% if user.groups.all.0.name == 'Адміністратор' %}
-                        <a href="{% url 'certs_corrector' %}"><button class="btn btn-w-m btn-success" type="button"><i class="fa fa-plus-square"></i> Sailor Corrector </button></a>
+                        <!--<a href="{% url 'certs_corrector' %}">-->
+                            <button class="btn btn-w-m btn-success" type="button" id="sailor-corrector">
+                                Sailor Corrector
+                            </button>
+                        <!--</a>-->
                         {% endif %}
                         <a href="{% url 'new_certification' %}"><button class="btn btn-w-m btn-success" type="button"><i class="fa fa-plus-square"></i> Додати </button></a>
                         {% if user.groups.all.0.name != 'НТЗ' %}
@@ -239,6 +243,19 @@
             status: status
         });
     {% endfor%}
+
+    // Sailor corrector
+    $('#sailor-corrector').on('click', function() {
+        $(this).attr('disabled', true);
+
+        $.ajax({
+            url: "{% url 'certs_corrector' %}",
+            method: 'GET',
+            success: res => {
+                $(this).removeAttr('disabled');
+            }
+        });
+    });
 </script>
 
 {% endblock %}
