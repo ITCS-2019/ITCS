@@ -42,15 +42,16 @@ $(function() {
                 wordWrapEnabled: true,
                 columnAutoWidth: true,
                 rowAlternationEnabled: true,
-                onSelectionChanged: function(e) {
-                    let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
-
-                    e.component.option('pager.infoText', `Всього: ${trainigDirections.length}${selected}`);
-                },
+                // onSelectionChanged: function(e) {
+                //     let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+                //
+                //     e.component.option('pager.infoText', `Всього: ${trainigDirections.length}${selected}`);
+                // },
                 onCellClick: function (data) {
                     switch (data.column.dataField) {
                         case 'status':
-                            let newStatus = (~~data.data.status === 0) ? 1 : 0;
+                            let grid = data.component;
+                                newStatus = (~~data.data.status === 0) ? 1 : 0;
 
                             $.ajax({
                                 url: changeStatusRoute,
@@ -61,12 +62,15 @@ $(function() {
                                 },
                                 dataType: 'json',
                                 success: function (res) {
+                                    let trainigDirections = grid.option('dataSource');
+
                                     trainigDirections.some((direction) => {
                                         if (~~direction.id === ~~data.data.id) {
                                             direction.status = newStatus;
                                         }
                                     });
-                                    trainingDirectionsGrid.refresh();
+                                    grid.option('dataSource', trainigDirections);
+                                    // trainingDirectionsGrid.refresh();
                                 }
                             });
                             break;
@@ -218,7 +222,6 @@ $(function() {
             method: 'GET',
             dataType: 'json',
             success: function (res) {
-
                 let dataSource = [];
 
                 directions = res.trainigDirections;
