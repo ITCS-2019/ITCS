@@ -401,6 +401,8 @@ def new_certification(request):
 				valid_type = certification.valid_type,
 				training_direction = certification.training_direction,
 				status=certification.status,
+				certf_number=certification.certf_number,
+				form_number=certification.form_number,
 				)#.first()
 			if created:
 				certification.save()
@@ -443,7 +445,7 @@ def crm_editCertification(request, id, template_name='crm_editCertificate.html')
 
 @login_required(login_url="login/")
 def certs_corrector(request):
-	certs = Certificate.objects.all()
+	certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
 	for cert in certs:
 		cert.first_name_en=cert.sailor.first_name_en
 		cert.last_name_en=cert.sailor.last_name_en
