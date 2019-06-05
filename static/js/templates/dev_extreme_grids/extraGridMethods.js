@@ -3,7 +3,8 @@ $(function() {
     function handleCerts(grid) {
         let dxGrid = grid.dxDataGrid('instance'),
             selectedRows = dxGrid.getSelectedRowsData(),
-            $modalText = $('#modal-text');
+            $modalText = $('.modal-text', '#error-grid-popup'),
+            $modalDialogText = $('.modal-text', '#dialog-grid-popup');
 
         if (selectedRows.length > 0) {
             let isInvalidData = false,
@@ -19,22 +20,28 @@ $(function() {
             });
 
             if (!isInvalidData) {
-                $.ajax({
-                    url: certOnHandle,
-                    method: 'GET',
-                    data: {
-                        certIDs: sendRows.join(',')
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (!data.error) {
-                            window.location.reload();
-                        }
-                        else {
-                            $modalText.html(data.error_message);
-                            $('#error-grid-popup').modal('show');
-                        }
-                    }
+                $modalDialogText.html('Вiдправити в обробку обранi сертифiкати?');
+
+                $('#dialog-grid-popup').modal('show');
+                $('#dialog-grid-popup').on('shown.bs.modal', function (e) {
+                    $('.btn-accept', $(this)).on('click', function() {
+                        $.ajax({
+                            url: certOnHandle,
+                            method: 'GET',
+                            data: {
+                                certIDs: sendRows.join(',')
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (!data.error) {
+                                    window.location.reload();
+                                } else {
+                                    $modalText.html(data.error_message);
+                                    $('#error-grid-popup').modal('show');
+                                }
+                            }
+                        });
+                    });
                 });
             }
             else {
@@ -51,7 +58,8 @@ $(function() {
     function removeCerts(grid) {
         let dxGrid = grid.dxDataGrid('instance'),
             selectedRows = dxGrid.getSelectedRowsData(),
-            $modalText = $('#modal-text');
+            $modalErrorText = $('.modal-text', '#error-grid-popup'),
+            $modalDialogText = $('.modal-text', '#dialog-grid-popup');
 
         if (selectedRows.length > 0) {
             let isInvalidData = false,
@@ -67,31 +75,38 @@ $(function() {
             });
 
             if (!isInvalidData) {
-                $.ajax({
-                    url: certRemove,
-                    method: 'GET',
-                    data: {
-                        certIDs: sendRows.join(',')
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        if (!data.error) {
-                            window.location.reload();
-                        }
-                        else {
-                            $modalText.html(data.error_message);
-                            $('#error-grid-popup').modal('show');
-                        }
-                    }
-                });
+                $modalDialogText.html('Видалити обранi сертифiкати?');
+
+                $('#dialog-grid-popup').modal('show');
+                $('#dialog-grid-popup').on('shown.bs.modal', function (e) {
+                    $('.btn-accept', $(this)).on('click', function() {
+                        $.ajax({
+                            url: certRemove,
+                            method: 'GET',
+                            data: {
+                                certIDs: sendRows.join(',')
+                            },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (!data.error) {
+                                    window.location.reload();
+                                }
+                                else {
+                                    $modalText.html(data.error_message);
+                                    $('#error-grid-popup').modal('show');
+                                }
+                            }
+                        });
+                    })
+                })
             }
             else {
-                $modalText.html('Можливо видаляти тiльки сертифiкати зi статусом "Чернетка"!');
+                $modalErrorText.html('Можливо видаляти тiльки сертифiкати зi статусом "Чернетка"!');
                 $('#error-grid-popup').modal('show');
             }
         }
         else {
-            $modalText.html('Не вибрано жодного сертифiката!');
+            $modalErrorText.html('Не вибрано жодного сертифiката!');
             $('#error-grid-popup').modal('show');
         }
     }
