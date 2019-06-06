@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
 
 from accounts.models import Profile
@@ -96,16 +96,21 @@ def crm_createUser(request):
 		print(userMail)
 		if userName and userPass and userMail:
 			print('Try Create User')
-			u,created = User.objects.get_or_create(username=userName, email=userMail, password=userPass)
+			# user = User.objects.create_user(userName, userMail, userPass)
+			u,created = User.objects.get_or_create(username=userName, email=userMail)
 			if created:
 				print('User Created')
+				u.set_password(userPass)
 				u.first_name = userFirstName
 				u.last_name = userFirstName
-				u.groups.add(1)#!!!!Rewrite and get from list
+				group = Group.objects.get(name=userGroup)
+				print(group)
+				u.groups.add(group)#!!!!Rewrite and get from list
 				profile, created = Profile.objects.get_or_create(user=u)
 				u.profile.organization_name = userNTZName
 				print('User Profile Created')
 				u.save()
+				return redirect('crm_users')
 			else:
 				print('User Not Created and Exist')
 		else:
@@ -116,17 +121,19 @@ def crm_createUser(request):
 @login_required(login_url="login/")
 def update_user(request, userID):
     if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=User.objects.filter(id=userID).first())
-        profile_form = ProfileForm(request.POST, instance=User.objects.filter(id=userID).first())
+        user = User.objects.filter(id=userID).first()
+        user_form = UserForm(request.POST, instance=user)
+        profile_form = ProfileForm(request.POST, instance=user.profile)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            return redirect('crm_profile')
+            return redirect('crm_users')
     else:
         print('USER ID: ', userID)
-        user_form = UserForm(instance=User.objects.filter(id=userID).first())
-        profile_form = ProfileForm(instance=User.objects.filter(id=userID).first())
-    return render(request, 'crm_editProfile.html', {
+        user = User.objects.filter(id=userID).first()
+        user_form = UserForm(instance=user)
+        profile_form = ProfileForm(instance=user.profile)
+    return render(request, 'crm_editUser.html', {
         'user_form': user_form,
         'profile_form': profile_form
     })

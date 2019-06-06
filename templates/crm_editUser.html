@@ -30,6 +30,9 @@
     <li>
         <a href="/mariner/regulations/"><i class="fa fa-database"></i> <span class="nav-label">Нормативнi документы</span></a>
     </li>
+     <li class="active">
+        <a href="/mariner/users/"><i class="fa fa-files-o"></i> <span class="nav-label">Користувачі</span></a>
+    </li>
     {% endif %}
 {% endblock %}
 
@@ -40,6 +43,9 @@
         <ol class="breadcrumb">
             <li>
                 <a href="/mariner/">Головна</a>
+            </li>
+            <li>
+                <a href="/mariner/users/">Користувачі</a>
             </li>
             <li class="active">
                 <strong>Профіль</strong>
@@ -99,6 +105,18 @@
                     <p></p>
                     <p></p>
 
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="font-normal">{{ profile_form.organization_name.label_tag }}</label>
+                            <div>
+                                {{ profile_form.organization_name|add_class:"form-control" }}
+                            </div>    
+                        </div>
+
+                    </div>
+                    <p></p>
+                    <p></p>
+
 
                     <div class="form-group text-center m-t-30">
                         <div class="text-center">
@@ -118,5 +136,21 @@
 {% endblock %}
 
 {% block scripts %}
+<!-- Toastr -->
+<!-- <script src="/static/js/plugins/toastr/toastr.min.js"></script>
 
+<script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                toastr.options = {
+                    closeButton: true,
+                    progressBar: true,
+                    showMethod: 'slideDown',
+                    timeOut: 2000
+                };
+                toastr.success('Система реєстрації та перевірки документів моряків', 'Вітаємо у ITCS');
+
+            }, 1300);
+        });
+</script> -->     
 {% endblock %}
