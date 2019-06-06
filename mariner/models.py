@@ -99,9 +99,23 @@ admin.site.register(TrainigDirections, TrainigDirectionsDocAdmin)
 
 #//////////////////////////////////////////////////////////
 class TrainigOrganisation(models.Model):
+    #logo
     organisation_id = models.CharField(max_length=140, blank=True)
-    organisation_name = models.CharField(max_length=140, blank=True)
-    orgnisation_email = models.CharField(max_length=140, blank=True)
+    organisation_name = models.CharField(max_length=140, blank=True) #*
+    #mail_adress #*
+    #phone1 #*
+    #phone2
+    orgnisation_email = models.CharField(max_length=140, blank=True) #*
+    #site_link
+    #checking_number
+    #bank_name
+    #mfo
+    #okpo
+    #inn
+    #nds_number
+    #head_full_name
+    #head_position
+    #accountant_full_name
     activated = models.DateField(null=True, blank=True)
     active_till = models.DateField(null=True, blank=True)
     directions = models.ManyToManyField(to='TrainigDirections', related_name='directioned', blank=True)
