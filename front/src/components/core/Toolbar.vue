@@ -42,7 +42,17 @@
           </span>
         </v-btn>
         <v-btn color="success" class="ml-1" small :depressed="true"
-        href="/mariner/certification/new/"
+        href="/mariner/uploadXLS/"
+        v-if="routeName === 'Certificates'">
+          <v-icon>
+            mdi-file-upload
+          </v-icon>
+          <span class="font-weight-bold ml-1">
+            Iмпортувати
+          </span>
+        </v-btn>
+        <v-btn color="success" class="ml-1" small :depressed="true"
+        to="/add-certificate"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-plus-box
@@ -94,6 +104,9 @@ export default {
           break
         case 'Training Directions':
           this.title = 'Напрямки пiдготовки'
+          break
+        case 'Add Certificate':
+          this.title = 'Додати сертифiкат'
           break
       }
     }

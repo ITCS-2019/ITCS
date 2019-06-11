@@ -49,5 +49,10 @@ export default [
     path: '/training-directions',
     name: 'Training Directions',
     view: 'TrainingDirections'
+  },
+  {
+    path: '/add-certificate',
+    name: 'Add Certificate',
+    view: 'AddCertificate'
   }
 ]

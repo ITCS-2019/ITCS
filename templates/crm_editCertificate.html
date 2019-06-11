@@ -527,84 +527,84 @@
 <script src="/static/js/templates/validation.js"></script>
 
 <script>
-        $(document).ready(function(){
+    $(document).ready(function(){
 
-            $.fn.datepicker.dates['itcsUkr'] = {
-                days: ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П’ятниця", "Субота"],
-                daysShort: ["НД", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
-                daysMin: ["НД", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
-                months: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
-                monthsShort: ["Сiч", "Лют", "Бер", "Квіт", "Трав", "Черв", "Лип", "Серп", "Вер", "Жовт", "Лист", "Груд"],
-                today: "Сьогодні",
-                clear: "Очистити",
-                format: "mm/dd/yyyy",
-                titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
-                weekStart: 0
-            };
+        $.fn.datepicker.dates['itcsUkr'] = {
+            days: ["Неділя", "Понеділок", "Вівторок", "Середа", "Четвер", "П’ятниця", "Субота"],
+            daysShort: ["НД", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
+            daysMin: ["НД", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"],
+            months: ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"],
+            monthsShort: ["Сiч", "Лют", "Бер", "Квіт", "Трав", "Черв", "Лип", "Серп", "Вер", "Жовт", "Лист", "Груд"],
+            today: "Сьогодні",
+            clear: "Очистити",
+            format: "mm/dd/yyyy",
+            titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+            weekStart: 0
+        };
 
-            $('#date-of-birth').datepicker({
-                language: 'itcsUkr',
-                todayBtn: 'linked',
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: 'dd.mm.yyyy',
-                endDate: '-16y',
-            });
+        $('#date-of-birth').datepicker({
+            language: 'itcsUkr',
+            todayBtn: 'linked',
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            endDate: '-16y',
+        });
 
-            $('#valid-date').datepicker({
-                language: 'itcsUkr',
-                todayBtn: 'linked',
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: 'dd.mm.yyyy',
-                startDate: '-0d',
-                endDate: '+5y'
-            });
-            $('#id_born').attr('autocomplete', 'off');
+        $('#valid-date').datepicker({
+            language: 'itcsUkr',
+            todayBtn: 'linked',
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            startDate: '-0d',
+            endDate: '+5y'
+        });
+        $('#id_born').attr('autocomplete', 'off');
 
-            $('#date-of-issue').datepicker({
-                language: 'itcsUkr',
-                todayBtn: 'linked',
-                keyboardNavigation: false,
-                forceParse: false,
-                calendarWeeks: true,
-                autoclose: true,
-                format: 'dd.mm.yyyy',
-                startDate: '+0d',
-                daysOfWeekDisabled: [0,6]
-            }).on('changeDate', function(e) {
-                let selectedDate = new Date(e.date.valueOf()),
-                    validDate = new Date(new Date(e.date.valueOf()).setFullYear(selectedDate.getFullYear() + 5));
+        $('#date-of-issue').datepicker({
+            language: 'itcsUkr',
+            todayBtn: 'linked',
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true,
+            format: 'dd.mm.yyyy',
+            startDate: '+0d',
+            daysOfWeekDisabled: [0,6]
+        }).on('changeDate', function(e) {
+            let selectedDate = new Date(e.date.valueOf()),
+                validDate = new Date(new Date(e.date.valueOf()).setFullYear(selectedDate.getFullYear() + 5));
 
-                $('#valid-date').datepicker('setStartDate', selectedDate);
-                $('#valid-date').datepicker('setEndDate', validDate);
-                $('#valid-date').datepicker('update', validDate);
-            });
+            $('#valid-date').datepicker('setStartDate', selectedDate);
+            $('#valid-date').datepicker('setEndDate', validDate);
+            $('#valid-date').datepicker('update', validDate);
+        });
 
-            $('.selectpicker').selectpicker();
+        $('.selectpicker').selectpicker();
 
-            $("#id_trainigOrganisation").change(function () {
-                var url = $("#certificateForm").attr("data-directions-url");
-                var organisationName = $(this).val();
-                $.ajax({
-                    url: url,
-                    data: {
-                    'organisation': 'Приватне підприємство \"Ізмаїльський морський тренажерний центр \"Марін Про Сервіс\"'       // add to the GET parameters
-                    },
-                    dataType: 'json',
-                    success: function (data) {   // `data` is the return
-                    
-                    // $("#id_trainingDirection").html(data);  // replace the contents with the data from the server
-                    // alert(data.directions[0].direction_title);
-                    }
-                });
+        $("#id_trainigOrganisation").change(function () {
+            var url = $("#certificateForm").attr("data-directions-url");
+            var organisationName = $(this).val();
+            $.ajax({
+                url: url,
+                data: {
+                'organisation': 'Приватне підприємство \"Ізмаїльський морський тренажерний центр \"Марін Про Сервіс\"'       // add to the GET parameters
+                },
+                dataType: 'json',
+                success: function (data) {   // `data` is the return
 
+                // $("#id_trainingDirection").html(data);  // replace the contents with the data from the server
+                // alert(data.directions[0].direction_title);
+                }
             });
 
         });
+
+    });
 </script>
 {% endblock %}

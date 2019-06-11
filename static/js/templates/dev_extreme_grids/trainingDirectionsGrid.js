@@ -50,7 +50,7 @@ $(function() {
                 onCellClick: function (data) {
                     switch (data.column.dataField) {
                         case 'status':
-                            let grid = data.component;
+                            let grid = data.component,
                                 newStatus = (~~data.data.status === 0) ? 1 : 0;
 
                             $.ajax({
