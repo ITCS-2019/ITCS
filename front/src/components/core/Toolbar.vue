@@ -42,7 +42,7 @@
           </span>
         </v-btn>
         <v-btn color="success" class="ml-1" small :depressed="true"
-        href="/mariner/uploadXLS/"
+        to="/import-certificate"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-file-upload
@@ -107,6 +107,9 @@ export default {
           break
         case 'Add Certificate':
           this.title = 'Додати сертифiкат'
+          break
+        case 'Import Certificate':
+          this.title = 'Iмпортувати сертифiкат'
           break
       }
     }

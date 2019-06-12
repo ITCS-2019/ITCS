@@ -54,5 +54,10 @@ export default [
     path: '/add-certificate',
     name: 'Add Certificate',
     view: 'AddCertificate'
+  },
+  {
+    path: '/import-certificate',
+    name: 'Import Certificate',
+    view: 'ImportCertificate'
   }
 ]
