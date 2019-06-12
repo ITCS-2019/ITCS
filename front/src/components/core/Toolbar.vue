@@ -100,7 +100,7 @@ export default {
           this.title = 'Сертифiкати'
           break
         case 'Dashboard':
-          this.title = 'Головна сторінка'
+          this.title = (gUserRole === 'НТЗ') ? organizationName.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`) : 'Головна сторінка'
           break
         case 'Training Directions':
           this.title = 'Напрямки пiдготовки'

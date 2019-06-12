@@ -237,6 +237,58 @@ export default {
 
     validNotFormatted(val) {
       this.valid_date = this.formatDate(this.validNotFormatted)
+    },
+
+    first_name_en(val) {
+      let regExp = /[^[a-zA-Z\-\'\s]/g;
+
+      this.$nextTick(() => {
+        let newVal = this.capitalize(val.replace(regExp, ''));
+
+        this.$set(this, 'first_name_en', newVal);
+      });
+    },
+
+    last_name_en(val) {
+      let regExp = /[^[a-zA-Z\-\'\s]/g;
+
+      this.$nextTick(() => {
+        let newVal = this.capitalize(val.replace(regExp, ''));
+
+        this.$set(this, 'last_name_en', newVal);
+      });
+    },
+
+    first_name_ukr(val) {
+      let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
+
+      this.$nextTick(() => {
+        let newVal = this.capitalize(val.replace(regExp, ''));
+
+        this.$set(this, 'first_name_ukr', newVal);
+        this.$set(this, 'first_name_en', this.translitToEn(newVal));
+      });
+    },
+
+    second_name_ukr(val) {
+      let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
+
+      this.$nextTick(() => {
+        let newVal = this.capitalize(val.replace(regExp, ''));
+
+        this.$set(this, 'second_name_ukr', newVal);
+      });
+    },
+
+    last_name_ukr(val) {
+      let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
+
+      this.$nextTick(() => {
+        let newVal = this.capitalize(val.replace(regExp, ''));
+
+        this.$set(this, 'last_name_ukr', newVal);
+        this.$set(this, 'last_name_en', this.translitToEn(newVal));
+      });
     }
   },
 
@@ -244,8 +296,6 @@ export default {
     axios.get(`/mariner/api/directionsInfo/`)
       .then(res => {
         let directions = res.data.trainigDirections;
-
-        console.log(directions);
 
         directions.forEach((direction) => {
           this.directions.push({
@@ -264,16 +314,8 @@ export default {
       this.$refs.birthdayDatepicker.save(date)
     },
 
-    saveIssue(date) {
-      this.$refs.issueDatepicker.save(date)
-    },
-
-    saveValid(date) {
-      this.$refs.validDatepicker.save(date)
-    },
-
     saveCertificate() {
-      let a = {
+      let formData = {
         first_name_en: this.first_name_en,
         last_name_en: this.last_name_en,
         last_name_ukr: this.last_name_ukr,
@@ -289,8 +331,7 @@ export default {
         status: this.status
       };
 
-      console.log(a);
-      axios.post(`/mariner/ajax/load-directions/`, a)
+      axios.post(`/mariner/certification/new/`, formData)
         .then(res => {
           console.log(res);
         })
@@ -304,6 +345,73 @@ export default {
 
       const [year, month, day] = date.split('-')
       return `${day}.${month}.${year}`
+    },
+
+    capitalize(str) {
+      return str.toLowerCase()
+              .split('-')
+              .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+              .join('-')
+              .split(' ')
+              .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+              .join(' ');
+    },
+
+    translitToEn(str, target) {
+      let ua = {
+            'а': 'a',
+            'б': 'b',
+            'в': 'v',
+            'г': 'g',
+            'д': 'd',
+            'е': 'e',
+            'є': 'ie',
+            'ж': 'zh',
+            'з': 'z',
+            'и': 'y',
+            'і': 'i',
+            'ї': 'i',
+            'к': 'k',
+            'л': 'l',
+            'м': 'm',
+            'н': 'n',
+            'о': 'o',
+            'п': 'p',
+            'р': 'r',
+            'с': 's',
+            'т': 't',
+            'у': 'u',
+            'ф': 'f',
+            'х': 'kh',
+            'ц': 'ts',
+            'ч': 'ch',
+            'ш': 'sh',
+            'щ': 'shch',
+            'ы': 'y',
+            'э': 'e',
+            'ю': 'iu',
+            'я': 'ia'
+          },
+          translited = [];
+
+      if (str.length > 0) {
+        str = str.replace(/й/g, 'i').replace(/Й/g, 'Y').replace(/Є/g, 'Ye').replace(/Ї/g, 'Yi').replace(/Ю/g, 'Yu').replace(/Я/g, 'Ya').replace(/[ъь]+/g, '');
+
+        for (let i = 0; i < str.length; ++i) {
+          translited.push(
+                  ua[ str[i] ]
+                  || ua[ str[i].toLowerCase() ] == undefined && str[i]
+                  || ua[ str[i].toLowerCase() ].replace(/^(.)/, function ( match ) { return match.toUpperCase() })
+          );
+        }
+
+        return translited.join('');
+
+        // target.val(translited.join(''));
+      }
+      else {
+        return '';
+      }
     }
   }
 }
