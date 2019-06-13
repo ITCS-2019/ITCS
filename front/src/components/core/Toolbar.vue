@@ -111,6 +111,9 @@ export default {
         case 'Import Certificate':
           this.title = 'Iмпортувати сертифiкат'
           break
+        case 'User Profile':
+          this.title = 'Профiль'
+          break
       }
     }
   },

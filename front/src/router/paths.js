@@ -59,5 +59,10 @@ export default [
     path: '/import-certificate',
     name: 'Import Certificate',
     view: 'ImportCertificate'
+  },
+  {
+    path: '/profile',
+    name: 'User Profile',
+    view: 'UserProfile'
   }
 ]
