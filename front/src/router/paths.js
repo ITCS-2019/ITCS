@@ -51,9 +51,9 @@ export default [
     view: 'TrainingDirections'
   },
   {
-    path: '/add-certificate',
-    name: 'Add Certificate',
-    view: 'AddCertificate'
+    path: '/edit-certificate/:id',
+    name: 'Edit Certificate',
+    view: 'EditCertificate'
   },
   {
     path: '/import-certificate',

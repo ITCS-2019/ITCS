@@ -52,7 +52,7 @@
           </span>
         </v-btn>
         <v-btn color="success" class="ml-1" small :depressed="true"
-        to="/add-certificate"
+        to="/edit-certificate/new"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-plus-box
@@ -105,7 +105,7 @@ export default {
         case 'Training Directions':
           this.title = 'Напрямки пiдготовки'
           break
-        case 'Add Certificate':
+        case 'Edit Certificate':
           this.title = 'Додати сертифiкат'
           break
         case 'Import Certificate':
