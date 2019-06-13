@@ -55,8 +55,9 @@
                     </template>
                     <v-date-picker ref="birthdayPicker"
                     no-title
+                    locale="uk"
                     v-model="bornNotFormatted"
-                    :max="new Date().toISOString().substr(0, 10)"
+                    :max="new Date(new Date().setFullYear(new Date().getFullYear() - 16)).toISOString().substr(0, 10)"
                     min="1950-01-01"
                     v-on:change="saveBirthday">
                     </v-date-picker>
@@ -90,7 +91,11 @@
                     </template>
                     <v-date-picker v-model="issueNotFormatted"
                     no-title
-                    v-on:input="issueDatepicker = false">
+                    locale="uk"
+                    :min="new Date().toISOString().substr(0, 10)"
+                    :max="new Date(new Date().setDate(new Date().getDate() + 5)).toISOString().substr(0, 10)"
+                    :allowed-dates="allowedIssueDates"
+                    v-on:input="selectIssueDate">
                     </v-date-picker>
                   </v-menu>
                 </v-flex>
@@ -113,7 +118,9 @@
                       </v-text-field>
                     </template>
                     <v-date-picker v-model="validNotFormatted"
+                    :min="minValidDate"
                     no-title
+                    locale="uk"
                     v-on:input="validDatepicker = false">
                     </v-date-picker>
                   </v-menu>
@@ -181,6 +188,7 @@
 export default {
   data() {
     return {
+      minValidDate: new Date().toISOString().substr(0, 10),
       inn: null,
       certf_number: null,
       first_name_ukr: null,
@@ -406,12 +414,19 @@ export default {
         }
 
         return translited.join('');
-
-        // target.val(translited.join(''));
       }
       else {
         return '';
       }
+    },
+
+    allowedIssueDates: val => ![0, 6].includes(new Date(val).getDay()),
+
+    selectIssueDate(date) {
+      this.issueDatepicker = false;
+
+      this.minValidDate = date;
+      this.validNotFormatted = new Date(new Date(date).setFullYear(new Date(date).getFullYear() + 5)).toISOString().substr(0, 10);
     }
   }
 }
