@@ -381,7 +381,8 @@ class UploadXLSForm(forms.Form):
                 self.fields['directions'].label = 'Напрямки'
         else:
             DIRS = (
-                (0, 'Авто визначення'))
+                (0, 'Авто визначення'),
+            )
             self.fields['directions'].label = 'Напрямки'
             self.fields['directions'] = forms.ChoiceField(choices=DIRS)
 
