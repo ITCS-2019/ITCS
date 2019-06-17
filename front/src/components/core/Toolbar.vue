@@ -31,16 +31,16 @@
         layout
         py-2
       >
-        <v-btn color="success" small :depressed="true"
-        href="/mariner/certification/"
-        v-if="routeName === 'Certificates' && userRole === 'НТЗ'">
-          <v-icon>
-            mdi-cloud-upload
-          </v-icon>
-          <span class="font-weight-bold ml-1">
-            Завантажити
-          </span>
-        </v-btn>
+        <!--<v-btn color="success" small :depressed="true"-->
+        <!--href="/mariner/certification/"-->
+        <!--v-if="routeName === 'Certificates' && userRole === 'НТЗ'">-->
+          <!--<v-icon>-->
+            <!--mdi-cloud-upload-->
+          <!--</v-icon>-->
+          <!--<span class="font-weight-bold ml-1">-->
+            <!--Завантажити-->
+          <!--</span>-->
+        <!--</v-btn>-->
         <v-btn color="success" class="ml-1" small :depressed="true"
         to="/import-certificate"
         v-if="routeName === 'Certificates'">

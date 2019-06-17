@@ -339,7 +339,15 @@ export default {
         status: this.status
       };
 
-      axios.post(`/mariner/certification/new/`, formData)
+      console.log(formData);
+
+      axios.post(`/mariner/certification/new/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
         .then(res => {
           console.log(res);
         })

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from . import views
 
@@ -39,5 +39,6 @@ urlpatterns = [
     path('editDirection/<direction_id>/', views.crm_editTrainigDirection, name='crm_editTrainigDirection'),
     path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
     path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
-    path('app/', views.application, name='app'),
+    #re_path('app/', views.application, name='app'),
+    re_path(r'^app/.*$', views.application, name='app'),
 ]

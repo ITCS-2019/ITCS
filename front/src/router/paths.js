@@ -41,27 +41,27 @@ export default [
     view: 'Upgrade'
   },
   {
-    path: '/certificates',
+    path: '/mariner/app/certificates',
     name: 'Certificates',
     view: 'Certificates'
   },
   {
-    path: '/training-directions',
+    path: '/mariner/app/training-directions',
     name: 'Training Directions',
     view: 'TrainingDirections'
   },
   {
-    path: '/edit-certificate/:id',
+    path: '/mariner/app/edit-certificate/:id',
     name: 'Edit Certificate',
     view: 'EditCertificate'
   },
   {
-    path: '/import-certificate',
+    path: '/mariner/app/import-certificate',
     name: 'Import Certificate',
     view: 'ImportCertificate'
   },
   {
-    path: '/profile',
+    path: '/mariner/app/profile',
     name: 'User Profile',
     view: 'UserProfile'
   }
