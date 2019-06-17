@@ -31,18 +31,28 @@
         layout
         py-2
       >
-        <v-btn color="success" small :depressed="true"
-        href="/mariner/certification/"
-        v-if="routeName === 'Certificates' && userRole === 'НТЗ'">
+        <!--<v-btn color="success" small :depressed="true"-->
+        <!--href="/mariner/certification/"-->
+        <!--v-if="routeName === 'Certificates' && userRole === 'НТЗ'">-->
+          <!--<v-icon>-->
+            <!--mdi-cloud-upload-->
+          <!--</v-icon>-->
+          <!--<span class="font-weight-bold ml-1">-->
+            <!--Завантажити-->
+          <!--</span>-->
+        <!--</v-btn>-->
+        <v-btn color="success" class="ml-1" small :depressed="true"
+        to="/import-certificate"
+        v-if="routeName === 'Certificates'">
           <v-icon>
-            mdi-cloud-upload
+            mdi-file-upload
           </v-icon>
           <span class="font-weight-bold ml-1">
-            Завантажити
+            Iмпортувати
           </span>
         </v-btn>
         <v-btn color="success" class="ml-1" small :depressed="true"
-        href="/mariner/certification/new/"
+        to="/edit-certificate/new"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-plus-box
@@ -90,10 +100,19 @@ export default {
           this.title = 'Сертифiкати'
           break
         case 'Dashboard':
-          this.title = 'Головна сторінка'
+          this.title = (gUserRole === 'НТЗ') ? organizationName.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`) : 'Головна сторінка'
           break
         case 'Training Directions':
           this.title = 'Напрямки пiдготовки'
+          break
+        case 'Edit Certificate':
+          this.title = 'Додати сертифiкат'
+          break
+        case 'Import Certificate':
+          this.title = 'Iмпортувати сертифiкат'
+          break
+        case 'User Profile':
+          this.title = 'Профiль'
           break
       }
     }

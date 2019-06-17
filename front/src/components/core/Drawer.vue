@@ -107,6 +107,16 @@ export default {
         to: '/certificates',
         icon: 'mdi-account-card-details',
         text: 'Сертифiкати'
+      },
+      {
+        to: '/profile',
+        icon: 'mdi-account',
+        text: 'Профiль'
+      },
+      {
+        to: '',
+        icon: 'mdi-exit-to-app',
+        text: 'Вихiд'
       }
     ],
     responsive: false,

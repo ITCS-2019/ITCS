@@ -140,9 +140,7 @@ def update_user(request, userID):
 #/////////////////Vue Application//////////////////////
 @login_required(login_url="login/")
 def application(request):
-	#trainigOrganisations = TrainigOrganisation.objects.all()
-	context = {'trainigOrganisations': 0,}
-	return render(request, "application.html", context)
+	return render(request, "application.html")
 
 #/////////////////TrainigOrganisation//////////////////////
 @login_required(login_url="login/")

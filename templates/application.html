@@ -17,7 +17,17 @@
     </div>
     <script>
         var gUserRole = '{{user.groups.all.0.name}}',
-            gUserName = '{{user.username}}';
+            gUserName = '{{user.username}}',
+
+            // TODO: remove after REST api get token
+            gToken = {
+                name: `{% csrf_token %}`.match(/name="(.*?)"/g)[0].match(/"(.*?)"/g)[0].replace(/"/g, ''),
+                token: `{% csrf_token %}`.match(/value="(.*?)"/g)[0].match(/"(.*?)"/g)[0].replace(/"/g, '')
+            },
+
+            // TODO: remove after REST api get of organization name
+            organizationName = '{{user.profile.organization_name}}';
+
     </script>
     {% render_bundle 'app' %}
 </body>
