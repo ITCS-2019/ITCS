@@ -94,22 +94,22 @@ export default {
     logo: '/static/img/avatar_empty.jpg',
     links: [
       {
-        to: '/mariner/app',
+        to: '/mariner/app/dashboard',
         icon: 'mdi-home',
         text: 'Головна'
       },
       {
-        to: '/training-directions',
+        to: '/mariner/app/training-directions',
         icon: 'mdi-file-tree',
         text: 'Напрямки Підготовки'
       },
       {
-        to: '/certificates',
+        to: '/mariner/app/certificates',
         icon: 'mdi-account-card-details',
         text: 'Сертифiкати'
       },
       {
-        to: '/profile',
+        to: '/mariner/app/profile',
         icon: 'mdi-account',
         text: 'Профiль'
       },

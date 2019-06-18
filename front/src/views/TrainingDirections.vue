@@ -175,6 +175,30 @@ export default {
             allowFiltering: true
           },
           {
+            dataField: 'direction_reviewCertCount',
+            caption: 'В обробцi',
+            allowEditing: false,
+            allowFiltering: true,
+            alignment: 'left',
+            visible: gUserRole === 'НТЗ',
+          },
+          {
+            dataField: 'direction_issuedCertCount',
+            caption: 'Видано',
+            allowEditing: false,
+            allowFiltering: true,
+            alignment: 'left',
+            visible: gUserRole === 'НТЗ',
+          },
+          {
+            dataField: 'direction_reviewAndIssuedCertsCount',
+            caption: 'Всього',
+            allowEditing: false,
+            allowFiltering: true,
+            alignment: 'left',
+            visible: gUserRole === 'НТЗ',
+          },
+          {
             dataField: 'allow_functions',
             caption: 'Рівень функцій',
             allowEditing: false,
@@ -217,21 +241,27 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     axios.get(`/mariner/api/directionsInfo/`)
       .then(res => {
         let directions = res.data.trainigDirections;
+
+        console.log(directions);
 
         directions.forEach((direction) => {
           this.dataSource.push({
             id: direction.id,
             price_id: direction.price_id,
-            direction_title: direction.direction_title,
+            direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
+            direction_reviewCertCount: direction.direction_reviewCertCount,
+            direction_issuedCertCount: direction.direction_issuedCertCount,
+            direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
             allow_functions: direction.allow_functions,
             level: direction.level,
             status: direction.status
           });
         });
+
 
         let grid = this.$refs.directionsGrid.tableInstance,
             selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';

@@ -34,7 +34,7 @@ const router = new Router({
       .concat([
         {
           path: '*',
-          redirect: '/mariner/app'
+          redirect: '/mariner/app/dashboard'
         }
       ]),
   scrollBehavior (to, from, savedPosition) {
