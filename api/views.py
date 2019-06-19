@@ -1,18 +1,24 @@
 from django.shortcuts import render, redirect
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
+from django.http import HttpResponse, JsonResponse
+
+from django.template.loader import render_to_string
+
+from rest_framework import authentication, permissions, viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .serializers import UserSerializer, TrainigDirectionSerializer, CertificateSerializer
+
 from accounts.models import Profile
-from django.http import JsonResponse
-
-from rest_framework import generics
-
 from mariner.models import Certificate, TrainigOrganisation, TrainigDirections, Sailor
-from .serializers import TrainigDirectionsSerializer, CertificatesSerializer
-
-from django.http import HttpResponse
 
 # from django.core.files.storage import FileSystemStorage
-from django.template.loader import render_to_string
+
 from weasyprint import HTML
 
 import xlwt
@@ -21,15 +27,70 @@ import xlwt
 
 import datetime
 
+"""
+REST Requests
+"""
+# class ListTrainigDirectionsView(generics.ListAPIView):
+# 	queryset = TrainigDirections.objects.all()
+# 	serializer_class = TrainigDirectionsSerializer
 
-class ListTrainigDirectionsView(generics.ListAPIView):
+# class ListCertificatesView(generics.ListAPIView):
+# 	queryset = Certificate.objects.all()
+# 	serializer_class = CertificatesSerializer
+
+User = get_user_model()
+
+class DefaultsMixin(object):
+	"""
+	Default settings for view authentication, permissions, 
+	filtering and paginations.
+	"""
+	authentication_classes = (
+		authentication.BasicAuthentication,
+		authentication.TokenAuthentication,
+	)
+	permission_classes = (
+		permissions.IsAuthenticated,
+	)
+	paginate_by = 25
+	paginate_by_param = 'page_size'
+	max_paginate_by = 100
+
+class UserViewSet(DefaultsMixin, viewsets.ReadOnlyModelViewSet):
+	lookup_field = User.USERNAME_FIELD
+	lookup_url_kwarg = User.USERNAME_FIELD
+	queryset = User.objects.order_by(User.USERNAME_FIELD)
+	serializer_class = UserSerializer
+
+class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = TrainigDirections.objects.all()
-	serializer_class = TrainigDirectionsSerializer
+	serializer_class = TrainigDirectionSerializer
 
-class ListCertificatesView(generics.ListAPIView):
-	queryset = Certificate.objects.all()
-	serializer_class = CertificatesSerializer
+# class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
+# 	queryset = Certificate.objects.order_by('id')
+# 	serializer_class = CertificateSerializer
 
+class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
+#class CertificateViewSet(DefaultsMixin, APIView):
+	queryset = Certificate.objects.order_by('id')
+	serializer_class = CertificateSerializer
+
+	def list(self, request):
+		certs = Certificate()
+		certsDataArr = []
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation)
+		elif request.user.groups.all()[0].name == 'Інспектор':
+			certs = Certificate.objects.exclude(status=0)
+		else:
+			certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+		serializer = CertificateSerializer(certs, many=True)
+		return Response({"certificates": serializer.data})
+
+"""
+AJAX Requests
+"""
 @login_required(login_url="login/")
 def dashInfo(request):
 	profile, created = Profile.objects.get_or_create(user=request.user)

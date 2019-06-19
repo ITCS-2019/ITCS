@@ -1,12 +1,18 @@
 from django.urls import path
 
-#from .views import ListTrainigDirectionsView
+from rest_framework.routers import DefaultRouter
 from . import views
+
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'directions', views.TrainigDirectionViewSet)
+router.register(r'certificates', views.CertificateViewSet)
+
 urlpatterns = [
     path('dashInfo/', views.dashInfo, name="api-dashInfo"),
     path('directionsInfo/', views.trainingDirectionsInfo, name="api-directionsInfo"),
-    path('trainigDirections/', views.ListTrainigDirectionsView.as_view(), name="trainigDirections-all"),
-    path('certificates/', views.ListCertificatesView.as_view(), name="certificates-all"),
+    #path('trainigDirections/', views.ListTrainigDirectionsView.as_view(), name="trainigDirections-all"),
+    #path('certificates/', views.CertificateViewSet.as_view(), name="certificates-all"),
     path('allCerts/', views.certificates, name="api-allCerts"),
     path('trainingOrganisationsInfo/', views.trainingOrganisationsInfo, name="api-trainingOrganisationsInfo"),
     path('issuedCerts/', views.issuedCerts, name="api-issuedCerts"),
