@@ -12,7 +12,7 @@ from rest_framework import authentication, permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import UserSerializer, TrainigDirectionSerializer, CertificateSerializer
+from .serializers import UserSerializer, TrainigDirectionSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
 
 from accounts.models import Profile
 from mariner.models import Certificate, TrainigOrganisation, TrainigDirections, Sailor
@@ -30,20 +30,11 @@ import datetime
 """
 REST Requests
 """
-# class ListTrainigDirectionsView(generics.ListAPIView):
-# 	queryset = TrainigDirections.objects.all()
-# 	serializer_class = TrainigDirectionsSerializer
-
-# class ListCertificatesView(generics.ListAPIView):
-# 	queryset = Certificate.objects.all()
-# 	serializer_class = CertificatesSerializer
-
 User = get_user_model()
 
 class DefaultsMixin(object):
 	"""
-	Default settings for view authentication, permissions, 
-	filtering and paginations.
+	Settings for view authentication, permissions, filtering and paginations.
 	"""
 	authentication_classes = (
 		authentication.BasicAuthentication,
@@ -62,16 +53,42 @@ class UserViewSet(DefaultsMixin, viewsets.ReadOnlyModelViewSet):
 	queryset = User.objects.order_by(User.USERNAME_FIELD)
 	serializer_class = UserSerializer
 
+class SailorViewSet(DefaultsMixin, viewsets.ModelViewSet):
+	queryset = Sailor.objects.all()
+	serializer_class = SailorSerializer
+
 class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
+	"""
+    Returns a list of all training direction in DB.
+    If user from training organisations return list of training directions of this organisation.
+    """
 	queryset = TrainigDirections.objects.all()
 	serializer_class = TrainigDirectionSerializer
 
-# class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
-# 	queryset = Certificate.objects.order_by('id')
-# 	serializer_class = CertificateSerializer
+	def list(self, request):
+		# request.user.auth_token.delete()
+		directions = TrainigDirections()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			directions = trainigOrganisation.directions.all()
+		else:
+			directions = TrainigDirections.objects.all()
+		serializer = TrainigDirectionSerializer(directions, many=True)
+		return Response({"directions": serializer.data})
+
+class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
+	"""
+    Return a list of all training organisations.
+    """
+	queryset = TrainigOrganisation.objects.all()
+	serializer_class = TrainigOrganisationSerializer
 
 class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
-#class CertificateViewSet(DefaultsMixin, APIView):
+	"""
+    Return a list of all certificates in DB.
+    If user from training organisations return list of certificates of this organisation.
+    If user from inspectors group return list of certificates exlude drafts status.
+    """
 	queryset = Certificate.objects.order_by('id')
 	serializer_class = CertificateSerializer
 
@@ -133,40 +150,6 @@ def dashInfo(request):
 		# dashInfoDict = {'dashInfo': dashData,}#'trainigOrganisations': trainigOrganisations,}
 		return JsonResponse(dashInfoDict)
 
-@login_required(login_url="login/")
-def trainingDirectionsInfo(request):
-	if request.user.groups.all()[0].name == 'НТЗ':
-		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		reviewCertIDs = []
-		for reviewCert in trainigOrganisation.get_certInReview():
-			reviewCertIDs.append(reviewCert.training_direction.id)
-		issuedCertIDs = []
-		for issuedCert in trainigOrganisation.get_issuedCerts():
-			issuedCertIDs.append(issuedCert.training_direction.id)
-		directionsDataArr = []
-		for direction in trainigOrganisation.directions.all():
-			reviewCertCount = reviewCertIDs.count(direction.id)
-			issuedCertCount = issuedCertIDs.count(direction.id)
-			certsLeftCount = direction.range_numbers.count()
-			directionData = {
-			'direction_id': direction.id,
-			'dirction_name': direction.direction_title,
-			'price_id':direction.price_id,
-			'level':direction.level,
-			'allow_functions':direction.allow_functions,
-			'status':direction.status,
-			'direction_reviewCertCount': reviewCertCount,
-			'direction_issuedCertCount': issuedCertCount,
-			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
-			}
-			directionsDataArr.append(directionData)
-		data = {'trainigDirections': directionsDataArr,}
-		return JsonResponse(data)
-	else:
-		trainigDirections = list(TrainigDirections.objects.all().values())
-		data = dict()
-		data['trainigDirections'] = trainigDirections
-		return JsonResponse(data)
 
 @login_required(login_url="login/")
 def trainingOrganisationsInfo(request):
@@ -213,55 +196,39 @@ def trainingOrganisationsInfo(request):
 	return JsonResponse(organisationsDict)
 
 @login_required(login_url="login/")
-def certificates(request):
-	certs = Certificate()
-	certsDataArr = []
+def trainingDirectionsInfo(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation)
-	elif request.user.groups.all()[0].name == 'Інспектор':
-		certs = Certificate.objects.exclude(status=0)
+		reviewCertIDs = []
+		for reviewCert in trainigOrganisation.get_certInReview():
+			reviewCertIDs.append(reviewCert.training_direction.id)
+		issuedCertIDs = []
+		for issuedCert in trainigOrganisation.get_issuedCerts():
+			issuedCertIDs.append(issuedCert.training_direction.id)
+		directionsDataArr = []
+		for direction in trainigOrganisation.directions.all():
+			reviewCertCount = reviewCertIDs.count(direction.id)
+			issuedCertCount = issuedCertIDs.count(direction.id)
+			certsLeftCount = direction.range_numbers.count()
+			directionData = {
+			'direction_id': direction.id,
+			'dirction_name': direction.direction_title,
+			'price_id':direction.price_id,
+			'level':direction.level,
+			'allow_functions':direction.allow_functions,
+			'status':direction.status,
+			'direction_reviewCertCount': reviewCertCount,
+			'direction_issuedCertCount': issuedCertCount,
+			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
+			}
+			directionsDataArr.append(directionData)
+		data = {'trainigDirections': directionsDataArr,}
+		return JsonResponse(data)
 	else:
-		certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
-		
-	for cert in certs:
-		organisationID = ''
-		organisationName = ''
-		directionID = ''
-		directionName = ''
-		if cert.trainigOrganisation is not None:
-			organisationID = cert.trainigOrganisation.id
-			organisationName = cert.trainigOrganisation.organisation_name
-		if cert.training_direction is not None:
-			directionID = cert.training_direction.id
-			directionName = cert.training_direction.direction_title
-		certData = {
-			'cert_id': cert.id,
-			'certf_number': cert.certf_number,
-			'form_number': cert.form_number,
-			'ntz_number': cert.ntz_number,
-			'first_name_en': cert.first_name_en,
-			'last_name_en': cert.last_name_en,
-			'last_name_ukr': cert.last_name_ukr,
-			'first_name_ukr': cert.first_name_ukr,
-			'second_name_ukr': cert.second_name_ukr,
-			'born': cert.born.strftime("%m.%d.%Y"),
-			'inn': cert.inn,
-			'sailor_id': cert.sailor.id,
-			'trainigOrganisation_id': organisationID,
-			'trainigOrganisation_name': organisationName,
-			'date_of_issue': cert.date_of_issue,
-			'valid_date': cert.valid_date,
-			'valid_type': cert.valid_type,
-			'direction_level': cert.direction_level,
-			'direction_allow_functions': cert.direction_allow_functions,
-			'training_direction_id': directionID,
-			'training_direction_title': directionName,
-			'status': cert.status,
-		}
-		certsDataArr.append(certData)
-	certificatesDict = {'certificates':certsDataArr,}
-	return JsonResponse(certificatesDict)
+		trainigDirections = list(TrainigDirections.objects.all().values())
+		data = dict()
+		data['trainigDirections'] = trainigDirections
+		return JsonResponse(data)
 
 @login_required(login_url="login/")
 def issuedCerts(request):
@@ -516,6 +483,60 @@ def exportToPrint(request):
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
 
+
+"""
+OLD Requests For Clear
+"""
+@login_required(login_url="login/")
+def certificates(request):
+	certs = Certificate()
+	certsDataArr = []
+	if request.user.groups.all()[0].name == 'НТЗ':
+		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation)
+	elif request.user.groups.all()[0].name == 'Інспектор':
+		certs = Certificate.objects.exclude(status=0)
+	else:
+		certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+		
+	for cert in certs:
+		organisationID = ''
+		organisationName = ''
+		directionID = ''
+		directionName = ''
+		if cert.trainigOrganisation is not None:
+			organisationID = cert.trainigOrganisation.id
+			organisationName = cert.trainigOrganisation.organisation_name
+		if cert.training_direction is not None:
+			directionID = cert.training_direction.id
+			directionName = cert.training_direction.direction_title
+		certData = {
+			'cert_id': cert.id,
+			'certf_number': cert.certf_number,
+			'form_number': cert.form_number,
+			'ntz_number': cert.ntz_number,
+			'first_name_en': cert.first_name_en,
+			'last_name_en': cert.last_name_en,
+			'last_name_ukr': cert.last_name_ukr,
+			'first_name_ukr': cert.first_name_ukr,
+			'second_name_ukr': cert.second_name_ukr,
+			'born': cert.born.strftime("%m.%d.%Y"),
+			'inn': cert.inn,
+			'sailor_id': cert.sailor.id,
+			'trainigOrganisation_id': organisationID,
+			'trainigOrganisation_name': organisationName,
+			'date_of_issue': cert.date_of_issue,
+			'valid_date': cert.valid_date,
+			'valid_type': cert.valid_type,
+			'direction_level': cert.direction_level,
+			'direction_allow_functions': cert.direction_allow_functions,
+			'training_direction_id': directionID,
+			'training_direction_title': directionName,
+			'status': cert.status,
+		}
+		certsDataArr.append(certData)
+	certificatesDict = {'certificates':certsDataArr,}
+	return JsonResponse(certificatesDict)
 # @login_required(login_url="login/")
 # def uploadXLS(request):
 # 	if "GET" == request.method:

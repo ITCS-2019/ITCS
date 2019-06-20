@@ -33,6 +33,21 @@ class UserSerializer(serializers.ModelSerializer):
 			'self': reverse('user-detail', kwargs={User.USERNAME_FIELD: username},
 				request=request),
 		}
+class SailorSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Sailor
+		fields = (
+			'id',
+			'first_name_en',
+			'last_name_ukr',
+			'last_name_ukr',
+			'first_name_ukr',
+			'second_name_ukr',
+			'born',
+			'died',
+			'inn',
+			'sex',
+		)
 
 class TrainigDirectionSerializer(serializers.ModelSerializer):
 	#level_display = serializers.SerializerMethodField('get_level_display')
@@ -40,7 +55,15 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TrainigDirections
-		fields = ('price_id', 'direction_title', 'level', 'allow_functions', 'price', )
+		fields = (
+			'id',
+			'price_id',
+			'direction_title',
+			'level',
+			'allow_functions',
+			'price',
+			'status',
+		)
 
 	# def get_level_display(self, obj):
 	# 	return obj.get_level_display()
@@ -51,6 +74,17 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 			'self': reverse('trainigDirections-detail', kwargs={'pk': obj.pk},
 				request=request),
 		}
+
+class TrainigOrganisationSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = TrainigOrganisation
+		fields = (
+			'organisation_name',
+			'orgnisation_email',
+			'activated',
+			'active_till',
+			'directions',
+		)
 
 class CertificateSerializer(serializers.ModelSerializer):
 	#links = serializers.SerializerMethodField('get_links')

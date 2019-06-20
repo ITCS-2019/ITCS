@@ -4,8 +4,12 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
+router.get_api_root_view().cls.__name__ = "ITCS"
+router.get_api_root_view().cls.__doc__ = "root api router"
 router.register(r'users', views.UserViewSet)
+router.register(r'sailors', views.SailorViewSet)
 router.register(r'directions', views.TrainigDirectionViewSet)
+router.register(r'organisations', views.TrainigOrganisationViewSet)
 router.register(r'certificates', views.CertificateViewSet)
 
 urlpatterns = [
