@@ -32,7 +32,7 @@
         py-2
       >
         <v-btn color="success" class="ml-1" small :depressed="true"
-        to="/import-certificate"
+        to="/mariner/app/import-certificate"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-file-upload
@@ -42,7 +42,7 @@
           </span>
         </v-btn>
         <v-btn color="success" class="ml-1" small :depressed="true"
-        to="/edit-certificate/new"
+        to="/mariner/app/edit-certificate/new"
         v-if="routeName === 'Certificates'">
           <v-icon>
             mdi-plus-box

@@ -331,7 +331,7 @@ export default {
         second_name_ukr: this.second_name_ukr,
         born: this.born,
         inn: this.inn,
-        date_of_issue: this.date_of_issue,
+        date_ofsaveCertificate_issue: this.date_of_issue,
         valid_date: this.valid_date,
         training_direction: this.training_direction.value,
         form_number: this.form_number,
@@ -341,12 +341,12 @@ export default {
 
       console.log(formData);
 
-      axios.post(`/mariner/certification/new/`,
+      axios.post(`/mariner/api/certificates/`,
         formData,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+          // headers: {
+          //   'Content-Type': 'multipart/form-data'
+          // }
         })
         .then(res => {
           console.log(res);
