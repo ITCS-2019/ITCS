@@ -322,6 +322,13 @@ export default {
       this.$refs.birthdayDatepicker.save(date)
     },
 
+    resetFormatDate(date) {
+      if (!date) return null
+
+      const [day, month, year] = date.split('.')
+      return `${year}-${month}-${day}`
+    },
+
     saveCertificate() {
       let formData = {
         first_name_en: this.first_name_en,
@@ -329,27 +336,19 @@ export default {
         last_name_ukr: this.last_name_ukr,
         first_name_ukr: this.first_name_ukr,
         second_name_ukr: this.second_name_ukr,
-        born: this.born,
+        born: this.resetFormatDate(this.born),
         inn: this.inn,
-        date_ofsaveCertificate_issue: this.date_of_issue,
-        valid_date: this.valid_date,
+        date_ofsaveCertificate_issue: this.resetFormatDate(this.date_ofsaveCertificate_issue),
+        valid_date: this.resetFormatDate(this.valid_date),
         training_direction: this.training_direction.value,
         form_number: this.form_number,
         certf_number: this.certf_number,
         status: this.status
       };
 
-      console.log(formData);
-
-      axios.post(`/mariner/api/certificates/`,
-        formData,
-        {
-          // headers: {
-          //   'Content-Type': 'multipart/form-data'
-          // }
-        })
+      axios.post(`/mariner/api/certificates/`, formData)
         .then(res => {
-          console.log(res);
+          this.$router.push('/mariner/app/certificates');
         })
         .catch((err) => {
           console.log(err);
