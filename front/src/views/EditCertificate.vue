@@ -300,18 +300,48 @@ export default {
     }
   },
 
-  created() {
-    axios.get(`/mariner/api/directionsInfo/`)
-      .then(res => {
-        let directions = res.data.trainigDirections;
+  mounted() {
+    let requests = [axios.get(`/mariner/api/directions/`)];
+
+    if (this.$route.params.id && this.$route.params.id !== 'new') {
+      requests.push(axios.get(`/mariner/api/certificates/${this.$route.params.id}`));
+    }
+
+    axios.all(requests)
+      .then(axios.spread((directionsRes, certRes) => {
+
+        // Directions
+        let directions = directionsRes.data.directions;
 
         directions.forEach((direction) => {
           this.directions.push({
-            caption: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
-            value: (gUserRole === 'НТЗ') ? direction.direction_id : direction.id
+            caption: direction.direction_title,
+            value: direction.id
           });
         });
-      })
+
+        // Current direction
+        let cert = certRes.data;
+
+        console.log(cert);
+
+        this.born = this.formatDate(cert.born);
+        this.certf_number = cert.certf_number;
+        this.date_of_issue = this.formatDate(cert.date_of_issue);
+        this.first_name_en = cert.first_name_en;
+        this.first_name_ukr = cert.first_name_ukr;
+        this.form_number = cert.form_number;
+        this.inn = cert.inn;
+        this.last_name_ukr = cert.last_name_ukr;
+        this.ntz_number = cert.ntz_number;
+        this.second_name_ukr = cert.second_name_ukr;
+        this.status = cert.status;
+        this.training_direction = {
+          caption: cert.training_direction.direction_title,
+          value: cert.training_direction.id
+        };
+        this.valid_date = this.formatDate(cert.valid_date);
+      }))
       .catch((err) => {
         console.log(err);
       });
@@ -322,6 +352,13 @@ export default {
       this.$refs.birthdayDatepicker.save(date)
     },
 
+    resetFormatDate(date) {
+      if (!date) return null
+
+      const [day, month, year] = date.split('.')
+      return `${year}-${month}-${day}`
+    },
+
     saveCertificate() {
       let formData = {
         first_name_en: this.first_name_en,
@@ -329,27 +366,25 @@ export default {
         last_name_ukr: this.last_name_ukr,
         first_name_ukr: this.first_name_ukr,
         second_name_ukr: this.second_name_ukr,
-        born: this.born,
+        born: this.resetFormatDate(this.born),
         inn: this.inn,
-        date_of_issue: this.date_of_issue,
-        valid_date: this.valid_date,
+        date_of_issue: this.resetFormatDate(this.date_of_issue),
+        valid_date: this.resetFormatDate(this.valid_date),
         training_direction: this.training_direction.value,
         form_number: this.form_number,
         certf_number: this.certf_number,
         status: this.status
       };
 
+      let certId = (this.$route.params.id && this.$route.params.id === 'new') ? '' : this.$route.params.id;
+
       console.log(formData);
 
-      axios.post(`/mariner/certification/new/`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
+      axios.post(`/mariner/api/certificates/${certId}`, formData)
         .then(res => {
+
           console.log(res);
+          this.$router.push('/mariner/app/certificates');
         })
         .catch((err) => {
           console.log(err);

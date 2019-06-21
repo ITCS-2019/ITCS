@@ -249,7 +249,7 @@ export default {
 
           certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
         },
-        onCellClick: function (e) {
+        onCellClick: (e) => {
           let certsGrid = e.component,
               _this = this;
 
@@ -276,10 +276,15 @@ export default {
             certsGrid.clickDate = null;
             switch (e.column.dataField) {
               case 'certificateNumber':
-                window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
                 return;
               case 'sailor':
-                window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                if (gUserRole === 'НТЗ') {
+                  _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
+                }
+                else {
+                  window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                }
                 return;
               case 'trainigOrganisation':
                 window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
@@ -287,7 +292,7 @@ export default {
             }
 
             if (e.column.dataField) {
-              window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+              _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
             }
           }
 
@@ -431,7 +436,7 @@ export default {
   },
 
   mounted() {
-    axios.get(`/mariner/api/allCerts/`)
+    axios.get(`/mariner/api/certificates/`)
       .then(res => {
         let certs = res.data.certificates;
 
@@ -454,12 +459,12 @@ export default {
           }
 
           this.dataSource.push({
-            certificateId: cert.cert_id,
+            certificateId: cert.id,
             certificateNumber: cert.certf_number,
             blankNumber: cert.form_number,
             issueDate: cert.date_of_issue,
             validDate: cert.valid_date,
-            trainingDirection: cert.training_direction_title,
+            trainingDirection: cert.training_direction.direction_title,
             sailorId: cert.sailor_id,
             sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
             trainigOrganisation: cert.trainigOrganisation_name,
