@@ -85,12 +85,26 @@
 
             <!--Grid btns row right side-->
             <div>
-              <v-btn color="success" small>
+              <v-btn color="success"
+              small
+              v-on:click="handleCerts">
                 <v-icon>
                   mdi-file-move
                 </v-icon>
                 <span class="font-weight-bold ml-1">
                   В обробку
+                </span>
+              </v-btn>
+              <v-btn color="warning"
+              small
+              v-on:click="e => showModal('Видалити обранi сертифiкати?')"
+              class="ml-1"
+              :depressed="true">
+                <v-icon>
+                  mdi-trash-can
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Видалити
                 </span>
               </v-btn>
             </div>
@@ -100,6 +114,49 @@
         </material-card>
       </v-flex>
     </v-layout>
+
+    <!--Notifications-->
+    <v-snackbar :color="snackbarConfig.color"
+    :top="true"
+    v-model="snackbar"
+    dark>
+      <v-icon color="white"
+      class="mr-3">
+        {{snackbarConfig.icon}}
+      </v-icon>
+      <div>
+        {{snackbarConfig.message}}
+      </div>
+      <v-icon size="16"
+      v-on:click="snackbar = false">
+        mdi-close-circle
+      </v-icon>
+    </v-snackbar>
+
+    <!--Modal-->
+    <v-dialog v-model="modal" persistent max-width="290">
+      <v-card>
+        <v-card-title class="headline">
+          Пiдтвердiть дiю
+        </v-card-title>
+        <v-card-text>
+          {{modalConfig.message}}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1"
+          flat
+          v-on:click="removeCerts">
+            Так
+          </v-btn>
+          <v-btn color="red darken-1"
+          flat
+          v-on:click="modal = false">
+            Нi
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -107,6 +164,16 @@
 export default {
   data() {
     return {
+      modal: false,
+      modalConfig: {
+        message: null
+      },
+      snackbar: false,
+      snackbarConfig: {
+        color: null,
+        icon: null,
+        message: null
+      },
       exportType: null,
       clickDelay: undefined,
       dataSource: [],
@@ -236,7 +303,7 @@ export default {
             }
           }
         },
-        onContentReady: function(e) {
+        onContentReady: (e) => {
           function changePage(page) {
             e.component.pageIndex(page);
           }
@@ -363,7 +430,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     axios.get(`/mariner/api/allCerts/`)
       .then(res => {
         let certs = res.data.certificates;
@@ -413,6 +480,152 @@ export default {
   },
 
   methods: {
+    showModal(message = false) {
+      let grid = this.$refs.certsGrid.tableInstance,
+          selectedRows = grid.getSelectedRowsData();
+
+      this.modalConfig.message = message;
+
+      if (selectedRows.length > 0) {
+        let isInvalidData = false;
+
+        selectedRows.some((row) => {
+          if (row.status !== 'Чернетка') {
+            isInvalidData = true;
+            return true;
+          }
+        });
+
+        if (!isInvalidData) {
+          this.modal = true;
+        }
+        else {
+          this.snackbarConfig.icon = 'mdi-alert-circle';
+          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.message = 'Можливо видаляти тiльки сертифiкати зi статусом "Чернетка"!';
+          this.snackbar = true;
+        }
+      }
+      else {
+        this.snackbarConfig.icon = 'mdi-alert-circle';
+        this.snackbarConfig.color = 'red';
+        this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
+        this.snackbar = true;
+      }
+    },
+
+    removeCerts() {
+      let grid = this.$refs.certsGrid.tableInstance,
+          selectedRows = grid.getSelectedRowsData(),
+          sendRows = [];
+
+      this.modal = false;
+
+      selectedRows.some((row) => {
+        sendRows.push(row.certificateId);
+      });
+
+      axios.get(`/mariner/api/removeDraftCerts/`,
+      {
+        params: {
+          certIDs: sendRows.join(',')
+        }
+      })
+        .then(res => {
+          if (!res.error) {
+            this.snackbarConfig.icon = 'mdi-check-circle';
+            this.snackbarConfig.color = 'success';
+            this.snackbarConfig.message = 'Сертифiкати успiшно видаленi!';
+            this.snackbar = true;
+
+            // change status in grid without reload
+            let i = this.dataSource.length;
+
+            while (i--) {
+              if (sendRows.includes(this.dataSource[i].certificateId)) {
+                this.dataSource.splice(i, 1);
+              }
+            }
+            grid.refresh();
+          }
+          else {
+            this.snackbarConfig.icon = 'mdi-alert-circle';
+            this.snackbarConfig.color = 'red';
+            this.snackbarConfig.message = res.error_message;
+            this.snackbar = true;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    handleCerts() {
+      let grid = this.$refs.certsGrid.tableInstance,
+          selectedRows = grid.getSelectedRowsData();
+
+      if (selectedRows.length > 0) {
+        let isInvalidData = false,
+            sendRows = [];
+
+        selectedRows.some((row) => {
+          if (row.status !== 'Чернетка') {
+            isInvalidData = true;
+            return true;
+          }
+          else {
+            sendRows.push(row.certificateId);
+          }
+        });
+
+        if (!isInvalidData) {
+          axios.get(`/mariner/api/changeToReviewStatus/`,
+          {
+            params: {
+              certIDs: sendRows.join(',')
+            }
+          })
+            .then(res => {
+              if (!res.error) {
+                this.snackbarConfig.icon = 'mdi-check-circle';
+                this.snackbarConfig.color = 'success';
+                this.snackbarConfig.message = 'Сертифiкати успiшно вiдправленi в обробку!';
+                this.snackbar = true;
+
+                // change status in grid without reload
+                this.dataSource.forEach((dataItem) => {
+                  if (sendRows.includes(dataItem.certificateId)) {
+                    dataItem.status = 'Обробка';
+                  }
+                });
+                grid.refresh();
+              }
+              else {
+                this.snackbarConfig.icon = 'mdi-alert-circle';
+                this.snackbarConfig.color = 'red';
+                this.snackbarConfig.message = res.error_message;
+                this.snackbar = true;
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+        else {
+          this.snackbarConfig.icon = 'mdi-alert-circle';
+          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.message = 'Змiнити статус на "Обробка" можливо тiльки для сертифiкатiв зi статусом "Чернетка"!';
+          this.snackbar = true;
+        }
+      }
+      else {
+        this.snackbarConfig.icon = 'mdi-alert-circle';
+        this.snackbarConfig.color = 'red';
+        this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
+        this.snackbar = true;
+      }
+    },
+
     exportGrid(isSelection, exportType) {
       let grid = this.$refs.certsGrid.tableInstance;
 
@@ -421,6 +634,7 @@ export default {
     },
 
     printGrid(gridRef) {
+
       // TODO: Refactor to pure js
       let $grid = this.$refs[`${gridRef}`].tableInstance._$element,
           $head = $('.dx-datagrid-headers', $grid),
