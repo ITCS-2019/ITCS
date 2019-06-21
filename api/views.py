@@ -89,7 +89,7 @@ class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
     If user from training organisations return list of certificates of this organisation.
     If user from inspectors group return list of certificates exlude drafts status.
     """
-	queryset = Certificate.objects.order_by('id')
+	queryset = Certificate.objects.order_by('-id')
 	serializer_class = CertificateSerializer
 
 	def list(self, request):
@@ -97,13 +97,25 @@ class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		certsDataArr = []
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation)
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
 		elif request.user.groups.all()[0].name == 'Інспектор':
-			certs = Certificate.objects.exclude(status=0)
+			certs = Certificate.objects.exclude(status=0).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
 		else:
-			certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+			certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
 		serializer = CertificateSerializer(certs, many=True)
 		return Response({"certificates": serializer.data})
+
+	def create(self, request, format=None):
+		trainigOrganisation = TrainigOrganisation()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			print('organisation_name = ', request.user.profile.organization_name)
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		else:
+			print('Organisation ID = ' , request.data.get('trainigOrganisation'))
+		print('Direction ID = ', request.data.get('training_direction'))
+		return Response({"message": "Test POST data."}, status=200)
+
+
 
 """
 AJAX Requests
