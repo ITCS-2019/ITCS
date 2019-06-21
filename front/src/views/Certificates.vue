@@ -276,10 +276,15 @@ export default {
             certsGrid.clickDate = null;
             switch (e.column.dataField) {
               case 'certificateNumber':
-                window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+                _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
                 return;
               case 'sailor':
-                window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                if (gUserRole === 'НТЗ') {
+                  _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
+                }
+                else {
+                  window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                }
                 return;
               case 'trainigOrganisation':
                 window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
@@ -287,7 +292,7 @@ export default {
             }
 
             if (e.column.dataField) {
-              window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+              _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
             }
           }
 

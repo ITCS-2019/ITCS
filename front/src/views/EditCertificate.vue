@@ -377,8 +377,13 @@ export default {
       };
 
       let certId = (this.$route.params.id && this.$route.params.id === 'new') ? '' : this.$route.params.id;
+
+      console.log(formData);
+
       axios.post(`/mariner/api/certificates/${certId}`, formData)
         .then(res => {
+
+          console.log(res);
           this.$router.push('/mariner/app/certificates');
         })
         .catch((err) => {
