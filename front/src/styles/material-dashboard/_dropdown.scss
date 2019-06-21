@@ -20,7 +20,7 @@
     &:hover,
     &:focus,
     &:active {
-      @include dropdown-menu-color($brand-primary);
+      @include dropdown-menu-color($brand-info);
 
       &,
       .v-list__tile__title {
