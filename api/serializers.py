@@ -88,7 +88,6 @@ class TrainigOrganisationSerializer(serializers.ModelSerializer):
 
 class CertificateSerializer(serializers.ModelSerializer):
 	#links = serializers.SerializerMethodField('get_links')
-
 	class Meta:
 		model = Certificate
 		depth = 1
