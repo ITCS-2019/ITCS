@@ -11,6 +11,8 @@ from django.template.loader import render_to_string
 from rest_framework import authentication, permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import decorators
+
 
 from .serializers import UserSerializer, TrainigDirectionSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
 
@@ -30,7 +32,7 @@ import datetime
 """
 REST Requests
 """
-User = get_user_model()
+# User = get_user_model()
 
 class DefaultsMixin(object):
 	"""
@@ -83,15 +85,24 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = TrainigOrganisation.objects.all()
 	serializer_class = TrainigOrganisationSerializer
 
-class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
+class CertificateViewSet(viewsets.ModelViewSet):
 	"""
     Return a list of all certificates in DB.
     If user from training organisations return list of certificates of this organisation.
     If user from inspectors group return list of certificates exlude drafts status.
     """
+	
+	permission_classes = (permissions.IsAuthenticated,)
 	queryset = Certificate.objects.order_by('-id')
 	serializer_class = CertificateSerializer
 
+	# def get_permissions(self):
+	# 	if self.action == 'list':
+	# 		return [permissions.IsAuthenticated()]
+	# 	else:
+	# 		return [permissions.IsAuthenticated()]
+
+	# @decorators.action(detail = 0, permission_classes=(permissions.IsAuthenticated, ))
 	def list(self, request):
 		certs = Certificate()
 		certsDataArr = []
@@ -115,7 +126,18 @@ class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		print('Direction ID = ', request.data.get('training_direction'))
 		return Response({"message": "Test POST data."}, status=200)
 
-
+# class LogoutView(DefaultsMixin, APIView):
+# 	#authentication_classes = (authentication.TokenAuthentication,)
+# 	def get(self, request):
+# 		print(request.user)
+# 		#request.user.auth_token.delete()
+# 		try:
+# 			token = Token.objects.get(user=request.user)
+# 			cache.delete(token.key)
+# 			token.delete()
+# 		except Token.DoesNotExist:
+# 			pass
+# 		return Response(status=200)
 
 """
 AJAX Requests

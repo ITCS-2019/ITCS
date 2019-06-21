@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
 
+from itcs import settings
 from accounts.models import Profile
 
 from regulations.models import RegulationDoc
@@ -140,7 +141,8 @@ def update_user(request, userID):
 #/////////////////Vue Application//////////////////////
 @login_required(login_url="login/")
 def application(request):
-	return render(request, "application.html")
+	context = {'debugMode':settings.DEBUG,}
+	return render(request, "application.html", context)
 
 #/////////////////TrainigOrganisation//////////////////////
 @login_required(login_url="login/")
