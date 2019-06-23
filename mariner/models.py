@@ -77,6 +77,7 @@ class TrainigDirections(models.Model):
 
     price_id = models.IntegerField(null=True, blank=True)
     direction_title = models.CharField(max_length=200)
+    direction_title_eng = models.CharField(max_length=200, blank=True, null=True)
     level = models.CharField(max_length=20, choices=LEVELS, default='---')
     
     allow_functions = models.CharField(max_length=20, choices=ALLOWS, default='---')
@@ -99,23 +100,25 @@ admin.site.register(TrainigDirections, TrainigDirectionsDocAdmin)
 
 #//////////////////////////////////////////////////////////
 class TrainigOrganisation(models.Model):
-    #logo
+    logo_pic = models.ImageField(upload_to = 'orgLogo/', default = 'orgLogo/no-img.jpg', blank=True, null=True)
     organisation_id = models.CharField(max_length=140, blank=True)
     organisation_name = models.CharField(max_length=140, blank=True) #*
-    #mail_adress #*
-    #phone1 #*
-    #phone2
+    organisation_name_eng = models.CharField(max_length=140, blank=True) #*
+    mail_adress_ukr = models.CharField(max_length=140, blank=True)#*
+    mail_adress_eng = models.CharField(max_length=140, blank=True)#*
+    phone1 = models.CharField(max_length=140, blank=True) #*
+    phone2 = models.CharField(max_length=140, blank=True)
     orgnisation_email = models.CharField(max_length=140, blank=True) #*
-    #site_link
-    #checking_number
-    #bank_name
-    #mfo
-    #okpo
-    #inn
-    #nds_number
-    #head_full_name
-    #head_position
-    #accountant_full_name
+    site_link = models.CharField(max_length=140, blank=True)
+    checking_number = models.CharField(max_length=140, blank=True)
+    bank_name = models.CharField(max_length=140, blank=True)
+    mfo = models.CharField(max_length=140, blank=True)
+    okpo = models.CharField(max_length=140, blank=True)
+    inn = models.CharField(max_length=140, blank=True)
+    nds_number = models.CharField(max_length=140, blank=True)
+    head_full_name = models.CharField(max_length=140, blank=True)
+    head_position = models.CharField(max_length=140, blank=True)
+    accountant_full_name = models.CharField(max_length=140, blank=True)
     activated = models.DateField(null=True, blank=True)
     active_till = models.DateField(null=True, blank=True)
     directions = models.ManyToManyField(to='TrainigDirections', related_name='directioned', blank=True)
@@ -134,6 +137,7 @@ class TrainigOrganisationAdmin(admin.ModelAdmin):
     filter_horizontal = ('directions',)
 
 admin.site.register(TrainigOrganisation, TrainigOrganisationAdmin)        
+
 #//////////////////////////////////////////////////////////
 class Certificate(models.Model):
     DRF = 0
