@@ -1,9 +1,11 @@
 from django.urls import path
 
 from rest_framework.routers import DefaultRouter
+
 from . import views
 
 router = DefaultRouter()
+
 router.get_api_root_view().cls.__name__ = "ITCS"
 router.get_api_root_view().cls.__doc__ = "root api router"
 router.register(r'users', views.UserViewSet)
@@ -28,4 +30,5 @@ urlpatterns = [
     path('exportXLS/', views.exportXLS, name='api-exportXLS'),
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
     # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
+    # path('logout/', views.LogoutView.as_view(), name="api-logout"),
 ]

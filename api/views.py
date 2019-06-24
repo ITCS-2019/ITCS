@@ -8,9 +8,11 @@ from django.http import HttpResponse, JsonResponse
 
 from django.template.loader import render_to_string
 
-from rest_framework import authentication, permissions, viewsets
+from rest_framework import permissions, viewsets#, authentication 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import decorators
+
 
 from .serializers import UserSerializer, TrainigDirectionSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
 
@@ -30,19 +32,19 @@ import datetime
 """
 REST Requests
 """
-User = get_user_model()
+# User = get_user_model()
 
 class DefaultsMixin(object):
 	"""
 	Settings for view authentication, permissions, filtering and paginations.
 	"""
-	authentication_classes = (
-		authentication.BasicAuthentication,
-		authentication.TokenAuthentication,
-	)
-	permission_classes = (
-		permissions.IsAuthenticated,
-	)
+	# authentication_classes = (
+	# 	authentication.BasicAuthentication,
+	# 	authentication.TokenAuthentication,
+	# )
+	# permission_classes = (
+	# 	permissions.IsAuthenticated,
+	# )
 	paginate_by = 25
 	paginate_by_param = 'page_size'
 	max_paginate_by = 100
@@ -66,7 +68,6 @@ class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	serializer_class = TrainigDirectionSerializer
 
 	def list(self, request):
-		# request.user.auth_token.delete()
 		directions = TrainigDirections()
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
@@ -83,12 +84,14 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = TrainigOrganisation.objects.all()
 	serializer_class = TrainigOrganisationSerializer
 
-class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
+class CertificateViewSet(viewsets.ModelViewSet):
 	"""
     Return a list of all certificates in DB.
     If user from training organisations return list of certificates of this organisation.
     If user from inspectors group return list of certificates exlude drafts status.
     """
+	
+	permission_classes = (permissions.IsAuthenticated,)
 	queryset = Certificate.objects.order_by('-id')
 	serializer_class = CertificateSerializer
 
@@ -108,13 +111,75 @@ class CertificateViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	def create(self, request, format=None):
 		trainigOrganisation = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
-			print('organisation_name = ', request.user.profile.organization_name)
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 		else:
-			print('Organisation ID = ' , request.data.get('trainigOrganisation'))
-		print('Direction ID = ', request.data.get('training_direction'))
-		return Response({"message": "Test POST data."}, status=200)
-
+			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
+		#print('Direction ID = ', request.data.get('training_direction'))
+		trainigDirection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
+		certification = Certificate()
+		if request.data.get('inn') is not None:
+			dbSailor = Sailor.objects.filter(inn=request.data.get('inn')).first()
+			if dbSailor is not None:
+				if certification.inn != dbSailor.inn:
+					sailor = Sailor()
+					sailor.first_name_en = request.data.get('first_name_en')
+					sailor.last_name_en = request.data.get('last_name_en')
+					sailor.last_name_ukr = request.data.get('last_name_ukr')
+					sailor.first_name_ukr = request.data.get('first_name_ukr')
+					sailor.second_name_ukr = request.data.get('second_name_ukr')
+					sailor.born = request.data.get('born')
+					sailor.died = request.data.get('died')#?
+					sailor.inn = request.data.get('inn')
+					sailor.save()
+				else:
+					sailor = Sailor()
+					sailor = dbSailor
+					sailor.save()
+			else:
+				sailor = Sailor()
+				sailor.first_name_en = request.data.get('first_name_en')
+				sailor.last_name_en = request.data.get('last_name_en')
+				sailor.last_name_ukr = request.data.get('last_name_ukr')
+				sailor.first_name_ukr = request.data.get('first_name_ukr')
+				sailor.second_name_ukr = request.data.get('second_name_ukr')
+				sailor.born = request.data.get('born')
+				sailor.inn = request.data.get('inn')
+				sailor.save()
+		else:
+			sailor, created = Sailor.objects.get_or_create(
+			first_name_en = request.data.get('first_name_en'),
+			last_name_en = request.data.get('last_name_en'),
+			last_name_ukr = request.data.get('last_name_ukr'),
+			first_name_ukr = request.data.get('first_name_ukr'),
+			second_name_ukr = request.data.get('second_name_ukr'),
+			born = request.data.get('born'),
+			)
+			if created:
+				sailor.save()
+		certification.sailor = sailor
+		certification.trainigOrganisation = trainigOrganisation
+		certification.training_direction = trainigDirection
+		certification, created = Certificate.objects.get_or_create(
+			first_name_en = request.data.get('first_name_en'),
+			last_name_en = request.data.get('last_name_en'),
+			last_name_ukr = request.data.get('last_name_ukr'),
+			first_name_ukr = request.data.get('first_name_ukr'),
+			second_name_ukr = request.data.get('second_name_ukr'),
+			born = request.data.get('born'),
+			sailor = sailor,
+			trainigOrganisation = trainigOrganisation,
+			date_of_issue = request.data.get('date_of_issue'),
+			valid_date = request.data.get('valid_date'),
+			valid_type = request.data.get('valid_type'),
+			training_direction = trainigDirection,
+			status=request.data.get('status'),
+			certf_number=request.data.get('certf_number'),
+			form_number=request.data.get('form_number'),
+			)
+		if created:
+			certification.save()
+		
+		return Response({"message": "Add Certificate"}, status=200)
 
 
 """
@@ -260,25 +325,23 @@ def issuedCerts(request):
 def changeTrainigDirectionStatus(request):
 	trainingDirID = request.GET.get('certID')
 	dirStatus = request.GET.get('dirStatus')
-	#print(trainingDirID)
-	#rint(dirStatus)
+	hasError = False
+	errorMessage = "No Error"
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 		#print(trainigOrganisation.directions.get(id=trainingDirID))
 		direction = trainigOrganisation.directions.get(id=trainingDirID)
 		#print('Direction Status:')
-		#print(direction.status)
-		data = {
-			'error' : False,
-			'error_message' : "Test MODE",
-		}
-		return JsonResponse(data)
+		direction.status = dirStatus
+		direction.save()
 	else:
-		data = {
-			'error' : True,
-			'error_message' : "Test MODE",
-		}
-		return JsonResponse(data)
+		hasError = False
+		errorMessage = "Not Training Organisation"
+	data = {
+		'error' : hasError,
+		'error_message' : errorMessage,
+	}
+	return JsonResponse(data)
 
 def changeCertNumber(request):
 	certID = request.GET.get('certID')

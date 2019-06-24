@@ -59,6 +59,7 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 			'id',
 			'price_id',
 			'direction_title',
+			'direction_title_eng',
 			'level',
 			'allow_functions',
 			'price',
@@ -78,9 +79,27 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 class TrainigOrganisationSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = TrainigOrganisation
+		depth = 1
 		fields = (
+			'id',
+			'logo_pic',
 			'organisation_name',
+			'organisation_name_eng',
+			'mail_adress_ukr',
+			'mail_adress_eng',
+			'phone1',
+			'phone2',
 			'orgnisation_email',
+			'site_link',
+			'checking_number',
+			'bank_name',
+			'mfo',
+			'okpo',
+			'inn',
+			'nds_number',
+			'head_full_name',
+			'head_position',
+			'accountant_full_name',
 			'activated',
 			'active_till',
 			'directions',
