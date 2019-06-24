@@ -382,8 +382,6 @@ export default {
 
       axios.post(`/mariner/api/certificates/${certId}`, formData)
         .then(res => {
-
-          console.log(res);
           this.$router.push('/mariner/app/certificates');
         })
         .catch((err) => {

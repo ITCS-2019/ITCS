@@ -6,7 +6,6 @@
     <v-layout justify-center>
       <v-flex md12>
         <material-card>
-          
         </material-card>
         <material-card style="margin-top: 15px;">
           <OrganisationForm>
