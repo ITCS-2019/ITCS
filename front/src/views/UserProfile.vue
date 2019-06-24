@@ -71,7 +71,7 @@
         .then(res => {
           let userData = res.data;
 
-          console.log(res);
+          // console.log(res);
 
         })
         .catch((err) => {

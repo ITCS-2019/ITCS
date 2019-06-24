@@ -156,33 +156,33 @@ export default {
   mounted() {
     axios.get(`/mariner/api/organisations/`)
       .then(res => {
-        let organisationData = res.data;
+        let organizationData = res.data.organisations;
 
-        this.organization.id = res.data.id;
-        this.organization.organisation_name = res.data.organisation_name;
-        this.organization.organisation_name_eng = res.data.organisation_name_eng;
-        this.organization.mail_adress_ukr = res.data.mail_adress_ukr;
-        this.organization.mail_adress_eng = res.data.mail_adress_eng;
-        // this.organization.logo_pic = res.data.logo_pic;
-        this.organization.phone1 = res.data.phone1;
-        this.organization.phone2 = res.data.phone2;
-        this.organization.orgnisation_email = res.data.orgnisation_email;
-        this.organization.site_link = res.data.site_link;
-        this.organization.checking_number = res.data.checking_number;
-        this.organization.bank_name = res.data.bank_name;
-        this.organization.mfo = res.data.mfo;
-        this.organization.okpo = res.data.okpo;
-        this.organization.inn = res.data.inn;
-        this.organization.nds_number = res.data.nds_number;
-        this.organization.head_full_name = res.data.head_full_name;
-        this.organization.head_position = res.data.head_position;
-        this.organization.accountant_full_name = res.data.accountant_full_name;
-        this.organization.activated = res.data.activated;
-        this.organization.active_till = res.data.active_till;
-        this.langs[0].organization_name = res.data.organisation_name;
-        this.langs[1].organization_name = res.data.organisation_name_eng;
-        this.langs[0].mail_adress = res.data.mail_adress_ukr;
-        this.langs[1].mail_adress = res.data.mail_adress_eng;
+        this.organization.id = organizationData.id;
+        this.organization.organisation_name = organizationData.organisation_name;
+        this.organization.organisation_name_eng = organizationData.organisation_name_eng;
+        this.organization.mail_adress_ukr = organizationData.mail_adress_ukr;
+        this.organization.mail_adress_eng = organizationData.mail_adress_eng;
+        // this.organization.logo_pic = organizationData.logo_pic;
+        this.organization.phone1 = organizationData.phone1;
+        this.organization.phone2 = organizationData.phone2;
+        this.organization.orgnisation_email = organizationData.orgnisation_email;
+        this.organization.site_link = organizationData.site_link;
+        this.organization.checking_number = organizationData.checking_number;
+        this.organization.bank_name = organizationData.bank_name;
+        this.organization.mfo = organizationData.mfo;
+        this.organization.okpo = organizationData.okpo;
+        this.organization.inn = organizationData.inn;
+        this.organization.nds_number = organizationData.nds_number;
+        this.organization.head_full_name = organizationData.head_full_name;
+        this.organization.head_position = organizationData.head_position;
+        this.organization.accountant_full_name = organizationData.accountant_full_name;
+        this.organization.activated = organizationData.activated;
+        this.organization.active_till = organizationData.active_till;
+        this.langs[0].organization_name = organizationData.organisation_name;
+        this.langs[1].organization_name = organizationData.organisation_name_eng;
+        this.langs[0].mail_adress = organizationData.mail_adress_ukr;
+        this.langs[1].mail_adress = organizationData.mail_adress_eng;
       })
       .catch((err) => {
         console.log(err);
@@ -196,7 +196,6 @@ export default {
       this.organization.mail_adress_ukr = this.langs[0].mail_adress;
       this.organization.mail_adress_eng = this.langs[1].mail_adress;
 
-      console.log(this.organization);
       axios.put(`/mariner/api/organisations/${this.organization.id}/`, this.organization)
         .then(res => {
           console.log(res);
