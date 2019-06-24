@@ -11,4 +11,5 @@ regulations/__pycache__/*
 regulations/migrations/*
 .DS_Store
 itcs/*
+front/webpack-stats.json
 

@@ -67,17 +67,16 @@ export default {
           switch (data.column.dataField) {
             case 'status':
               let grid = data.component,
-                      newStatus = (~~data.data.status === 0) ? 1 : 0;
+                  newStatus = (~~data.data.status === 0) ? 1 : 0;
 
-              $.ajax({
-                url: '/mariner/api/changeTrainigDirectionStatus/',
-                method: 'GET',
-                data: {
+              axios.get(`/mariner/api/changeTrainigDirectionStatus/`,
+              {
+                params: {
                   certID: data.data.id,
                   dirStatus: newStatus
-                },
-                dataType: 'json',
-                success: function (res) {
+                }
+              })
+                .then(res => {
                   let trainigDirections = grid.option('dataSource');
 
                   trainigDirections.some((direction) => {
@@ -86,8 +85,10 @@ export default {
                     }
                   });
                   grid.option('dataSource', trainigDirections);
-                }
-              });
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
               break;
           }
         },
@@ -246,11 +247,9 @@ export default {
       .then(res => {
         let directions = res.data.trainigDirections;
 
-        console.log(directions);
-
         directions.forEach((direction) => {
           this.dataSource.push({
-            id: direction.id,
+            id: direction.direction_id,
             price_id: direction.price_id,
             direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
             direction_reviewCertCount: direction.direction_reviewCertCount,
@@ -261,7 +260,6 @@ export default {
             status: direction.status
           });
         });
-
 
         let grid = this.$refs.directionsGrid.tableInstance,
             selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
