@@ -6,6 +6,34 @@
     <v-layout justify-center>
       <v-flex md12>
         <material-card>
+          <v-form>
+            <v-container py-0>
+              <v-layout wrap>
+                <v-flex xs12 md6>
+                  <v-text-field label="Логiн"
+                  v-model="user.username"/>
+                </v-flex>
+                <v-flex xs12 md6>
+                  <v-text-field label="ПIБ"
+                  v-model="user.full_name"/>
+                </v-flex>
+                <v-flex xs12 md12>
+                  <v-text-field label="Назва організації"
+                  v-model="user.profile.organization_name"/>
+                </v-flex>
+              </v-layout>
+              <v-layout wrap>
+                <v-flex xs12
+                text-xs-right>
+                  <v-btn class="mx-0 font-weight-light ml-1"
+                  v-on:click="saveProfile"
+                  color="success">
+                    Зберегти
+                  </v-btn>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-form>
         </material-card>
         <material-card style="margin-top: 15px;">
           <OrganisationForm>
@@ -26,12 +54,29 @@
 
     data() {
       return {
-        userRole: gUserRole
+        userRole: gUserRole,
+        user: {
+          id: null,
+          username: null,
+          full_name: null,
+          profile: {
+            organization_name: null
+          }
+        }
       }
     },
 
-    created() {
+    mounted() {
+      axios.get(`/mariner/api/users/2/`)
+        .then(res => {
+          let userData = res.data;
 
+          console.log(res);
+
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     methods: {

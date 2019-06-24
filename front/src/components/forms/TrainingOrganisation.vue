@@ -85,12 +85,12 @@
             <v-layout wrap>
                 <v-flex xs12
                 text-xs-right>
-                    <v-btn class="mx-0"
-                    v-on:click="$router.go(-1)"
-                    color="success"
-                    flat>
-                        Вiдхилити
-                    </v-btn>
+                    <!--<v-btn class="mx-0"-->
+                    <!--v-on:click="$router.go(-1)"-->
+                    <!--color="success"-->
+                    <!--flat>-->
+                        <!--Вiдхилити-->
+                    <!--</v-btn>-->
                     <v-btn class="mx-0 font-weight-light ml-1"
                     v-on:click="saveOrganizationInfo"
                     color="success">
@@ -154,7 +154,7 @@ export default {
   },
 
   mounted() {
-    axios.get(`/mariner/api/organisations/1`)
+    axios.get(`/mariner/api/organisations/`)
       .then(res => {
         let organisationData = res.data;
 
