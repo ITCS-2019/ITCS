@@ -2,17 +2,18 @@
     <v-form>
         <v-container py-0>
             <v-tabs fixed-tabs>
-                <v-tab v-for="lang in organisation.langs"
+                <v-tab v-for="lang in langs"
                 :key="lang.lang">
                     {{lang.lang}}
                 </v-tab>
                 <v-tab-item
-                v-for="lang in organisation.langs"
+                v-for="lang in langs"
                 :key="lang.lang">
                     <v-layout wrap>
                         <v-flex xs12>
-                            <v-text-field :label="(lang.lang === 'Українська') ? 'Назва НТЗ' : 'Training Organisation name'"
-                            v-model="lang.organisation_name"/>
+                            <v-text-field :label="(lang.lang === 'Українська') ? 'Назва НТЗ' : 'Training organization name'"
+                            v-model="lang.organization_name"
+                            :readonly="false"/>
                             <v-text-field :label="(lang.lang === 'Українська') ? 'Адреса' : 'Address'"
                             v-model="lang.mail_adress"/>
                         </v-flex>
@@ -22,75 +23,76 @@
             <v-layout wrap>
                 <v-flex xs12 md6>
                     <v-text-field label="Телефон"
-                    v-model="organisation.phone1"
+                    v-model="organization.phone1"
                     mask="(###)### - ## - ##"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="Додатковий телефон"
-                    v-model="organisation.phone1"
+                    v-model="organization.phone2"
                     mask="(###)### - ## - ##"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="E-mail"
-                    v-model="organisation.orgnisation_email"/>
+                    v-model="organization.orgnisation_email"/>
                     <!--<v-text-field label="Email адреса"-->
-                    <!--v-model="lang.organisation_name"-->
+                    <!--v-model="lang.organization_name"-->
                     <!--prepend-inner-icon="mdi-email-outline"/>-->
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="Сайт"
-                    v-model="organisation.site_link"/>
+                    v-model="organization.site_link"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="№ Р/рахунок"
-                    v-model="organisation.checking_number"/>
+                    v-model="organization.checking_number"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="Назва банку"
-                    v-model="organisation.bank_name"/>
+                    v-model="organization.bank_name"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="МФО"
-                    v-model="organisation.mfo"
+                    v-model="organization.mfo"
                     mask="### ###"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="ЄДРПОУ"
-                    v-model="organisation.okpo"
+                    v-model="organization.okpo"
                     mask="## ## ## ##"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="ІПН"
-                    v-model="organisation.inn"
+                    v-model="organization.inn"
                     mask="#### #### ####"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="№ свiдоцтва ПДВ"
-                    v-model="organisation.nds_number"/>
+                    v-model="organization.nds_number"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="ПIБ керiвника"
-                    v-model="organisation.head_full_name"/>
+                    v-model="organization.head_full_name"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="Посада керiвника"
-                    v-model="organisation.head_position"/>
+                    v-model="organization.head_position"/>
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="ПIБ Бухгалтера"
-                    v-model="organisation.accountant_full_name"/>
+                    v-model="organization.accountant_full_name"/>
                 </v-flex>
             </v-layout>
             <v-layout wrap>
                 <v-flex xs12
                 text-xs-right>
-                    <v-btn class="mx-0"
-                    v-on:click="$router.go(-1)"
-                    color="success"
-                    flat>
-                        Вiдхилити
-                    </v-btn>
+                    <!--<v-btn class="mx-0"-->
+                    <!--v-on:click="$router.go(-1)"-->
+                    <!--color="success"-->
+                    <!--flat>-->
+                        <!--Вiдхилити-->
+                    <!--</v-btn>-->
                     <v-btn class="mx-0 font-weight-light ml-1"
+                    v-on:click="saveOrganizationInfo"
                     color="success">
                         Зберегти
                     </v-btn>
@@ -102,9 +104,9 @@
 
 <script>
 export default {
-  name: 'TrainingOrganisationInfo',
+  name: 'TrainingorganizationInfo',
   props: {
-    organisationData: {
+    organizationData: {
       type: Object,
       required: false,
       default: () => {}
@@ -113,8 +115,12 @@ export default {
 
   data(){
     return {
-      organisation: {
+      organization: {
         id: null,
+        organisation_name: null,
+        organisation_name_eng: null,
+        mail_adress_ukr: null,
+        mail_adress_eng: null,
         logo_pic: null,
         phone1: null,
         phone2: null,
@@ -130,25 +136,74 @@ export default {
         head_position: null,
         accountant_full_name: null,
         activated: null,
-        active_till: null,
-        langs: [
-          {
-            lang: 'Українська',
-            organisation_name: null,
-            mail_adress: null
-          },
-          {
-            lang: 'Англiйська',
-            organisation_name: null,
-            mail_adress: null
-          }
-        ]
-      }
+        active_till: null
+      },
+      langs: [
+        {
+          lang: 'Українська',
+          organization_name: null,
+          mail_adress: null
+        },
+        {
+          lang: 'Англiйська',
+          organization_name: null,
+          mail_adress: null
+        }
+      ]
     }
   },
 
   mounted() {
+    axios.get(`/mariner/api/organisations/`)
+      .then(res => {
+        let organizationData = res.data.organisations;
 
+        this.organization.id = organizationData.id;
+        this.organization.organisation_name = organizationData.organisation_name;
+        this.organization.organisation_name_eng = organizationData.organisation_name_eng;
+        this.organization.mail_adress_ukr = organizationData.mail_adress_ukr;
+        this.organization.mail_adress_eng = organizationData.mail_adress_eng;
+        // this.organization.logo_pic = organizationData.logo_pic;
+        this.organization.phone1 = organizationData.phone1;
+        this.organization.phone2 = organizationData.phone2;
+        this.organization.orgnisation_email = organizationData.orgnisation_email;
+        this.organization.site_link = organizationData.site_link;
+        this.organization.checking_number = organizationData.checking_number;
+        this.organization.bank_name = organizationData.bank_name;
+        this.organization.mfo = organizationData.mfo;
+        this.organization.okpo = organizationData.okpo;
+        this.organization.inn = organizationData.inn;
+        this.organization.nds_number = organizationData.nds_number;
+        this.organization.head_full_name = organizationData.head_full_name;
+        this.organization.head_position = organizationData.head_position;
+        this.organization.accountant_full_name = organizationData.accountant_full_name;
+        this.organization.activated = organizationData.activated;
+        this.organization.active_till = organizationData.active_till;
+        this.langs[0].organization_name = organizationData.organisation_name;
+        this.langs[1].organization_name = organizationData.organisation_name_eng;
+        this.langs[0].mail_adress = organizationData.mail_adress_ukr;
+        this.langs[1].mail_adress = organizationData.mail_adress_eng;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+
+  methods: {
+    saveOrganizationInfo() {
+      this.organization.organisation_name = this.langs[0].organization_name;
+      this.organization.organisation_name_eng = this.langs[1].organization_name;
+      this.organization.mail_adress_ukr = this.langs[0].mail_adress;
+      this.organization.mail_adress_eng = this.langs[1].mail_adress;
+
+      axios.put(`/mariner/api/organisations/${this.organization.id}/`, this.organization)
+        .then(res => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 }
 </script>

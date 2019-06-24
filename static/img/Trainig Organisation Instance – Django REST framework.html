@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)http://127.0.0.1:8000/mariner/api/organisations/1/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+      
+        
+        <meta name="robots" content="NONE,NOARCHIVE">
+      
+
+      <title>Trainig Organisation Instance – Django REST framework</title>
+
+      
+        
+          <link rel="stylesheet" type="text/css" href="./Trainig Organisation Instance – Django REST framework_files/bootstrap.min.css">
+          <link rel="stylesheet" type="text/css" href="./Trainig Organisation Instance – Django REST framework_files/bootstrap-tweaks.css">
+        
+
+        <link rel="stylesheet" type="text/css" href="./Trainig Organisation Instance – Django REST framework_files/prettify.css">
+        <link rel="stylesheet" type="text/css" href="./Trainig Organisation Instance – Django REST framework_files/default.css">
+        
+      
+
+    
+  </head>
+
+  
+  <body class="" cz-shortcut-listen="true">
+
+    <div class="wrapper">
+      
+        <div class="navbar navbar-static-top navbar-inverse" role="navigation" aria-label="navbar">
+          <div class="container">
+            <span>
+              
+                <a class="navbar-brand" rel="nofollow" href="https://www.django-rest-framework.org/">
+                    Django REST framework
+                </a>
+              
+            </span>
+            <ul class="nav navbar-nav pull-right">
+              
+                
+                  <li class="navbar-text">MarineProService</li>
+                
+              
+            </ul>
+          </div>
+        </div>
+      
+
+      <div class="container">
+        
+          <ul class="breadcrumb">
+            
+              
+                <li><a href="http://127.0.0.1:8000/mariner/api/">Itcs</a></li>
+              
+            
+              
+                <li><a href="http://127.0.0.1:8000/mariner/api/organisations/">Trainig Organisation List</a></li>
+              
+            
+              
+                <li class="active"><a href="http://127.0.0.1:8000/mariner/api/organisations/1/">Trainig Organisation Instance</a></li>
+              
+            
+          </ul>
+        
+
+        <!-- Content -->
+        <div id="content" role="main" aria-label="content">
+          
+
+          <div class="region" aria-label="request form">
+          
+          
+          
+            <form id="get-form" class="pull-right">
+              <fieldset>
+                
+                  <div class="btn-group format-selection">
+                    <a class="btn btn-primary js-tooltip" href="http://127.0.0.1:8000/mariner/api/organisations/1/" rel="nofollow" title="" data-original-title="Make a GET request on the Trainig Organisation Instance resource">GET</a>
+
+                    <button class="btn btn-primary dropdown-toggle js-tooltip" data-toggle="dropdown" title="" data-original-title="Specify a format for the GET request">
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      
+                        <li>
+                          <a class="js-tooltip format-option" href="http://127.0.0.1:8000/mariner/api/organisations/1/?format=json" rel="nofollow" title="" data-original-title="Make a GET request on the Trainig Organisation Instance resource with the format set to `json`">json</a>
+                        </li>
+                      
+                        <li>
+                          <a class="js-tooltip format-option" href="http://127.0.0.1:8000/mariner/api/organisations/1/?format=api" rel="nofollow" title="" data-original-title="Make a GET request on the Trainig Organisation Instance resource with the format set to `api`">api</a>
+                        </li>
+                      
+                    </ul>
+                  </div>
+                
+              </fieldset>
+            </form>
+          
+
+          
+            <form class="button-form" action="http://127.0.0.1:8000/mariner/api/organisations/1/" data-method="OPTIONS">
+              <button class="btn btn-primary js-tooltip" title="" data-original-title="Make an OPTIONS request on the Trainig Organisation Instance resource">OPTIONS</button>
+            </form>
+          
+
+          
+            <button class="btn btn-danger button-form js-tooltip" title="" data-toggle="modal" data-target="#deleteModal" data-original-title="Make a DELETE request on the Trainig Organisation Instance resource">DELETE</button>
+
+            <!-- Delete Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h4 class="text-center">Are you sure you want to delete this Trainig Organisation Instance?</h4>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <form class="button-form" action="http://127.0.0.1:8000/mariner/api/organisations/1/" data-method="DELETE">
+                      <button class="btn btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+
+          
+
+          
+
+          
+          </div>
+
+            <div class="content-main" role="main" aria-label="main content">
+              <div class="page-header">
+                <h1>Trainig Organisation Instance</h1>
+              </div>
+              <div style="float:left">
+                
+                  <p>Return a list of all training organisations.</p>
+                
+              </div>
+
+              
+
+              <div class="request-info" style="clear: both" aria-label="request info">
+                <pre class="prettyprint"><b><span class="pln">GET</span></b><span class="pln"> </span><span class="pun">/</span><span class="pln">mariner</span><span class="pun">/</span><span class="pln">api</span><span class="pun">/</span><span class="pln">organisations</span><span class="pun">/</span><span class="lit">1</span><span class="pun">/</span></pre>
+              </div>
+
+              <div class="response-info" aria-label="response info">
+                <pre class="prettyprint"><span class="meta nocode"><b>HTTP 200 OK</b>
+<b>Allow:</b> <span class="lit">GET, PUT, PATCH, DELETE, HEAD, OPTIONS</span>
+<b>Content-Type:</b> <span class="lit">application/json</span>
+<b>Vary:</b> <span class="lit">Accept</span>
+
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"logo_pic"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"</span><a href="http://127.0.0.1:8000/media/orgLogo/no-img.jpg" rel="nofollow"><span class="str">http://127.0.0.1:8000/media/orgLogo/no-img.jpg</span></a><span class="str">"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"organisation_name"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Приватне підприємство \"Ізмаїльський морський тренажерний центр \"Марін Про Сервіс\""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"organisation_name_eng"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"mail_adress_ukr"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"mail_adress_eng"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"phone1"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"phone2"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"orgnisation_email"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"site_link"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"checking_number"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"bank_name"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"mfo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"okpo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"inn"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"nds_number"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"head_full_name"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"head_position"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"accountant_full_name"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"activated"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2019-04-10"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"active_till"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2019-08-28"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"directions"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"price_id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"direction_title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Автоматизовані ідентифікаційні системи"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"direction_title_eng"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"level"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Отримання"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"allow_functions"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"---"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"price"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"range_numbers"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+                </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">3</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">4</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">5</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">6</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">7</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">8</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">9</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">10</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">11</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">12</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">13</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">14</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">15</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">16</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">17</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">18</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">19</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">20</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">21</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">22</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">23</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">24</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">25</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">26</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">27</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">28</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">29</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">30</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">31</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">32</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">33</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">34</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">35</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">36</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">37</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">38</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">39</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">40</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">41</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">42</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">43</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">44</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">45</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">46</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">47</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">48</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">49</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">50</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">51</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">52</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">53</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">54</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">55</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">56</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">57</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">58</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">59</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">60</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">61</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">62</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">63</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">64</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">65</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">66</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">67</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">68</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">69</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">70</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">71</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">72</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">73</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">74</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">75</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">76</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">77</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">78</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">79</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">80</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">81</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">82</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">83</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">84</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">85</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">86</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">87</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">88</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">89</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">90</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">91</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">92</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">93</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">94</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">95</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">96</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">97</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">98</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">99</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">100</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">101</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">102</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">103</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">104</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">105</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">106</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">107</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">108</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">109</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">110</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">111</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">112</span><span class="pun">,</span><span class="pln">
+                </span><span class="lit">113</span><span class="pln">
+            </span><span class="pun">]</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"price_id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"direction_title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Виконання обов`язків членів екіпажу з охорони судна"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"direction_title_eng"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"level"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Отримання"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"allow_functions"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"---"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"price"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"range_numbers"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[]</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">3</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"price_id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">25</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"direction_title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Підготовка з судноводіння з використанням радіолокатора, радіолокаційної прокладки та використанням ЗАРП, з роботи в колективі на містку, з пошуку та порятунку"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"direction_title_eng"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"level"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Підтвердження"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"allow_functions"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Управлiння"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"price"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"range_numbers"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[]</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">}</span></pre>
+              </div>
+            </div>
+
+            
+              
+
+              
+                <div class="tabbable">
+                  
+                    <ul class="nav nav-tabs form-switcher">
+                      <li class="active">
+                        <a name="html-tab" href="http://127.0.0.1:8000/mariner/api/organisations/1/#put-object-form" data-toggle="tab" aria-expanded="true">HTML form</a>
+                      </li>
+                      <li>
+                        <a name="raw-tab" href="http://127.0.0.1:8000/mariner/api/organisations/1/#put-generic-content-form" data-toggle="tab">Raw data</a>
+                      </li>
+                    </ul>
+                  
+
+                  <div class="well tab-content">
+                    
+                      <div class="tab-pane active" id="put-object-form">
+                        <form action="http://127.0.0.1:8000/mariner/api/organisations/1/" data-method="PUT" enctype="multipart/form-data" class="form-horizontal" novalidate="">
+                          <fieldset>
+                            
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Logo pic
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="logo_pic" type="file" value="http://127.0.0.1:8000/media/orgLogo/no-img.jpg">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Organisation name
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="organisation_name" class="form-control" type="text" value="Приватне підприємство &quot;Ізмаїльський морський тренажерний центр &quot;Марін Про Сервіс&quot;">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Organisation name eng
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="organisation_name_eng" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Mail adress ukr
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="mail_adress_ukr" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Mail adress eng
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="mail_adress_eng" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Phone1
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="phone1" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Phone2
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="phone2" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Orgnisation email
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="orgnisation_email" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Site link
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="site_link" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Checking number
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="checking_number" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Bank name
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="bank_name" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Mfo
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="mfo" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Okpo
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="okpo" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Inn
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="inn" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Nds number
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="nds_number" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Head full name
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="head_full_name" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Head position
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="head_position" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Accountant full name
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="accountant_full_name" class="form-control" type="text" value="">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Activated
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="activated" class="form-control" type="date" value="2019-04-10">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+    <div class="form-group ">
+  
+    <label class="col-sm-2 control-label ">
+      Active till
+    </label>
+  
+
+  <div class="col-sm-10">
+    <input name="active_till" class="form-control" type="date" value="2019-08-28">
+
+    
+
+    
+  </div>
+</div>
+
+  
+
+  
+
+
+                            <div class="form-actions">
+                              <button class="btn btn-primary js-tooltip" title="" data-original-title="Make a PUT request on the Trainig Organisation Instance resource">PUT</button>
+                            </div>
+                          </fieldset>
+                        </form>
+                      </div>
+                    
+
+                    <div class="tab-pane" id="put-generic-content-form">
+                      
+                        <form action="http://127.0.0.1:8000/mariner/api/organisations/1/" data-method="PUT" class="form-horizontal">
+                          <fieldset>
+                            
+
+
+  <div class="form-group">
+    <label for="id__content_type" class="col-sm-2 control-label">Media type:</label>
+    <div class="col-sm-10">
+      <select name="_content_type" data-override="content-type" id="id__content_type" class="form-control">
+  <option value="application/json" selected="">application/json</option>
+
+  <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+
+  <option value="multipart/form-data">multipart/form-data</option>
+
+</select>
+      <span class="help-block"></span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="id__content" class="col-sm-2 control-label">Content:</label>
+    <div class="col-sm-10">
+      <textarea name="_content" cols="40" rows="10" data-override="content" id="id__content" class="form-control">{
+    "id": 1,
+    "logo_pic": "http://127.0.0.1:8000/media/orgLogo/no-img.jpg",
+    "organisation_name": "Приватне підприємство \"Ізмаїльський морський тренажерний центр \"Марін Про Сервіс\"",
+    "organisation_name_eng": "",
+    "mail_adress_ukr": "",
+    "mail_adress_eng": "",
+    "phone1": "",
+    "phone2": "",
+    "orgnisation_email": "",
+    "site_link": "",
+    "checking_number": "",
+    "bank_name": "",
+    "mfo": "",
+    "okpo": "",
+    "inn": "",
+    "nds_number": "",
+    "head_full_name": "",
+    "head_position": "",
+    "accountant_full_name": "",
+    "activated": "2019-04-10",
+    "active_till": "2019-08-28",
+    "directions": [
+        {
+            "id": 1,
+            "price_id": 1,
+            "direction_title": "Автоматизовані ідентифікаційні системи",
+            "direction_title_eng": null,
+            "level": "Отримання",
+            "allow_functions": "---",
+            "price": null,
+            "status": 0,
+            "range_numbers": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32,
+                33,
+                34,
+                35,
+                36,
+                37,
+                38,
+                39,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                46,
+                47,
+                48,
+                49,
+                50,
+                51,
+                52,
+                53,
+                54,
+                55,
+                56,
+                57,
+                58,
+                59,
+                60,
+                61,
+                62,
+                63,
+                64,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                71,
+                72,
+                73,
+                74,
+                75,
+                76,
+                77,
+                78,
+                79,
+                80,
+                81,
+                82,
+                83,
+                84,
+                85,
+                86,
+                87,
+                88,
+                89,
+                90,
+                91,
+                92,
+                93,
+                94,
+                95,
+                96,
+                97,
+                98,
+                99,
+                100,
+                101,
+                102,
+                103,
+                104,
+                105,
+                106,
+                107,
+                108,
+                109,
+                110,
+                111,
+                112,
+                113
+            ]
+        },
+        {
+            "id": 2,
+            "price_id": 2,
+            "direction_title": "Виконання обов`язків членів екіпажу з охорони судна",
+            "direction_title_eng": null,
+            "level": "Отримання",
+            "allow_functions": "---",
+            "price": null,
+            "status": 0,
+            "range_numbers": []
+        },
+        {
+            "id": 3,
+            "price_id": 25,
+            "direction_title": "Підготовка з судноводіння з використанням радіолокатора, радіолокаційної прокладки та використанням ЗАРП, з роботи в колективі на містку, з пошуку та порятунку",
+            "direction_title_eng": null,
+            "level": "Підтвердження",
+            "allow_functions": "Управлiння",
+            "price": null,
+            "status": 0,
+            "range_numbers": []
+        }
+    ]
+}</textarea>
+      <span class="help-block"></span>
+    </div>
+  </div>
+
+
+                            <div class="form-actions">
+                              
+                                <button class="btn btn-primary js-tooltip" title="" data-original-title="Make a PUT request on the Trainig Organisation Instance resource">PUT</button>
+                              
+                              
+                              <button data-method="PATCH" class="btn btn-primary js-tooltip" title="" data-original-title="Make a PATCH request on the Trainig Organisation Instance resource">PATCH</button>
+                                
+                            </div>
+                          </fieldset>
+                        </form>
+                      
+                    </div>
+                  </div>
+                </div>
+              
+            
+          
+        </div><!-- /.content -->
+      </div><!-- /.container -->
+    </div><!-- ./wrapper -->
+
+    
+
+    
+      <script>
+        window.drf = {
+          csrfHeaderName: "X-CSRFTOKEN",
+          csrfToken: "iXrtNPOZAsfJXbgvAQkRmTT4FVMHQSbVbyDjU3UjiCIZ7Opb1gFP9h7Emjv1D8LU"
+        };
+      </script>
+      <script src="./Trainig Organisation Instance – Django REST framework_files/jquery-3.3.1.min.js"></script>
+      <script src="./Trainig Organisation Instance – Django REST framework_files/ajax-form.js"></script>
+      <script src="./Trainig Organisation Instance – Django REST framework_files/csrf.js"></script>
+      <script src="./Trainig Organisation Instance – Django REST framework_files/bootstrap.min.js"></script>
+      <script src="./Trainig Organisation Instance – Django REST framework_files/prettify-min.js"></script>
+      <script src="./Trainig Organisation Instance – Django REST framework_files/default.js"></script>
+      <script>
+        $(document).ready(function() {
+          $('form').ajaxForm();
+        });
+      </script>
+    
+
+  
+  
+
+</body></html>
