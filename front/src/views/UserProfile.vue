@@ -3,9 +3,12 @@
   fluid
   grid-list-xl
   pt-0>
-    <v-layout justify-center wrap>
+    <v-layout justify-center>
       <v-flex md12>
         <material-card>
+          
+        </material-card>
+        <material-card style="margin-top: 15px;">
           <OrganisationForm>
           </OrganisationForm>
         </material-card>
