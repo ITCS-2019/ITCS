@@ -243,15 +243,15 @@ export default {
   },
 
   mounted() {
-    axios.get(`/mariner/api/directions/`)
+    axios.get(`/mariner/api/directionsInfo/`)
       .then(res => {
-        let directions = res.data.directions;
+        let directions = res.data.trainigDirections;
 
         directions.forEach((direction) => {
           this.dataSource.push({
-            id: direction.id,
+            id: direction.direction_id,
             price_id: direction.price_id,
-            direction_title: direction.direction_title,
+            direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
             direction_reviewCertCount: direction.direction_reviewCertCount,
             direction_issuedCertCount: direction.direction_issuedCertCount,
             direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
