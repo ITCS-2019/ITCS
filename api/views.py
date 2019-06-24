@@ -81,9 +81,19 @@ class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	"""
     Return a list of all training organisations.
+    If user from training organisations return organisation of user.
     """
 	queryset = TrainigOrganisation.objects.all()
 	serializer_class = TrainigOrganisationSerializer
+
+	def list(self, request):
+		organisations = TrainigOrganisation()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			organisations = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		else:
+			organisations = TrainigOrganisation.objects.all()
+		serializer = TrainigOrganisationSerializer(organisations)
+		return Response({"organisations": serializer.data})
 
 class CertificateViewSet(viewsets.ModelViewSet):
 	"""
