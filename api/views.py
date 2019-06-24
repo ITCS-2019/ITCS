@@ -49,6 +49,18 @@ class DefaultsMixin(object):
 	paginate_by_param = 'page_size'
 	max_paginate_by = 100
 
+class CurrentUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
+	"""
+    Returns information about cerrent user.
+    """
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+
+	def list(self, request):
+		current_user = User.objects.get(id = request.user.id)
+		serializer = UserSerializer(current_user)
+		return Response({"user": serializer.data})
+
 class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 	#lookup_field = User.USERNAME_FIELD
 	#lookup_url_kwarg = User.USERNAME_FIELD

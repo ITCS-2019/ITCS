@@ -8,6 +8,7 @@ router = DefaultRouter()
 
 router.get_api_root_view().cls.__name__ = "ITCS"
 router.get_api_root_view().cls.__doc__ = "root api router"
+router.register(r'user', views.CurrentUserViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'sailors', views.SailorViewSet)
 router.register(r'directions', views.TrainigDirectionViewSet)
