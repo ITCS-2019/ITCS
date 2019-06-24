@@ -49,10 +49,10 @@ class DefaultsMixin(object):
 	paginate_by_param = 'page_size'
 	max_paginate_by = 100
 
-class UserViewSet(DefaultsMixin, viewsets.ReadOnlyModelViewSet):
-	lookup_field = User.USERNAME_FIELD
-	lookup_url_kwarg = User.USERNAME_FIELD
-	queryset = User.objects.order_by(User.USERNAME_FIELD)
+class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
+	#lookup_field = User.USERNAME_FIELD
+	#lookup_url_kwarg = User.USERNAME_FIELD
+	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
 class SailorViewSet(DefaultsMixin, viewsets.ModelViewSet):
@@ -76,6 +76,7 @@ class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			directions = TrainigDirections.objects.all()
 		serializer = TrainigDirectionSerializer(directions, many=True)
 		return Response({"directions": serializer.data})
+
 
 class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	"""

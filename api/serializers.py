@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from mariner.models import Certificate, TrainigOrganisation, TrainigDirections, Sailor
+from accounts.models import Profile
 
 User = get_user_model()
 
@@ -17,22 +18,34 @@ User = get_user_model()
 # 		model = Certificate
 # 		depth = 1
 # 		fields = ("certf_number", "form_number", "ntz_number", "sailor", "trainigOrganisation", "training_direction")
+class ProfileSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Profile
+		fields = ('organization_name',)
 
 class UserSerializer(serializers.ModelSerializer):
-	full_name = serializers.CharField(source='get_full_name', read_only=True)
-	#links = serializers.SerializerMethodField('get_links')
+	full_name = serializers.CharField(source='get_full_name')
+	profile = ProfileSerializer(required=True)
 
 	class Meta:
 		model = User
-		fields = ('id', User.USERNAME_FIELD, 'full_name', 'is_active', )
+		fields = ('id', User.USERNAME_FIELD, 'full_name', 'is_active', 'profile', )
 
 	def get_links(self, obj):
 		request = self.context['request']
-		username = obj.get_username()
 		return {
-			'self': reverse('user-detail', kwargs={User.USERNAME_FIELD: username},
+			'self': reverse('user-detail', kwargs={'pk': obj.pk},
 				request=request),
 		}
+
+	# def get_links(self, obj):
+	# 	request = self.context['request']
+	# 	username = obj.get_username()
+	# 	return {
+	# 		'self': reverse('user-detail', kwargs={User.USERNAME_FIELD: username},
+	# 			request=request),
+	# 	}
+
 class SailorSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Sailor
@@ -52,7 +65,6 @@ class SailorSerializer(serializers.ModelSerializer):
 class TrainigDirectionSerializer(serializers.ModelSerializer):
 	#level_display = serializers.SerializerMethodField('get_level_display')
 	#links = serializers.SerializerMethodField('get_links')
-
 	class Meta:
 		model = TrainigDirections
 		fields = (
