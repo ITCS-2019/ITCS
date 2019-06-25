@@ -105,6 +105,7 @@
               </v-btn>
               <v-btn color="success"
               small
+              v-if="certsCelected > 0"
               v-on:click="handleCerts">
                 <v-icon>
                   mdi-file-move
@@ -115,6 +116,7 @@
               </v-btn>
               <v-btn color="warning"
               small
+              v-if="certsCelected > 0"
               v-on:click="e => showModal('Видалити обранi сертифiкати?')"
               :depressed="true">
                 <v-icon>
@@ -203,6 +205,7 @@
 
     data() {
       return {
+        certsCelected: 0,
         isSelectedCert: false,
         certId: 0,
         dialog: false,
@@ -286,9 +289,11 @@
           hoverStateEnabled: true,
           wordWrapEnabled: true,
           columnAutoWidth: true,
-          onSelectionChanged: function(e) {
+          onSelectionChanged: (e) => {
             let certsGrid = e.component,
                 selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+
+            this.certsCelected = certsGrid.getSelectedRowKeys().length;
 
             certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
           },
@@ -525,6 +530,7 @@
               let certsGrid = this.$refs.certsGrid.tableInstance,
                   selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
+              this.certsCelected = certsGrid.getSelectedRowKeys().length;
               certsGrid.option('dataSource', this.dataSource);
               certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
               certsGrid.endCustomLoading();
