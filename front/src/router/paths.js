@@ -25,11 +25,6 @@ export default [
     view: 'TrainingDirections'
   },
   {
-    path: '/mariner/app/edit-certificate/:id',
-    name: 'Edit Certificate',
-    view: 'EditCertificate'
-  },
-  {
     path: '/mariner/app/import-certificate',
     name: 'Import Certificate',
     view: 'ImportCertificate'

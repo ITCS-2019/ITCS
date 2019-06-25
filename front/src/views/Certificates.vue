@@ -203,6 +203,7 @@
 
     data() {
       return {
+        isSelectedCert: false,
         certId: 0,
         dialog: false,
         certFormModal: false,
@@ -316,12 +317,13 @@
               certsGrid.clickCount = 0;
               certsGrid.clickKey = 0;
               certsGrid.clickDate = null;
-              switch (e.column.dataField) {
+
+              switch (e.column.dataField && e.data.status === 'Чернетка') {
                 case 'certificateNumber':
                   _this.showCertFormModal(e.data.certificateId)
                   return;
                 case 'sailor':
-                  if (gUserRole === 'НТЗ') {
+                  if (gUserRole === 'НТЗ' && e.data.status === 'Чернетка') {
                     _this.showCertFormModal(e.data.certificateId)
                   }
                   else {
@@ -333,7 +335,7 @@
                   return;
               }
 
-              if (e.column.dataField) {
+              if (e.column.dataField && e.data.status === 'Чернетка') {
                 _this.showCertFormModal(e.data.certificateId)
               }
             }
