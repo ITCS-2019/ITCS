@@ -323,8 +323,6 @@ export default {
         // Current direction
         let cert = certRes.data;
 
-        console.log(cert);
-
         this.born = this.formatDate(cert.born);
         this.certf_number = cert.certf_number;
         this.date_of_issue = this.formatDate(cert.date_of_issue);
@@ -377,8 +375,6 @@ export default {
       };
 
       let certId = (this.$route.params.id && this.$route.params.id === 'new') ? '' : this.$route.params.id;
-
-      console.log(formData);
 
       axios.post(`/mariner/api/certificates/${certId}`, formData)
         .then(res => {
