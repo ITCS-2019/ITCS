@@ -63,6 +63,18 @@
           />
         </v-list-tile>
         <v-list-tile
+          avatar
+          class="v-list-item"
+          v-on:click="logOutGlobal"
+        >
+          <v-list-tile-action>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title
+            v-text="`Вихiд`"
+          />
+        </v-list-tile>
+        <v-list-tile
           style="display: none;"
           disabled
           active-class="primary"
@@ -112,11 +124,6 @@ export default {
         to: '/mariner/app/profile',
         icon: 'mdi-account',
         text: 'Профiль'
-      },
-      {
-        to: '',
-        icon: 'mdi-exit-to-app',
-        text: 'Вихiд'
       }
     ],
     responsive: false,
@@ -155,6 +162,10 @@ export default {
       } else {
         this.responsive = false
       }
+    },
+
+    logOutGlobal() {
+      window.location.replace('/mariner/logout/');
     }
   }
 }
