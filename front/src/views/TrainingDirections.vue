@@ -176,30 +176,6 @@ export default {
             allowFiltering: true
           },
           {
-            dataField: 'direction_reviewCertCount',
-            caption: 'В обробцi',
-            allowEditing: false,
-            allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
-          },
-          {
-            dataField: 'direction_issuedCertCount',
-            caption: 'Видано',
-            allowEditing: false,
-            allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
-          },
-          {
-            dataField: 'direction_reviewAndIssuedCertsCount',
-            caption: 'Всього',
-            allowEditing: false,
-            allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
-          },
-          {
             dataField: 'allow_functions',
             caption: 'Рівень функцій',
             allowEditing: false,
@@ -223,6 +199,30 @@ export default {
                                 ${(~~data.value === 0) ? '&#10004;' : '&#x274C;'}
                             </div>`);
             }
+          },
+          {
+            dataField: 'direction_reviewCertCount',
+            caption: 'В обробцi',
+            allowEditing: false,
+            allowFiltering: true,
+            alignment: 'left',
+            visible: gUserRole === 'НТЗ',
+          },
+          {
+            dataField: 'direction_issuedCertCount',
+            caption: 'Видано',
+            allowEditing: false,
+            allowFiltering: true,
+            alignment: 'left',
+            visible: gUserRole === 'НТЗ',
+          },
+          {
+            dataField: 'direction_reviewAndIssuedCertsCount',
+            caption: 'Всього',
+            allowEditing: false,
+            allowFiltering: true,
+            alignment: 'left',
+            visible: gUserRole === 'НТЗ',
           },
           {
             type: "buttons",
