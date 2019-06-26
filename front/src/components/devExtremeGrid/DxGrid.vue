@@ -39,16 +39,14 @@ export default {
             tableInstance: null
         }
     },
-    created(){
-
-    },
     mounted(){
         var _this = this
         $(function(){
             DevExpress.localization.locale('ru');
-            _this.$nextTick(()=>{
+            _this.$nextTick(() => {
                 _this.tableInstance = $('#dev-extreme-grid').dxDataGrid(_this.tableConfig).dxDataGrid('instance');
                 _this.tableInstance.beginCustomLoading();
+                _this.$emit('init')
             })
         });
     }

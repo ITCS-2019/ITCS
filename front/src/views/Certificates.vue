@@ -129,7 +129,9 @@
             </div>
           </v-layout>
 
-          <DxGrid :tableConfig="tableConfig" ref="certsGrid"/>
+          <DxGrid :tableConfig="tableConfig"
+          v-on:init="gridInited()"
+          ref="certsGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
@@ -485,11 +487,26 @@
       }
     },
 
-    mounted() {
-      this.loadGridData();
-    },
-
     methods: {
+      gridInited() {
+        let grid = this.$refs.certsGrid.tableInstance,
+            filterVal;
+
+        this.loadGridData();
+
+        console.log(this.$route.params);
+
+        if (this.$route.params.columns) {
+          let columns = this.$route.params.columns;
+
+          columns.forEach((column) => {
+            grid.beginUpdate();
+            grid.columnOption(column.dataField, 'filterValue', column.filterValue);
+            grid.endUpdate();
+          });
+        }
+      },
+
       loadGridData(refresh = false) {
         axios.get(`/mariner/api/certificates/`)
           .then(res => {

@@ -16,12 +16,15 @@
           <v-layout nowrap
           class="mt-2 pl-2 pr-2">
             <v-flex md12>
-              <span class="font-weight-bold">
-                Кількість Напрямків
-              </span>
-              <span class="font-weight-bold">
-                - {{directionsCount}}
-              </span>
+              <router-link to="/mariner/app/training-directions"
+              class="c-link">
+                <span class="font-weight-bold black--text">
+                  Кількість Напрямків
+                </span>
+                <span class="font-weight-bold black--text">
+                  - {{directionsCount}}
+                </span>
+              </router-link>
             </v-flex>
           </v-layout>
         </material-card>
@@ -59,20 +62,43 @@
           <v-layout wrap
           class="mt-2 pl-2 pr-2">
             <v-flex md12>
-              <span class="font-weight-bold">
-                Cертіфікатів в обробці
-              </span>
-              <span class="font-weight-bold">
-                - {{certsInReviewCount}},
-              </span>
+              <router-link class="c-link"
+              :to="{name: 'Certificates',
+              params: {
+                columns: [
+                  {
+                    dataField: 'status',
+                    filterValue: 'Обробка'
+                  }
+                ]
+              }}">
+                <span class="font-weight-bold black--text">
+                  Cертіфікатів в обробці
+                </span>
+                <span class="font-weight-bold black--text">
+                  - {{certsInReviewCount}},
+                </span>
+              </router-link>
             </v-flex>
             <v-flex md12>
-              <span class="font-weight-bold">
-                Виданих сертіфікатів
-              </span>
-              <span class="font-weight-bold">
-                - {{issuedCertCount}}
-              </span>
+              <router-link class="c-link"
+              :to="{name: 'Certificates',
+                params: {
+                  columns: [
+                    {
+                      dataField: 'status',
+                      filterValue: 'Видан'
+                    }
+                  ]
+                }
+              }">
+                <span class="font-weight-bold black--text">
+                  Виданих сертіфікатів
+                </span>
+                <span class="font-weight-bold black--text">
+                  - {{issuedCertCount}}
+                </span>
+              </router-link>
             </v-flex>
           </v-layout>
         </material-card>
