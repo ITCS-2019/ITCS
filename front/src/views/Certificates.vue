@@ -178,7 +178,8 @@
     </v-dialog>
 
     <!--Certificate form modal-->
-    <v-dialog v-model="certFormModal" persistent max-width="95%">
+    <v-dialog v-model="certFormModal" persistent max-width="95%"
+    v-on:keydown.esc="certFormModal = false">
       <v-card>
         <v-card-text>
         <CertificateForm :certId="certId"
