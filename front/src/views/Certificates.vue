@@ -494,8 +494,6 @@
 
         this.loadGridData();
 
-        console.log(this.$route.params);
-
         if (this.$route.params.columns) {
           let columns = this.$route.params.columns;
 
@@ -544,19 +542,17 @@
               });
             });
 
-            this.$nextTick(() => {
-              let certsGrid = this.$refs.certsGrid.tableInstance,
-                  selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+            let certsGrid = this.$refs.certsGrid.tableInstance,
+                selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
-              this.certsCelected = certsGrid.getSelectedRowKeys().length;
-              certsGrid.option('dataSource', this.dataSource);
-              certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
-              certsGrid.endCustomLoading();
+            this.certsCelected = certsGrid.getSelectedRowKeys().length;
+            certsGrid.option('dataSource', this.dataSource);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+            certsGrid.endCustomLoading();
 
-              if (refresh) {
-                certsGrid.refresh();
-              }
-            });
+            if (refresh) {
+              certsGrid.refresh();
+            }
           })
           .catch((err) => {
             console.log(err);

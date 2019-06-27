@@ -33,5 +33,10 @@ export default [
     path: '/mariner/app/profile',
     name: 'User Profile',
     view: 'UserProfile'
+  },
+  {
+    path: '/mariner/app/sailors',
+    name: 'Sailors',
+    view: 'Sailors'
   }
 ]

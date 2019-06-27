@@ -5,10 +5,8 @@
     grid-list-xl
   >
     <v-layout wrap>
-      <v-flex v-bind:lg4="role === 'Адміністратор' ? true : false"
+      <v-flex v-bind:lg4="(role === 'Адміністратор' || role === 'Інспектор') ? true : false"
       v-bind:lg6="role === 'НТЗ' ? true : false"
-      v-bind:md12="role === 'Адміністратор' ? true : false"
-      v-bind:md6="role === 'НТЗ' ? true : false"
       sm12>
         <material-card color="green"
         class="pb-4"
@@ -29,32 +27,31 @@
           </v-layout>
         </material-card>
       </v-flex>
-      <v-flex v-bind:lg4="role === 'Адміністратор' ? true : false"
+      <v-flex v-bind:lg4="(role === 'Адміністратор' || role === 'Інспектор') ? true : false"
       v-bind:lg6="role === 'НТЗ' ? true : false"
-      v-bind:md12="role === 'Адміністратор' ? true : false"
-      v-bind:md6="role === 'НТЗ' ? true : false"
       sm12
-      v-if="role === 'Адміністратор'">
+      v-if="role === 'Адміністратор' || role === 'Інспектор'">
         <material-card color="green"
         class="pb-4"
         title="НТЗ">
           <v-layout nowrap
           class="mt-2 pl-2 pr-2">
             <v-flex md12>
-              <span class="font-weight-bold">
-                Кількість НТЗ
-              </span>
-              <span class="font-weight-bold">
-                - {{organisationsCount}}
-              </span>
+              <router-link to="/mariner/app/training-directions"
+              class="c-link">
+                <span class="font-weight-bold black--text">
+                  Кількість НТЗ
+                </span>
+                <span class="font-weight-bold black--text">
+                  - {{organisationsCount}}
+                </span>
+              </router-link>
             </v-flex>
           </v-layout>
         </material-card>
       </v-flex>
-      <v-flex v-bind:lg4="role === 'Адміністратор' ? true : false"
+      <v-flex v-bind:lg4="(role === 'Адміністратор' || role === 'Інспектор') ? true : false"
       v-bind:lg6="role === 'НТЗ' ? true : false"
-      v-bind:md12="role === 'Адміністратор' ? true : false"
-      v-bind:md6="role === 'НТЗ' ? true : false"
       sm12>
         <material-card color="green"
         class="pb-4"
@@ -103,6 +100,14 @@
           </v-layout>
         </material-card>
       </v-flex>
+
+      <v-flex md12>
+        <material-card>
+          <DxGrid :tableConfig="tableConfig"
+          v-on:init="gridInited()"
+          ref="certsOnAproveGrid"/>
+        </material-card>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -115,7 +120,106 @@ export default {
       certsInReviewCount: 0,
       organisationsCount: 0,
       directionsCount: 0,
-      role: gUserRole
+      role: gUserRole,
+      dataSource: [],
+      tableConfig: {
+        dataSource: [],
+        allowColumnReordering: false,
+        allowColumnResizing: true,
+        columnAutoWidth: false,
+        showBorders: true,
+        showRowLines: true,
+        paging: {
+          enabled: true,
+          pageSize: 10
+        },
+        pager: {
+          showPageSizeSelector: true,
+          allowedPageSizes: [10, 20, 50, 100],
+          showInfo: true,
+          visible: true
+        },
+        searchPanel: {
+          visible: true,
+          width: 240,
+          placeholder: "Шукати..."
+        },
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        onRowClick: function (e) {
+          // window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
+        },
+        onContentReady: function(e) {
+          function changePage(page) {
+            e.component.pageIndex(page);
+          }
+
+          let $customPagination = $('.custom-pagination.custom-pagination--certificates'),
+                  $select = $('.custom-pagination__select', $customPagination),
+                  pageCount = e.component.pageCount(),
+                  currentPage = e.component.pageIndex(),
+                  $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+                  $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+                  $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+                  $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+                  $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                          ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                          : e.element.find('.dx-datagrid-header-panel'),
+                  $appendedPagination = $('.custom-pagination.custom-pagination--certificates', $gridToolbar);
+
+          if (pageCount > 1) {
+            $select.empty();
+            for (let i = 0; i < pageCount; i++) {
+              (i === currentPage)
+                      ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
+                      : $select.append(`<option value="${i}">${i + 1}</option>>`);
+            }
+
+            $appendedPagination.remove();
+            $gridToolbar.append($customPagination);
+
+            if (currentPage === 0) {
+              $firstPageBtn.attr('disabled', true);
+              $prevPageBtn.attr('disabled', true);
+            }
+            else {
+              $firstPageBtn.attr('disabled', false);
+              $prevPageBtn.attr('disabled', false);
+            }
+
+            if ((currentPage + 1) === pageCount) {
+              $lastPageBtn.attr('disabled', true);
+              $nextPageBtn.attr('disabled', true);
+            }
+            else {
+              $lastPageBtn.attr('disabled', false);
+              $nextPageBtn.attr('disabled', false);
+            }
+
+            $select.on('change', function() {changePage($(this).val(), pageCount)});
+            $firstPageBtn.on('click', function() {changePage(0, pageCount)});
+            $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
+            $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
+            $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
+
+            $customPagination.fadeIn('fast');
+          }
+        },
+        columns: [
+          {
+            dataField: 'ntz',
+            caption: 'НТЗ',
+            allowEditing: true
+          },
+          {
+            dataField: 'certificatesAmount',
+            caption: 'До видачі',
+            width: 200,
+            allowEditing: false
+
+          }
+        ]
+      }
     }
   },
 
@@ -138,6 +242,28 @@ export default {
   },
 
   methods: {
+    gridInited() {
+      axios.get(`/mariner/api/organisations/`)
+        .then(res => {
+          let grid = this.$refs.certsOnAproveGrid.tableInstance;
+
+          // TODO: replace with response data
+          this.dataSource.push({
+            certificatesAmount: "5",
+            ntz: `Приватне підприємство "Ізмаїльський морський тренажерний центр "Марін Про Сервіс"`
+          },
+          {
+            certificatesAmount: "0",
+            ntz: `Приватне підприємство "Клуб веселых мореплавотелей Сомали"`
+          });
+
+          grid.option('dataSource', this.dataSource);
+          grid.endCustomLoading();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 }
 </script>

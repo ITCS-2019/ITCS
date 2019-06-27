@@ -75,6 +75,9 @@ export default {
         case 'User Profile':
           this.title = 'Профiль'
           break
+        case 'Sailors':
+          this.title = 'Моряки'
+          break
       }
     }
   },
