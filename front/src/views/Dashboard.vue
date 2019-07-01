@@ -101,7 +101,8 @@
         </material-card>
       </v-flex>
 
-      <v-flex md12>
+      <v-flex md12
+      v-if="role !== 'НТЗ'">
         <material-card>
           <DxGrid :tableConfig="tableConfig"
           v-on:init="gridInited()"

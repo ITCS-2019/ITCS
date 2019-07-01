@@ -761,19 +761,40 @@
 
         // TODO: Refactor to pure js
         let $grid = this.$refs[`${gridRef}`].tableInstance._$element,
-            $head = $('.dx-datagrid-headers', $grid),
-            $rows = $('.dx-datagrid-rowsview', $grid),
+            grid = $grid = this.$refs[`${gridRef}`].tableInstance,
             mywindow = window.open('', 'PRINT', 'height=400,width=600');
 
-        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-        mywindow.document.write('</head><body >');
-        mywindow.document.write('<h1>' + document.title  + '</h1>');
-        mywindow.document.write(`${$head.html()}${$rows.html()}`);
-        mywindow.document.write('</body></html>');
+        let printTable = `<table style="width: 100%; border-collapse: collapse;"><tr>`,
+            cols = grid._options.columns,
+            rows = grid.getVisibleRows();
 
+        cols.forEach((col) => {
+          if (col.visible !== false)
+            printTable += `<th style="border: 1px solid black;">${col.caption}</th>`
+        });
+
+        printTable += '</tr>';
+
+        rows.forEach((row) => {
+          let cells = row.cells;
+
+          printTable += '<tr>';
+          cells.forEach((cell) => {
+            if (cell.displayValue !== false)
+              printTable += `<td style="border: 1px solid black; padding: 5px; font-size: 12px">${(cell.text === '') ? ' ' : cell.text}</td>`
+          });
+          printTable += '</tr>';
+        });
+
+        printTable += '</table>';
+
+        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+        mywindow.document.write('</head><body>');
+        mywindow.document.write('<h1>' + document.title  + '</h1>');
+        mywindow.document.write(printTable);
+        mywindow.document.write('</body></html>');
         mywindow.document.close();
         mywindow.focus();
-
         mywindow.print();
         mywindow.close();
 
