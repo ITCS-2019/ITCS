@@ -6,19 +6,88 @@
     <v-layout justify-center wrap>
       <v-flex md12>
         <material-card>
-          <DxGrid :tableConfig="tableConfig" ref="directionsGrid"/>
+          <v-layout id="grid-controls"
+          justify-space-between
+          wrap>
+
+            <!--Grid btns row left side-->
+            <div>
+            </div>
+
+            <!--Grid btns row right side-->
+            <div>
+              <v-btn color="success" small :depressed="true"
+              v-on:click="showSailorFormModal()">
+                <v-icon>
+                  mdi-plus-box
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                Додати
+              </span>
+              </v-btn>
+            </div>
+          </v-layout>
+          <DxGrid :tableConfig="tableConfig"
+          v-on:init="gridInited()"
+          ref="sailorsGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
+
+    <!--Notifications-->
+    <v-snackbar :color="snackbarConfig.color"
+    :top="true"
+    v-model="snackbar"
+    dark>
+      <v-icon color="white"
+      class="mr-3">
+        {{snackbarConfig.icon}}
+      </v-icon>
+      <div>
+        {{snackbarConfig.message}}
+      </div>
+      <v-icon size="16"
+      v-on:click="snackbar = false">
+        mdi-close-circle
+      </v-icon>
+    </v-snackbar>
+
+    <!--Sailor form modal-->
+    <v-dialog v-model="sailorFormModal" persistent max-width="95%"
+    v-on:keydown.esc="sailorFormModal = false">
+      <v-card>
+        <v-card-text>
+          <SailorForm ref="sailorForm">
+          </SailorForm>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" flat v-on:click="sailorFormModal = false">Вiдхилити</v-btn>
+          <v-btn color="success" v-on:click="saveSailor">Зберегти</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import SailorForm from '@/components/forms/SailorForm.vue'
 
 export default {
+  components: {
+    SailorForm
+  },
+
   data() {
     return {
+      sailorFormModal: false,
       dataSource: [],
+      snackbar: false,
+      snackbarConfig: {
+        color: null,
+        icon: null,
+        message: null
+      },
       tableConfig: {
         dataSource: [],
         allowColumnReordering: false,
@@ -57,42 +126,43 @@ export default {
         wordWrapEnabled: true,
         columnAutoWidth: true,
         rowAlternationEnabled: true,
-        onSelectionChanged: function (e) {
+        onSelectionChanged: function(e) {
           let grid = e.component,
-                  selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+              selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
-          grid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
         },
-        onCellClick: function (data) {
-          switch (data.column.dataField) {
-            case 'status':
-              let grid = data.component,
-                  newStatus = (~~data.data.status === 0) ? 1 : 0;
+        onCellClick: function (e) {
+          // if (e.column.dataField) {
+          //   window.location.replace(`/mariner/sailor/${e.data.id}`);
+          // }
+        },
+        onRowClick: function (e) {
+          let component = e.component;
 
-              axios.get(`/mariner/api/changeTrainigDirectionStatus/`,
-              {
-                params: {
-                  certID: data.data.id,
-                  dirStatus: newStatus
-                }
-              })
-                .then(res => {
-                  let trainigDirections = grid.option('dataSource');
+          function initialClick() {
+            component.clickCount = 1;
+            component.clickKey = e.key;
+            component.clickDate = new Date();
+          }
 
-                  trainigDirections.some((direction) => {
-                    if (~~direction.id === ~~data.data.id) {
-                      direction.status = newStatus;
-                    }
-                  });
-                  grid.option('dataSource', trainigDirections);
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
-              break;
+          function doubleClick() {
+            component.clickCount = 0;
+            component.clickKey = 0;
+            component.clickDate = null;
+          }
+
+          if ((!component.clickCount) || (component.clickCount != 1) || (component.clickKey != e.key) ) {
+            initialClick();
+          }
+          else if (component.clickKey == e.key) {
+            if (((new Date()) - component.clickDate) <= 300)
+              doubleClick();
+            else
+              initialClick();
           }
         },
-        onContentReady: function (e) {
+        onContentReady: function(e) {
           function changePage(page) {
             e.component.pageIndex(page);
           }
@@ -124,7 +194,8 @@ export default {
             if (currentPage === 0) {
               $firstPageBtn.attr('disabled', true);
               $prevPageBtn.attr('disabled', true);
-            } else {
+            }
+            else {
               $firstPageBtn.attr('disabled', false);
               $prevPageBtn.attr('disabled', false);
             }
@@ -132,26 +203,17 @@ export default {
             if ((currentPage + 1) === pageCount) {
               $lastPageBtn.attr('disabled', true);
               $nextPageBtn.attr('disabled', true);
-            } else {
+            }
+            else {
               $lastPageBtn.attr('disabled', false);
               $nextPageBtn.attr('disabled', false);
             }
 
-            $select.on('change', function () {
-              changePage($(this).val(), pageCount)
-            });
-            $firstPageBtn.on('click', function () {
-              changePage(0, pageCount)
-            });
-            $lastPageBtn.on('click', function () {
-              changePage(pageCount - 1)
-            });
-            $nextPageBtn.on('click', function () {
-              changePage(currentPage + 1)
-            });
-            $prevPageBtn.on('click', function () {
-              changePage(currentPage - 1)
-            });
+            $select.on('change', function() {changePage($(this).val(), pageCount)});
+            $firstPageBtn.on('click', function() {changePage(0, pageCount)});
+            $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
+            $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
+            $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
 
             $customPagination.fadeIn('fast');
           }
@@ -162,80 +224,38 @@ export default {
             visible: false
           },
           {
-            dataField: 'price_id',
-            caption: 'Код',
-            allowEditing: false,
-            allowFiltering: true,
-            sortOrder: 'asc',
-            alignment: 'left'
-          },
-          {
-            dataField: 'direction_title',
-            caption: 'Напрямок підготовки',
-            allowEditing: false,
-            allowFiltering: true
-          },
-          {
-            dataField: 'allow_functions',
-            caption: 'Рівень функцій',
-            allowEditing: false,
-            allowFiltering: true
-          },
-          {
-            dataField: 'level',
-            caption: 'Рівень кваліфікації',
-            allowEditing: false,
-            allowFiltering: true
-          },
-          {
-            dataField: 'status',
-            caption: 'Статус',
+            dataField: 'pib',
+            caption: 'ПIБ',
             allowEditing: false,
             allowFiltering: false,
-            cssClass: 'center-vertical',
-            alignment: 'left',
-            cellTemplate: function (element, data) {
-              element.append(`<div style="text-align: center; color: green;">
-                                ${(~~data.value === 0) ? '&#10004;' : '&#x274C;'}
-                            </div>`);
+            cellTemplate: function(element, data) {
+              element.append(`<div style="white-space: nowrap;">
+                                            ${data.value.first_name_ukr} ${data.value.second_name_ukr} ${data.value.last_name_ukr}
+                                        </div>
+                                        <div style="white-space: nowrap;">
+                                            ${data.value.first_name_en} ${data.value.last_name_en}
+                                        </div>`);
             }
           },
           {
-            dataField: 'direction_reviewCertCount',
-            caption: 'В обробцi',
+            dataField: 'sex',
+            caption: 'Стать',
             allowEditing: false,
             allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
+            alignment: 'left'
           },
           {
-            dataField: 'direction_issuedCertCount',
-            caption: 'Видано',
+            dataField: 'born',
+            caption: 'Дата народження',
+            dataType: 'date',
             allowEditing: false,
-            allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
+            format: 'dd.MM.yyyy',
           },
           {
-            dataField: 'direction_reviewAndIssuedCertsCount',
-            caption: 'Всього',
+            dataField: 'inn',
+            caption: 'ИНН',
             allowEditing: false,
-            allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
-          },
-          {
-            type: "buttons",
-            width: 110,
-            visible: gUserRole !== 'НТЗ',
-            cssClass: 'center-vertical',
-            buttons: [{
-              hint: 'Редагувати',
-              icon: 'edit',
-              onClick: function (e) {
-                window.location.replace(`/mariner/editDirection/${e.row.data.id}`);
-              }
-            }]
+            allowFiltering: true
           }
         ]
       }
@@ -243,34 +263,102 @@ export default {
   },
 
   mounted() {
-    // axios.get(`/mariner/api/directionsInfo/`)
-    //   .then(res => {
-    //     let directions = res.data.trainigDirections;
-    //
-    //     directions.forEach((direction) => {
-    //       this.dataSource.push({
-    //         id: direction.direction_id,
-    //         price_id: direction.price_id,
-    //         direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
-    //         direction_reviewCertCount: direction.direction_reviewCertCount,
-    //         direction_issuedCertCount: direction.direction_issuedCertCount,
-    //         direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
-    //         allow_functions: direction.allow_functions,
-    //         level: direction.level,
-    //         status: direction.status
-    //       });
-    //     });
-    //
-    //     let grid = this.$refs.directionsGrid.tableInstance,
-    //         selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
-    //
-    //     grid.option('dataSource', this.dataSource);
-    //     grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
-    //     grid.endCustomLoading();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+
+  },
+
+  methods: {
+    saveSailor() {
+      let formData = {
+        first_name_en: this.$refs.sailorForm.first_name_en,
+        last_name_en: this.$refs.sailorForm.last_name_en,
+        last_name_ukr: this.$refs.sailorForm.last_name_ukr,
+        first_name_ukr: this.$refs.sailorForm.first_name_ukr,
+        second_name_ukr: this.$refs.sailorForm.second_name_ukr,
+        born: this.$refs.sailorForm.resetFormatDate(this.$refs.sailorForm.born),
+        inn: this.$refs.sailorForm.inn,
+        sex: this.$refs.sailorForm.sex,
+        died: null
+      };
+
+      axios({
+        method: 'post',
+        url: `/mariner/api/sailors/`,
+        data: formData
+      })
+        .then(res => {
+          this.loadGridData(true);
+          this.sailorFormModal = false;
+
+          this.snackbarConfig.icon = 'mdi-check-circle';
+          this.snackbarConfig.color = 'success';
+          this.snackbarConfig.message = 'Моряк успішно внесений!';
+          this.snackbar = true;
+        })
+        .catch((err) => {
+          console.log(err);
+          this.snackbarConfig.icon = 'mdi-alert-circle';
+          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.message = err;
+          this.snackbar = true;
+        });
+    },
+
+    showSailorFormModal() {
+      this.sailorFormModal = true;
+    },
+
+    gridInited() {
+      let grid = this.$refs.sailorsGrid.tableInstance;
+
+      this.loadGridData();
+
+      if (this.$route.params.columns) {
+        let columns = this.$route.params.columns;
+
+        columns.forEach((column) => {
+          grid.beginUpdate();
+          grid.columnOption(column.dataField, 'filterValue', column.filterValue);
+          grid.endUpdate();
+        });
+      }
+    },
+
+    loadGridData(refresh = false) {
+      axios.get(`/mariner/api/sailors/`)
+        .then(res => {
+          let sailors = res.data;
+
+          sailors.forEach((sailor) => {
+            this.dataSource.push({
+              id: sailor.id,
+              pib: {
+                first_name_ukr: sailor.first_name_ukr,
+                second_name_ukr: sailor.second_name_ukr,
+                last_name_ukr: sailor.last_name_ukr,
+                first_name_en: sailor.first_name_en,
+                last_name_en: 'last name',
+              },
+              sex: sailor.sex,
+              born: sailor.born,
+              inn: sailor.inn,
+            });
+          });
+
+          let grid = this.$refs.sailorsGrid.tableInstance,
+              selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
+          grid.option('dataSource', this.dataSource);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+          grid.endCustomLoading();
+
+          if (refresh) {
+            grid.refresh();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 }
 </script>

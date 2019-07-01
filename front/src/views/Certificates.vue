@@ -489,8 +489,7 @@
 
     methods: {
       gridInited() {
-        let grid = this.$refs.certsGrid.tableInstance,
-            filterVal;
+        let grid = this.$refs.certsGrid.tableInstance;
 
         this.loadGridData();
 
