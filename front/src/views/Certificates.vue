@@ -126,6 +126,32 @@
                   Видалити
                 </span>
               </v-btn>
+
+              <v-menu offset-y
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
+                <v-btn slot="activator"
+                color="success"
+                class="v-btn--simple"
+                simple small icon>
+                  <v-icon>
+                    mdi-settings
+                  </v-icon>
+                </v-btn>
+                <v-card>
+                  <v-list dense>
+                    <v-list-tile key="saveTableConfig"
+                    v-on:click="saveTableConfig()">
+                      <v-list-tile-title v-text="`Зберегти конфiгурацiю таблицi`"/>
+                    </v-list-tile>
+                    <v-list-tile key="resetTableConfig"
+                    v-on:click="resetTableConfig()">
+                      <v-list-tile-title v-text="`Стандартна конфiгурацiя`"/>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-menu>
+
             </div>
           </v-layout>
 
@@ -488,6 +514,34 @@
     },
 
     methods: {
+      resetTableConfig() {
+        localStorage.setItem('certGridConfig', undefined);
+        this.snackbarConfig.icon = 'mdi-check-circle';
+        this.snackbarConfig.color = 'success';
+        this.snackbarConfig.message = 'Застосована стандартна конфiгурацiя таблицi!';
+        this.snackbar = true;
+      },
+
+      saveTableConfig() {
+        let grid = this.$refs.certsGrid.tableInstance,
+            cols = grid._options.columns,
+            certGridConfig = [];
+
+        cols.forEach((col, i) => {
+          certGridConfig.push({
+            index: i,
+            width: (grid.columnOption(col.dataField, 'width')) ? grid.columnOption(col.dataField, 'width') : false,
+            sortOrder: (grid.columnOption(i, 'sortOrder')) ? grid.columnOption(i, 'sortOrder') : false
+          });
+        });
+
+        localStorage.setItem('certGridConfig', JSON.stringify(certGridConfig));
+        this.snackbarConfig.icon = 'mdi-check-circle';
+        this.snackbarConfig.color = 'success';
+        this.snackbarConfig.message = 'Конфiгурацiя таблицi збережена!';
+        this.snackbar = true;
+      },
+
       gridInited() {
         let grid = this.$refs.certsGrid.tableInstance;
 
@@ -501,6 +555,17 @@
             grid.columnOption(column.dataField, 'filterValue', column.filterValue);
             grid.endUpdate();
           });
+        }
+
+        if (localStorage.getItem('certGridConfig')) {
+          let gridConfig = JSON.parse(localStorage.getItem('certGridConfig'));
+
+          gridConfig.forEach((col) => {
+            grid.columnOption(col.index, 'width', (col.width) ? col.width : undefined);
+            grid.columnOption(col.index, 'sortOrder', (col.sortOrder) ? col.sortOrder : undefined);
+          });
+
+
         }
       },
 
