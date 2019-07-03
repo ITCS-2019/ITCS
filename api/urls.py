@@ -13,6 +13,8 @@ router.register(r'users', views.UserViewSet)
 router.register(r'sailors', views.SailorViewSet)
 router.register(r'directions', views.TrainigDirectionViewSet)
 router.register(r'organisations', views.TrainigOrganisationViewSet)
+#router.register(r'organisationCerts', views.CertificatesOfOrganisation)
+router.register(r'organisationCerts', views.CertificatesOfOrganisation, base_name='organisationCerts')
 router.register(r'certificates', views.CertificateViewSet)
 
 urlpatterns = [

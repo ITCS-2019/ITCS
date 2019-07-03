@@ -49,21 +49,13 @@ class DefaultsMixin(object):
 	paginate_by_param = 'page_size'
 	max_paginate_by = 100
 
-class CurrentUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
+class CurrentUserViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 	"""
     Returns information about cerrent user.
     """
-	queryset = User.objects.all()
-	serializer_class = UserSerializer
+	queryset = Profile.objects.all()
 
-	def retrieve(self, request, pk):
-		print('--------------------')
-		print(pk)
-		current_user = User.objects.get(id = request.user.id)
-		serializer = UserSerializer(current_user)
-		return Response({"User": "You can't get user by id"}, status=200)
-		#return Response({"user": serializer.data})
-
+	
 	def list(self, request):
 		current_user = User.objects.get(id = request.user.id)
 		serializer = UserSerializer(current_user)
@@ -83,6 +75,15 @@ class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
+	#TODO: Show user by id only for admin?
+	# def retrieve(self, request, pk):
+	# 	print('--------------------')
+	# 	print(pk)
+	# 	current_user = User.objects.get(id = request.user.id)
+	# 	serializer = UserSerializer(current_user)
+	# 	#return Response({"User": "You can't get user by id"}, status=200)
+	# 	return Response({"user": serializer.data})
+
 	def list(self, request):
 		users = User()
 		users_count = int()
@@ -101,6 +102,32 @@ class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 		else:
 			return [permissions.IsAdminUser()]
 			
+class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+	"""
+    Return a list of organisation certificates.
+    Use organisation id for retrieve certificates.
+    If user from training organisations return list of certificates of this organisation.
+    """
+	serializer = CertificateSerializer
+
+	def list(self, request):
+		certs = Certificate()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			serializer = CertificateSerializer(certs, many=True)
+			return Response({"certificates": serializer.data})
+		else:
+			return Response({"Message": "Use organisation id for retrieve certificates"}, status=200)
+
+	def retrieve(self, request, pk):
+		if request.user.groups.all()[0].name != 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(id=pk)
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			serializer = CertificateSerializer(certs, many=True)
+			return Response({"certificates": serializer.data})
+		else:
+			return Response({"Message": "You can't get certificates of organisation"}, status=200) 
 
 class SailorViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = Sailor.objects.all()
@@ -181,6 +208,53 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		serializer = CertificateSerializer(certs, many=True)
 		return Response({"certificates": serializer.data})
 
+	def update(self, request, pk, format=None):
+		certificate = Certificate.objects.get(id=pk)
+
+		certificate.certf_number = request.data.get('certf_number'),
+		certificate.form_number =request.data.get('form_number'),
+		certificate.ntz_number = request.data.get('ntz_number'),
+
+		certificate.first_name_en = request.data.get('first_name_en')
+		certificate.last_name_en = request.data.get('last_name_en')
+		certificate.last_name_ukr = request.data.get('last_name_ukr')
+		certificate.first_name_ukr = request.data.get('first_name_ukr')
+		certificate.second_name_ukr = request.data.get('second_name_ukr')
+		certificate.born = request.data.get('born')
+		certificate.inn = request.data.get('inn')
+
+		sailor, created = Sailor.objects.get_or_create(
+			first_name_en = request.data.get('first_name_en'),
+			last_name_en = request.data.get('last_name_en'),
+			last_name_ukr = request.data.get('last_name_ukr'),
+			first_name_ukr = request.data.get('first_name_ukr'),
+			second_name_ukr = request.data.get('second_name_ukr'),
+			born = request.data.get('born'),
+		)
+		if created:
+			sailor.save()
+		certificate.sailor = sailor
+
+		trainigOrganisation = TrainigOrganisation()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		else:
+			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
+		certification.trainigOrganisation = trainigOrganisation
+		certification.date_of_issue = request.data.get('date_of_issue'),
+		certification.valid_date =  request.data.get('valid_date'),
+		certification.valid_type = request.data.get('valid_type'),
+
+		certification.direction_level = request.data.get('direction_level'),
+		certification.direction_allow_functions = request.data.get('direction_allow_functions'),
+		certification.training_direction = TrainigDirections.objects.get(id=request.data.get('training_direction'))
+
+		certification.status = request.data.get('status'),
+
+		certificate.save()
+
+		return Response({"Certificate": "Updated"}, status=200)
+
 	def create(self, request, format=None):
 		trainigOrganisation = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
@@ -254,9 +328,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			certification.save()
 		
 		return Response({"message": "Add Certificate"}, status=200)
-
-
-
 
 """
 AJAX Requests
