@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ('id', User.USERNAME_FIELD, 'full_name', 'is_active', 'profile', )
+		fields = ('id', 'username', 'full_name', 'is_active', 'profile', )
 
 	def get_links(self, obj):
 		request = self.context['request']
