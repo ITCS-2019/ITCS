@@ -40,8 +40,8 @@ export default [
     view: 'Sailors'
   },
   {
-    path: '/mariner/app/training-organizations',
-    name: 'Training Organizations',
-    view: 'TrainingOrganizations'
+    path: '/mariner/app/training-organisations',
+    name: 'Training Organisations',
+    view: 'TrainingOrganisations'
   }
 ]

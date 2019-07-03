@@ -289,7 +289,7 @@
                   }
                 });
               },
-              visible: isInspector
+              visible: gUserRole === 'Інспектор'
             },
             {
               dataField: 'organisation_id',
@@ -303,14 +303,14 @@
               caption: 'Назва НТЗ',
               allowEditing: false,
               allowFiltering: true,
-              visible: !isInspector
+              visible: gUserRole !== 'Інспектор'
             },
             {
               dataField: 'organisation_name',
               caption: 'Назва НТЗ',
               allowEditing: false,
               allowFiltering: true,
-              groupIndex: (isInspector) ? 0 : false
+              groupIndex: (gUserRole === 'Інспектор') ? 0 : false
             },
             {
               dataField: 'activated',
@@ -336,7 +336,7 @@
                 hint: 'Редагувати',
                 icon: 'edit',
                 onClick: function(e) {
-                  if (isInspector) {
+                  if (gUserRole === 'Інспектор') {
                     let trainingOrganisationName = e.row.data.organisation_name.split('|')[0];
 
                     window.location.replace(`/mariner/editTrainigOrganisation/${trainingOrganisationName}`);
@@ -399,44 +399,30 @@
 
       gridInited() {
         let grid = this.$refs.trainingOrganizationsGrid.tableInstance;
-        //
-        // this.loadGridData();
-        //
-        // if (this.$route.params.columns) {
-        //   let columns = this.$route.params.columns;
-        //
-        //   columns.forEach((column) => {
-        //     grid.beginUpdate();
-        //     grid.columnOption(column.dataField, 'filterValue', column.filterValue);
-        //     grid.endUpdate();
-        //   });
-        // }
-        grid.endCustomLoading();
+
+        this.loadGridData();
       },
 
       loadGridData(refresh = false) {
-        axios.get(`/mariner/api/sailors/`)
+        axios.get(`/mariner/api/trainingOrganisationsInfo/`)
           .then(res => {
-            let sailors = res.data;
+            let organisations = res.data.organisations;
 
-            sailors.forEach((sailor) => {
-              this.dataSource.push({
-                id: sailor.id,
-                pib: {
-                  first_name_ukr: sailor.first_name_ukr,
-                  second_name_ukr: sailor.second_name_ukr,
-                  last_name_ukr: sailor.last_name_ukr,
-                  first_name_en: sailor.first_name_en,
-                  last_name_en: 'last name',
-                },
-                sex: sailor.sex,
-                born: sailor.born,
-                inn: sailor.inn,
-              });
-            });
+            // organisations.forEach((organisation) => {
+            //   this.dataSource.push({
+            //     id: '{{trainig.id}}',
+            //     organisation_id: '{{trainig.organisation_id}}',
+            //     organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
+            //     activated: '{{ trainig.activated|date:"m.d.Y" }}',
+            //     active_till: '{{ trainig.active_till|date:"m.d.Y" }}',
+            //     directions: directions
+            //   });
+            // });
 
-            let grid = this.$refs.sailorsGrid.tableInstance,
-                    selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+            console.log(organisations);
+
+            let grid = this.$refs.trainingOrganizationsGrid.tableInstance,
+                selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
             grid.option('dataSource', this.dataSource);
             grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);

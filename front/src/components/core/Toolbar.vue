@@ -78,7 +78,7 @@ export default {
         case 'Sailors':
           this.title = 'Моряки'
           break
-        case 'Training Organizations':
+        case 'Training Organisations':
           this.title = 'Навчально-Тренувальні Заклади'
           break
       }
