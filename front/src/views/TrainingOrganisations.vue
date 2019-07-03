@@ -96,7 +96,7 @@
           showBorders: true,
           showRowLines: true,
           selection: {
-            mode: (gUserRole === 'Інспектор') ? false : 'multiple',
+            mode: (gUserRole === 'Інспектор' || 'Адміністратор') ? false : 'multiple',
             showCheckBoxesMode: 'always'
           },
           paging: {
@@ -145,16 +145,16 @@
             // e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
           },
           onCellClick: function (e) {
-            if (e.column.dataField && gUserRole !== 'Інспектор') {
-              window.location.replace(`/mariner/trainigOrganisation/${e.data.organisation_name}`);
-            }
-            else if (gUserRole === 'Інспектор'
-            && e.column.dataField
-            && e.column.dataField === 'organisation_name'
-            && typeof e.value !== 'boolean') {
-              let trainingOrganisationName = e.value.split('|')[0];
-              window.location.replace(`/mariner/trainigOrganisation/${trainingOrganisationName}`);
-            }
+            // if (e.column.dataField && (gUserRole !== 'Інспектор' || 'Адміністратор')) {
+            //   window.location.replace(`/mariner/trainigOrganisation/${e.data.organisation_name}`);
+            // }
+            // else if ((gUserRole === 'Інспектор' || 'Адміністратор')
+            // && e.column.dataField
+            // && e.column.dataField === 'organisation_name'
+            // && typeof e.value !== 'boolean') {
+            //   let trainingOrganisationName = e.value.split('|')[0];
+            //   window.location.replace(`/mariner/trainigOrganisation/${trainingOrganisationName}`);
+            // }
           },
           onContentReady: function(e) {
             function changePage(page) {
@@ -222,8 +222,14 @@
               caption: 'Напрямки пiдготовки',
               allowEditing: false,
               allowFiltering: false,
-              cellTemplate: function(element, data) {
-                element.append(`<div class="c-cell__row">
+              cellTemplate: (element, data) => {
+                function test(a) {
+                  console.log(a);
+                }
+
+                let grid = this.$refs.trainingOrganizationsGrid.tableInstance;
+
+                element.append(`<div class="c-cell__row c-cell__row--min-width-490">
                                     <span class="c-cell__text">
                                     </span>
                                     <span class="c-cell__amount">
@@ -243,21 +249,22 @@
                                     </span>
                                 </div>`);
 
-                trainingOrganisationsMainGrid.beginCustomLoading();
+                grid.beginCustomLoading();
 
                 // Get training organisations/directions certs info
                 $.ajax({
-                  url: organisationInfo,
+                  url: '/mariner/api/trainingOrganisationsInfo/',
                   method: 'GET',
                   dataType: 'json',
-                  success: function (res) {
+                  success: (res) => {
                     let organisationsInfo = res.organisations;
 
                     let directionsData = data.value,
-                            organisationId = data.data.id,
-                            expandedOrganisation = organisationsInfo.find(organisation => {
-                              return organisation.organisation_id === ~~organisationId;
-                            });
+                        organisationId = data.data.id,
+                        expandedOrganisation = organisationsInfo.find(organisation => {
+                          console.log(organisation.organisation_id);
+                          return organisation.id === organisationId;
+                        });
 
                     directionsData.forEach((direction) => {
                       let directionInfo = expandedOrganisation.organisation_directions.find(organisationDirection => {
@@ -265,7 +272,7 @@
                       });
 
                       element.append(`<div class="c-cell__row">
-                                          <a class="c-cell__text" href="${direction.route}">
+                                          <a class="c-cell__text" href="javascript:void(0);" onclick="window.vue.$router.push('/mariner/app/dashboard')">
                                               ${directionInfo.dirction_name}
                                           </a>
                                           <span class="c-cell__amount">
@@ -285,11 +292,11 @@
                                           </span>
                                       </div>`);
                     });
-                    trainingOrganisationsMainGrid.endCustomLoading();
+                    grid.endCustomLoading();
                   }
                 });
               },
-              visible: gUserRole === 'Інспектор'
+              visible: gUserRole === 'Інспектор' || 'Адміністратор'
             },
             {
               dataField: 'organisation_id',
@@ -303,14 +310,14 @@
               caption: 'Назва НТЗ',
               allowEditing: false,
               allowFiltering: true,
-              visible: gUserRole !== 'Інспектор'
+              visible: gUserRole !== 'Інспектор' || 'Адміністратор'
             },
             {
               dataField: 'organisation_name',
               caption: 'Назва НТЗ',
               allowEditing: false,
               allowFiltering: true,
-              groupIndex: (gUserRole === 'Інспектор') ? 0 : false
+              groupIndex: (gUserRole === 'Інспектор' || 'Адміністратор') ? 0 : false
             },
             {
               dataField: 'activated',
@@ -336,7 +343,7 @@
                 hint: 'Редагувати',
                 icon: 'edit',
                 onClick: function(e) {
-                  if (gUserRole === 'Інспектор') {
+                  if (gUserRole === 'Інспектор' || 'Адміністратор') {
                     let trainingOrganisationName = e.row.data.organisation_name.split('|')[0];
 
                     window.location.replace(`/mariner/editTrainigOrganisation/${trainingOrganisationName}`);
@@ -408,16 +415,25 @@
           .then(res => {
             let organisations = res.data.organisations;
 
-            // organisations.forEach((organisation) => {
-            //   this.dataSource.push({
-            //     id: '{{trainig.id}}',
-            //     organisation_id: '{{trainig.organisation_id}}',
-            //     organisation_name: `${'{{ trainig.organisation_name }}'.replace(/&quot;/g, `"`).replace(/&#39;/g, `'`)}${(isInspector) ? ` | Сертифiкатiв до видачi: ${'{{trainig.get_certInReview.count}}'}` : ``}`,
-            //     activated: '{{ trainig.activated|date:"m.d.Y" }}',
-            //     active_till: '{{ trainig.active_till|date:"m.d.Y" }}',
-            //     directions: directions
-            //   });
-            // });
+            organisations.forEach((organisation) => {
+              let organisationData = {
+                    id: organisation.id,
+                    organisation_id: organisation.organisation_id,
+                    organisation_name: organisation.organisation_name,
+                    activated: organisation.activated,
+                    active_till: organisation.active_till,
+                    directions: []
+                  },
+                  directions = organisation.organisation_directions;
+
+              directions.forEach((direction) => {
+                organisationData.directions.push({
+                  directionId: direction.direction_id
+                });
+              });
+
+              this.dataSource.push(organisationData);
+            });
 
             console.log(organisations);
 

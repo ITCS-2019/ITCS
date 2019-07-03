@@ -33,7 +33,7 @@ Vue.config.productionTip = false
 Vue.component('DxGrid', require('@/components/devExtremeGrid/DxGrid.vue').default);
 
 /* eslint-disable no-new */
-new Vue({
+window.vue = new Vue({
   i18n,
   router,
   store,

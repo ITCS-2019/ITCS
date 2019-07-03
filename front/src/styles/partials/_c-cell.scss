@@ -6,6 +6,9 @@
   justify-content: flex-start;
   flex-wrap: wrap;
   border-top: 1px solid #ddd;
+  &.c-cell__row--min-width-490 {
+    min-width: 490px;
+  }
 }
 
 .c-cell__row:first-child {

@@ -172,7 +172,7 @@ $(function() {
                                     let directionsData = data.value,
                                         organisationId = data.data.id,
                                         expandedOrganisation = organisationsInfo.find(organisation => {
-                                            return organisation.organisation_id === ~~organisationId;
+                                            return organisation.id === ~~organisationId;
                                         });
 
                                     directionsData.forEach((direction) => {
