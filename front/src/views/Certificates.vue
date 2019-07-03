@@ -641,7 +641,7 @@
         };
 
         axios({
-          method: (this.certId === 0) ? 'post' : 'put',
+          method: (this.certId === 0) ? 'POST' : 'PATCH',
           url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
           data: formData
         })
