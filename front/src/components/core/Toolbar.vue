@@ -31,26 +31,6 @@
         layout
         py-2
       >
-        <v-btn color="success" class="ml-1" small :depressed="true"
-        to="/mariner/app/import-certificate"
-        v-if="routeName === 'Certificates'">
-          <v-icon>
-            mdi-file-upload
-          </v-icon>
-          <span class="font-weight-bold ml-1">
-            Iмпортувати
-          </span>
-        </v-btn>
-        <v-btn color="success" class="ml-1" small :depressed="true"
-        to="/mariner/app/edit-certificate/new"
-        v-if="routeName === 'Certificates'">
-          <v-icon>
-            mdi-plus-box
-          </v-icon>
-          <span class="font-weight-bold ml-1">
-            Додати
-          </span>
-        </v-btn>
       </v-flex>
     </v-toolbar-items>
   </v-toolbar>

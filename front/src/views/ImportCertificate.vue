@@ -66,7 +66,7 @@
                 <v-flex xs12
                 text-xs-right>
                   <v-btn class="mx-0"
-                  to="/certificates"
+                  to="/mariner/app/certificates"
                   color="success"
                   flat>
                     Вiдхилити

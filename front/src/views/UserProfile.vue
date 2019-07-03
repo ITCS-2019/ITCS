@@ -11,18 +11,21 @@
               <v-layout wrap>
                 <v-flex xs12 md6>
                   <v-text-field label="Логiн"
-                  v-model="user.username"/>
+                  v-model="user.username"
+                  :readonly="true"/>
                 </v-flex>
                 <v-flex xs12 md6>
                   <v-text-field label="ПIБ"
-                  v-model="user.full_name"/>
+                  v-model="user.full_name"
+                  :readonly="true"/>
                 </v-flex>
                 <v-flex xs12 md12>
                   <v-text-field label="Назва організації"
-                  v-model="user.profile.organization_name"/>
+                  v-model="user.profile.organization_name"
+                  :readonly="true"/>
                 </v-flex>
               </v-layout>
-              <v-layout wrap>
+              <v-layout wrap v-if="false">
                 <v-flex xs12
                 text-xs-right>
                   <v-btn class="mx-0 font-weight-light ml-1"
@@ -36,7 +39,7 @@
           </v-form>
         </material-card>
         <material-card style="margin-top: 15px;">
-          <OrganisationForm>
+          <OrganisationForm ref="organisationForm">
           </OrganisationForm>
         </material-card>
       </v-flex>
@@ -67,12 +70,13 @@
     },
 
     mounted() {
-      axios.get(`/mariner/api/users/2/`)
+      axios.get(`/mariner/api/user/`)
         .then(res => {
-          let userData = res.data;
+          let userData = res.data.user;
 
-          // console.log(res);
-
+          this.user.id = userData.id;
+          this.user.username = userData.username;
+          this.user.profile.organization_name = userData.profile.organization_name;
         })
         .catch((err) => {
           console.log(err);
@@ -81,7 +85,13 @@
 
     methods: {
       saveProfile() {
+        axios.put(`/mariner/api/users/${this.user.id}/`, this.user)
+          .then(res => {
 
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     }
   }

@@ -13,7 +13,7 @@
                         <v-flex xs12>
                             <v-text-field :label="(lang.lang === 'Українська') ? 'Назва НТЗ' : 'Training organization name'"
                             v-model="lang.organization_name"
-                            :readonly="false"/>
+                            :readonly="true"/>
                             <v-text-field :label="(lang.lang === 'Українська') ? 'Адреса' : 'Address'"
                             v-model="lang.mail_adress"/>
                         </v-flex>
@@ -99,6 +99,24 @@
                 </v-flex>
             </v-layout>
         </v-container>
+
+        <!--Notifications-->
+        <v-snackbar :color="snackbarConfig.color"
+        :top="true"
+        v-model="snackbar"
+        dark>
+            <v-icon color="white"
+            class="mr-3">
+                {{snackbarConfig.icon}}
+            </v-icon>
+            <div>
+                {{snackbarConfig.message}}
+            </div>
+            <v-icon size="16"
+            v-on:click="snackbar = false">
+                mdi-close-circle
+            </v-icon>
+        </v-snackbar>
     </v-form>
 </template>
 
@@ -115,6 +133,12 @@ export default {
 
   data(){
     return {
+      snackbar: false,
+      snackbarConfig: {
+        color: null,
+        icon: null,
+        message: null
+      },
       organization: {
         id: null,
         organisation_name: null,
@@ -198,11 +222,24 @@ export default {
 
       axios.put(`/mariner/api/organisations/${this.organization.id}/`, this.organization)
         .then(res => {
-          console.log(res);
+          this.showNotification({
+            icon: 'mdi-check-circle',
+            color: 'success',
+            message: 'Iнформацiя про НТЗ змiнено!'
+          });
         })
         .catch((err) => {
           console.log(err);
         });
+    },
+
+    showNotification(config = false) {
+      if (config) {
+        this.snackbarConfig.icon = config.icon;
+        this.snackbarConfig.color = config.color;
+        this.snackbarConfig.message = config.message;
+        this.snackbar = true;
+      }
     }
   }
 }

@@ -85,8 +85,27 @@
 
             <!--Grid btns row right side-->
             <div>
+              <v-btn color="success" small :depressed="true"
+              v-on:click="showCertFormModal(0)">
+                <v-icon>
+                  mdi-plus-box
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Додати
+                </span>
+              </v-btn>
+              <v-btn color="success" small :depressed="true"
+              to="/mariner/app/import-certificate">
+                <v-icon>
+                  mdi-file-upload
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Iмпортувати
+                </span>
+              </v-btn>
               <v-btn color="success"
               small
+              v-if="certsCelected > 0"
               v-on:click="handleCerts">
                 <v-icon>
                   mdi-file-move
@@ -97,8 +116,8 @@
               </v-btn>
               <v-btn color="warning"
               small
+              v-if="certsCelected > 0"
               v-on:click="e => showModal('Видалити обранi сертифiкати?')"
-              class="ml-1"
               :depressed="true">
                 <v-icon>
                   mdi-trash-can
@@ -133,7 +152,7 @@
       </v-icon>
     </v-snackbar>
 
-    <!--Modal-->
+    <!--Modal dialog-->
     <v-dialog v-model="modal" persistent max-width="290">
       <v-card>
         <v-card-title class="headline">
@@ -157,509 +176,596 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!--Certificate form modal-->
+    <v-dialog v-model="certFormModal" persistent max-width="95%">
+      <v-card>
+        <v-card-text>
+        <CertificateForm :certId="certId"
+        ref="certForm">
+        </CertificateForm>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" flat v-on:click="certFormModal = false">Вiдхилити</v-btn>
+          <v-btn color="success" v-on:click="saveCert">Зберегти</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      modal: false,
-      modalConfig: {
-        message: null
-      },
-      snackbar: false,
-      snackbarConfig: {
-        color: null,
-        icon: null,
-        message: null
-      },
-      exportType: null,
-      clickDelay: undefined,
-      dataSource: [],
-      tableConfig: {
+  import CertificateForm from '@/components/forms/CertificateForm.vue'
+
+  export default {
+    components: {
+      CertificateForm
+    },
+
+    data() {
+      return {
+        certsCelected: 0,
+        isSelectedCert: false,
+        certId: 0,
+        dialog: false,
+        certFormModal: false,
+        modal: false,
+        modalConfig: {
+          message: null
+        },
+        snackbar: false,
+        snackbarConfig: {
+          color: null,
+          icon: null,
+          message: null
+        },
+        exportType: null,
+        clickDelay: undefined,
         dataSource: [],
-        allowColumnReordering: false,
-        allowColumnResizing: true,
-        columnAutoWidth: false,
-        showBorders: true,
-        showRowLines: true,
-        editing: {
-          mode: "cell",
-          allowUpdating: true
-        },
-        selection: {
-          mode: "multiple",
-          showCheckBoxesMode: 'always'
-        },
-        paging: {
-          enabled: true,
-          pageSize: 10
-        },
-        pager: {
-          showPageSizeSelector: true,
-          allowedPageSizes: [10, 20, 50, 100],
-          showInfo: true,
-          visible: true
-        },
-        searchPanel: {
-          visible: true,
-          width: 240,
-          placeholder: "Шукати..."
-        },
-        export: {
-          enabled: false,
-          fileName: "certificates",
-          allowExportSelectedData: true
-        },
-        rowAlternationEnabled: true,
-        customizeExportData: (cols, rows) => {
-          let certIDs = [];
+        tableConfig: {
+          dataSource: [],
+          allowColumnReordering: false,
+          allowColumnResizing: true,
+          columnAutoWidth: false,
+          showBorders: true,
+          showRowLines: true,
+          editing: {
+            mode: "cell",
+            allowUpdating: true
+          },
+          selection: {
+            mode: "multiple",
+            showCheckBoxesMode: 'always'
+          },
+          paging: {
+            enabled: true,
+            pageSize: 10
+          },
+          pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [10, 20, 50, 100],
+            showInfo: true,
+            visible: true
+          },
+          searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Шукати..."
+          },
+          export: {
+            enabled: false,
+            fileName: "certificates",
+            allowExportSelectedData: true
+          },
+          rowAlternationEnabled: true,
+          customizeExportData: (cols, rows) => {
+            let certIDs = [];
 
-          if (rows.length > 0) {
-            rows.forEach((row) => {
-              certIDs.push(row.data.certificateId);
-            });
+            if (rows.length > 0) {
+              rows.forEach((row) => {
+                certIDs.push(row.data.certificateId);
+              });
 
-            let element = document.createElement('a');
-            element.setAttribute('href', `/mariner/api/exportToPrint/?exportType=${this.exportType}&certIDs=${certIDs.join(',')}`);
-            element.setAttribute('target', '_blank');
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-          }
-        },
-        onFileSaving: function (e) {
-          e.cancel = true;
-        },
-        headerFilter: {
-          visible: true
-        },
-        filterRow: {
-          visible: true,
-          applyFilter: "auto"
-        },
-        hoverStateEnabled: true,
-        wordWrapEnabled: true,
-        columnAutoWidth: true,
-        onSelectionChanged: function(e) {
-          let certsGrid = e.component,
-              selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+              let element = document.createElement('a');
+              element.setAttribute('href', `/mariner/api/exportToPrint/?exportType=${this.exportType}&certIDs=${certIDs.join(',')}`);
+              element.setAttribute('target', '_blank');
+              element.style.display = 'none';
+              document.body.appendChild(element);
+              element.click();
+              document.body.removeChild(element);
+            }
+          },
+          onFileSaving: function (e) {
+            e.cancel = true;
+          },
+          headerFilter: {
+            visible: true
+          },
+          filterRow: {
+            visible: true,
+            applyFilter: "auto"
+          },
+          hoverStateEnabled: true,
+          wordWrapEnabled: true,
+          columnAutoWidth: true,
+          onSelectionChanged: (e) => {
+            let certsGrid = e.component,
+                selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
-          certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
-        },
-        onCellClick: (e) => {
-          let certsGrid = e.component,
-              _this = this;
+            this.certsCelected = certsGrid.getSelectedRowKeys().length;
 
-          function initialClick() {
-            certsGrid.clickCount = 1;
-            certsGrid.clickKey = e.key;
-            certsGrid.clickDate = new Date();
-            _this.clickDelay = setTimeout(() => {
-              if (e.column.dataField) {
-                if (e.row.isSelected) {
-                  certsGrid.deselectRows([e.key]);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+          },
+          onCellClick: (e) => {
+            let certsGrid = e.component,
+                _this = this;
+
+            function initialClick() {
+              certsGrid.clickCount = 1;
+              certsGrid.clickKey = e.key;
+              certsGrid.clickDate = new Date();
+              _this.clickDelay = setTimeout(() => {
+                if (e.column.dataField) {
+                  if (e.row.isSelected) {
+                    certsGrid.deselectRows([e.key]);
+                  }
+                  else {
+                    certsGrid.selectRows([e.key], true);
+                  }
                 }
-                else {
-                  certsGrid.selectRows([e.key], true);
-                }
+              }, 300);
+            }
+
+            function doubleClick() {
+              clearTimeout(_this.clickDelay);
+              certsGrid.clickCount = 0;
+              certsGrid.clickKey = 0;
+              certsGrid.clickDate = null;
+
+              switch (e.column.dataField && e.data.status === 'Чернетка') {
+                case 'certificateNumber':
+                  _this.showCertFormModal(e.data.certificateId)
+                  return;
+                case 'sailor':
+                  if (gUserRole === 'НТЗ' && e.data.status === 'Чернетка') {
+                    _this.showCertFormModal(e.data.certificateId)
+                  }
+                  else {
+                    window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+                  }
+                  return;
+                case 'trainigOrganisation':
+                  window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
+                  return;
               }
-            }, 300);
-          }
 
-          function doubleClick() {
-            clearTimeout(_this.clickDelay);
-            certsGrid.clickCount = 0;
-            certsGrid.clickKey = 0;
-            certsGrid.clickDate = null;
-            switch (e.column.dataField) {
-              case 'certificateNumber':
-                _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
-                return;
-              case 'sailor':
-                if (gUserRole === 'НТЗ') {
-                  _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
-                }
-                else {
-                  window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-                }
-                return;
-              case 'trainigOrganisation':
-                window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
-                return;
+              if (e.column.dataField && e.data.status === 'Чернетка') {
+                _this.showCertFormModal(e.data.certificateId)
+              }
             }
 
-            if (e.column.dataField) {
-              _this.$router.push(`/mariner/app/edit-certificate/${e.data.certificateId}`);
-            }
-          }
-
-          if ((!certsGrid.clickCount) || (certsGrid.clickCount != 1) || (certsGrid.clickKey != e.key) ) {
-            initialClick();
-          }
-          else if (certsGrid.clickKey == e.key) {
-            if (((new Date()) - certsGrid.clickDate) <= 300) {
-              doubleClick();
-            }
-            else {
+            if ((!certsGrid.clickCount) || (certsGrid.clickCount != 1) || (certsGrid.clickKey != e.key) ) {
               initialClick();
             }
-          }
-        },
-        onContentReady: (e) => {
-          function changePage(page) {
-            e.component.pageIndex(page);
-          }
-
-          let $customPagination = $('.custom-pagination.custom-pagination--grid'),
-              $select = $('.custom-pagination__select', $customPagination),
-              pageCount = e.component.pageCount(),
-              currentPage = e.component.pageIndex(),
-              $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
-              $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
-              $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
-              $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
-              $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
-                      ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
-                      : e.element.find('.dx-datagrid-header-panel'),
-              $appendedPagination = $('.custom-pagination.custom-pagination--grid', $gridToolbar);
-
-          if (pageCount > 1) {
-            $select.empty();
-            for (let i = 0; i < pageCount; i++) {
-              (i === currentPage)
-                      ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
-                      : $select.append(`<option value="${i}">${i + 1}</option>>`);
+            else if (certsGrid.clickKey == e.key) {
+              if (((new Date()) - certsGrid.clickDate) <= 300) {
+                doubleClick();
+              }
+              else {
+                initialClick();
+              }
+            }
+          },
+          onContentReady: (e) => {
+            function changePage(page) {
+              e.component.pageIndex(page);
             }
 
-            $appendedPagination.remove();
-            $gridToolbar.append($customPagination);
+            let $customPagination = $('.custom-pagination.custom-pagination--grid'),
+                $select = $('.custom-pagination__select', $customPagination),
+                pageCount = e.component.pageCount(),
+                currentPage = e.component.pageIndex(),
+                $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+                $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+                $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+                $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+                $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                        ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                        : e.element.find('.dx-datagrid-header-panel'),
+                $appendedPagination = $('.custom-pagination.custom-pagination--grid', $gridToolbar);
 
-            if (currentPage === 0) {
-              $firstPageBtn.attr('disabled', true);
-              $prevPageBtn.attr('disabled', true);
+            if (pageCount > 1) {
+              $select.empty();
+              for (let i = 0; i < pageCount; i++) {
+                (i === currentPage)
+                        ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
+                        : $select.append(`<option value="${i}">${i + 1}</option>>`);
+              }
+
+              $appendedPagination.remove();
+              $gridToolbar.append($customPagination);
+
+              if (currentPage === 0) {
+                $firstPageBtn.attr('disabled', true);
+                $prevPageBtn.attr('disabled', true);
+              }
+              else {
+                $firstPageBtn.attr('disabled', false);
+                $prevPageBtn.attr('disabled', false);
+              }
+
+              if ((currentPage + 1) === pageCount) {
+                $lastPageBtn.attr('disabled', true);
+                $nextPageBtn.attr('disabled', true);
+              }
+              else {
+                $lastPageBtn.attr('disabled', false);
+                $nextPageBtn.attr('disabled', false);
+              }
+
+              $select.on('change', function() {changePage($(this).val(), pageCount)});
+              $firstPageBtn.on('click', function() {changePage(0, pageCount)});
+              $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
+              $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
+              $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
+
+              $customPagination.fadeIn('fast');
             }
-            else {
-              $firstPageBtn.attr('disabled', false);
-              $prevPageBtn.attr('disabled', false);
+          },
+          columns: [
+            {
+              dataField: 'certificateId',
+              visible: false,
+              allowExporting: false
+            },
+            {
+              dataField: 'certificateNumber',
+              caption: '№ Сертифіката',
+              allowEditing: false,
+              allowFiltering: true,
+            },
+            {
+              dataField: 'blankNumber',
+              caption: '№ Бланку',
+              allowEditing: false,
+              allowFiltering: true,
+            },
+            {
+              dataField: 'issueDate',
+              caption: 'Дата видачі',
+              dataType: 'date',
+              allowEditing: false,
+              format: 'dd.MM.yyyy',
+            },
+            {
+              dataField: 'validDate',
+              caption: 'Дійсний до',
+              dataType: 'date',
+              allowEditing: false,
+              format: 'dd.MM.yyyy',
+            },
+            {
+              dataField: 'certificateNumberGenerated',
+              caption: '№ сертифіката(сген.)',
+              allowEditing: false,
+              visible: false
+            },
+            {
+              dataField: 'trainingDirection',
+              caption: 'Напрямок підготовки',
+              allowEditing: false,
+              allowFiltering: true,
+            },
+            {
+              dataField: 'sailorId',
+              visible: false,
+            },
+            {
+              dataField: 'sailor',
+              caption: 'Моряк',
+              allowEditing: false,
+              allowFiltering: true,
+            },
+            {
+              dataField: 'trainigOrganisation',
+              caption: 'НТЗ',
+              allowEditing: false,
+              allowFiltering: true,
+              visible: gUserRole !== 'НТЗ',
+            },
+            {
+              dataField: 'status',
+              caption: 'Статус',
+              allowEditing: false,
             }
-
-            if ((currentPage + 1) === pageCount) {
-              $lastPageBtn.attr('disabled', true);
-              $nextPageBtn.attr('disabled', true);
-            }
-            else {
-              $lastPageBtn.attr('disabled', false);
-              $nextPageBtn.attr('disabled', false);
-            }
-
-            $select.on('change', function() {changePage($(this).val(), pageCount)});
-            $firstPageBtn.on('click', function() {changePage(0, pageCount)});
-            $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
-            $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
-            $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
-
-            $customPagination.fadeIn('fast');
-          }
-        },
-        columns: [
-          {
-            dataField: 'certificateId',
-            visible: false,
-            allowExporting: false
-          },
-          {
-            dataField: 'certificateNumber',
-            caption: '№ Сертифіката',
-            allowEditing: false,
-            allowFiltering: true,
-          },
-          {
-            dataField: 'blankNumber',
-            caption: '№ Бланку',
-            allowEditing: false,
-            allowFiltering: true,
-          },
-          {
-            dataField: 'issueDate',
-            caption: 'Дата видачі',
-            dataType: 'date',
-            allowEditing: false,
-            format: 'dd.MM.yyyy',
-          },
-          {
-            dataField: 'validDate',
-            caption: 'Дійсний до',
-            dataType: 'date',
-            allowEditing: false,
-            format: 'dd.MM.yyyy',
-          },
-          {
-            dataField: 'certificateNumberGenerated',
-            caption: '№ сертифіката(сген.)',
-            allowEditing: false,
-            visible: false
-          },
-          {
-            dataField: 'trainingDirection',
-            caption: 'Напрямок підготовки',
-            allowEditing: false,
-            allowFiltering: true,
-          },
-          {
-            dataField: 'sailorId',
-            visible: false,
-          },
-          {
-            dataField: 'sailor',
-            caption: 'Моряк',
-            allowEditing: false,
-            allowFiltering: true,
-          },
-          {
-            dataField: 'trainigOrganisation',
-            caption: 'НТЗ',
-            allowEditing: false,
-            allowFiltering: true,
-            visible: gUserRole !== 'НТЗ',
-          },
-          {
-            dataField: 'status',
-            caption: 'Статус',
-            allowEditing: false,
-          }
-        ]
-      }
-    }
-  },
-
-  mounted() {
-    axios.get(`/mariner/api/certificates/`)
-      .then(res => {
-        let certs = res.data.certificates;
-
-        certs.forEach((cert) => {
-          let status;
-
-          switch (cert.status) {
-            case 0:
-              status = 'Чернетка';
-              break;
-            case 1:
-              status = 'Обробка';
-              break;
-            case 2:
-              status = 'Видан';
-              break;
-            case 3:
-              status = 'Анульований';
-              break;
-          }
-
-          this.dataSource.push({
-            certificateId: cert.id,
-            certificateNumber: cert.certf_number,
-            blankNumber: cert.form_number,
-            issueDate: cert.date_of_issue,
-            validDate: cert.valid_date,
-            trainingDirection: cert.training_direction.direction_title,
-            sailorId: cert.sailor_id,
-            sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
-            trainigOrganisation: cert.trainigOrganisation_name,
-            status: status
-          });
-        });
-
-        let certsGrid = this.$refs.certsGrid.tableInstance,
-            selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
-
-        certsGrid.option('dataSource', this.dataSource);
-        certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
-        certsGrid.endCustomLoading();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  },
-
-  methods: {
-    showModal(message = false) {
-      let grid = this.$refs.certsGrid.tableInstance,
-          selectedRows = grid.getSelectedRowsData();
-
-      this.modalConfig.message = message;
-
-      if (selectedRows.length > 0) {
-        let isInvalidData = false;
-
-        selectedRows.some((row) => {
-          if (row.status !== 'Чернетка') {
-            isInvalidData = true;
-            return true;
-          }
-        });
-
-        if (!isInvalidData) {
-          this.modal = true;
+          ]
         }
-        else {
-          this.snackbarConfig.icon = 'mdi-alert-circle';
-          this.snackbarConfig.color = 'red';
-          this.snackbarConfig.message = 'Можливо видаляти тiльки сертифiкати зi статусом "Чернетка"!';
-          this.snackbar = true;
-        }
-      }
-      else {
-        this.snackbarConfig.icon = 'mdi-alert-circle';
-        this.snackbarConfig.color = 'red';
-        this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
-        this.snackbar = true;
       }
     },
 
-    removeCerts() {
-      let grid = this.$refs.certsGrid.tableInstance,
-          selectedRows = grid.getSelectedRowsData(),
-          sendRows = [];
+    mounted() {
+      this.loadGridData();
+    },
 
-      this.modal = false;
+    methods: {
+      loadGridData(refresh = false) {
+        axios.get(`/mariner/api/certificates/`)
+          .then(res => {
+            let certs = res.data.certificates;
 
-      selectedRows.some((row) => {
-        sendRows.push(row.certificateId);
-      });
+            certs.forEach((cert) => {
+              let status;
 
-      axios.get(`/mariner/api/removeDraftCerts/`,
-      {
-        params: {
-          certIDs: sendRows.join(',')
-        }
-      })
-        .then(res => {
-          if (!res.error) {
+              switch (cert.status) {
+                case 0:
+                  status = 'Чернетка';
+                  break;
+                case 1:
+                  status = 'Обробка';
+                  break;
+                case 2:
+                  status = 'Видан';
+                  break;
+                case 3:
+                  status = 'Анульований';
+                  break;
+              }
+
+              this.dataSource.push({
+                certificateId: cert.id,
+                certificateNumber: cert.certf_number,
+                blankNumber: cert.form_number,
+                issueDate: cert.date_of_issue,
+                validDate: cert.valid_date,
+                trainingDirection: cert.training_direction.direction_title,
+                sailorId: cert.sailor_id,
+                sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
+                trainigOrganisation: cert.trainigOrganisation_name,
+                status: status
+              });
+            });
+
+            this.$nextTick(() => {
+              let certsGrid = this.$refs.certsGrid.tableInstance,
+                  selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+
+              this.certsCelected = certsGrid.getSelectedRowKeys().length;
+              certsGrid.option('dataSource', this.dataSource);
+              certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+              certsGrid.endCustomLoading();
+
+              if (refresh) {
+                certsGrid.refresh();
+              }
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+
+      saveCert() {
+        let formData = {
+          first_name_en: this.$refs.certForm.first_name_en,
+          last_name_en: this.$refs.certForm.last_name_en,
+          last_name_ukr: this.$refs.certForm.last_name_ukr,
+          first_name_ukr: this.$refs.certForm.first_name_ukr,
+          second_name_ukr: this.$refs.certForm.second_name_ukr,
+          born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
+          inn: this.$refs.certForm.inn,
+          date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
+          valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
+          training_direction: this.$refs.certForm.training_direction.value,
+          form_number: this.$refs.certForm.form_number,
+          certf_number: this.$refs.certForm.certf_number,
+          status: this.$refs.certForm.status
+        };
+
+        axios({
+          method: (this.certId === 0) ? 'post' : 'put',
+          url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
+          data: formData
+        })
+          .then(res => {
+            this.loadGridData(true);
+            this.certFormModal = false;
+
             this.snackbarConfig.icon = 'mdi-check-circle';
             this.snackbarConfig.color = 'success';
-            this.snackbarConfig.message = 'Сертифiкати успiшно видаленi!';
+            this.snackbarConfig.message = (this.certId === 0)
+                                            ? 'Сертифiкат успiшно створено!'
+                                            : 'Сертифiкат успiшно Вiдредаговано!';
             this.snackbar = true;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
 
-            // change status in grid without reload
-            let i = this.dataSource.length;
+      showCertFormModal(certId) {
+        this.certId = certId;
+        this.certFormModal = true;
+        this.$nextTick(() => {
+          this.$refs.certForm.loadFormData();
+        });
+      },
 
-            while (i--) {
-              if (sendRows.includes(this.dataSource[i].certificateId)) {
-                this.dataSource.splice(i, 1);
-              }
+      showModal(message = false) {
+        let grid = this.$refs.certsGrid.tableInstance,
+            selectedRows = grid.getSelectedRowsData();
+
+        this.modalConfig.message = message;
+
+        if (selectedRows.length > 0) {
+          let isInvalidData = false;
+
+          selectedRows.some((row) => {
+            if (row.status !== 'Чернетка') {
+              isInvalidData = true;
+              return true;
             }
-            grid.refresh();
+          });
+
+          if (!isInvalidData) {
+            this.modal = true;
           }
           else {
             this.snackbarConfig.icon = 'mdi-alert-circle';
             this.snackbarConfig.color = 'red';
-            this.snackbarConfig.message = res.error_message;
+            this.snackbarConfig.message = 'Можливо видаляти тiльки сертифiкати зi статусом "Чернетка"!';
             this.snackbar = true;
           }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    handleCerts() {
-      let grid = this.$refs.certsGrid.tableInstance,
-          selectedRows = grid.getSelectedRowsData();
-
-      if (selectedRows.length > 0) {
-        let isInvalidData = false,
-            sendRows = [];
-
-        selectedRows.some((row) => {
-          if (row.status !== 'Чернетка') {
-            isInvalidData = true;
-            return true;
-          }
-          else {
-            sendRows.push(row.certificateId);
-          }
-        });
-
-        if (!isInvalidData) {
-          axios.get(`/mariner/api/changeToReviewStatus/`,
-          {
-            params: {
-              certIDs: sendRows.join(',')
-            }
-          })
-            .then(res => {
-              if (!res.error) {
-                this.snackbarConfig.icon = 'mdi-check-circle';
-                this.snackbarConfig.color = 'success';
-                this.snackbarConfig.message = 'Сертифiкати успiшно вiдправленi в обробку!';
-                this.snackbar = true;
-
-                // change status in grid without reload
-                this.dataSource.forEach((dataItem) => {
-                  if (sendRows.includes(dataItem.certificateId)) {
-                    dataItem.status = 'Обробка';
-                  }
-                });
-                grid.refresh();
-              }
-              else {
-                this.snackbarConfig.icon = 'mdi-alert-circle';
-                this.snackbarConfig.color = 'red';
-                this.snackbarConfig.message = res.error_message;
-                this.snackbar = true;
-              }
-            })
-            .catch((err) => {
-              console.log(err);
-            });
         }
         else {
           this.snackbarConfig.icon = 'mdi-alert-circle';
           this.snackbarConfig.color = 'red';
-          this.snackbarConfig.message = 'Змiнити статус на "Обробка" можливо тiльки для сертифiкатiв зi статусом "Чернетка"!';
+          this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
           this.snackbar = true;
         }
+      },
+
+      removeCerts() {
+        let grid = this.$refs.certsGrid.tableInstance,
+            selectedRows = grid.getSelectedRowsData(),
+            sendRows = [];
+
+        this.modal = false;
+
+        selectedRows.some((row) => {
+          sendRows.push(row.certificateId);
+        });
+
+        axios.get(`/mariner/api/removeDraftCerts/`,
+        {
+          params: {
+            certIDs: sendRows.join(',')
+          }
+        })
+          .then(res => {
+            if (!res.error) {
+              this.snackbarConfig.icon = 'mdi-check-circle';
+              this.snackbarConfig.color = 'success';
+              this.snackbarConfig.message = 'Сертифiкати успiшно видаленi!';
+              this.snackbar = true;
+
+              // change status in grid without reload
+              let i = this.dataSource.length;
+
+              while (i--) {
+                if (sendRows.includes(this.dataSource[i].certificateId)) {
+                  this.dataSource.splice(i, 1);
+                }
+              }
+              grid.refresh();
+            }
+            else {
+              this.snackbarConfig.icon = 'mdi-alert-circle';
+              this.snackbarConfig.color = 'red';
+              this.snackbarConfig.message = res.error_message;
+              this.snackbar = true;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      },
+
+      handleCerts() {
+        let grid = this.$refs.certsGrid.tableInstance,
+            selectedRows = grid.getSelectedRowsData();
+
+        if (selectedRows.length > 0) {
+          let isInvalidData = false,
+              sendRows = [];
+
+          selectedRows.some((row) => {
+            if (row.status !== 'Чернетка') {
+              isInvalidData = true;
+              return true;
+            }
+            else {
+              sendRows.push(row.certificateId);
+            }
+          });
+
+          if (!isInvalidData) {
+            axios.get(`/mariner/api/changeToReviewStatus/`,
+            {
+              params: {
+                certIDs: sendRows.join(',')
+              }
+            })
+              .then(res => {
+                if (!res.error) {
+                  this.snackbarConfig.icon = 'mdi-check-circle';
+                  this.snackbarConfig.color = 'success';
+                  this.snackbarConfig.message = 'Сертифiкати успiшно вiдправленi в обробку!';
+                  this.snackbar = true;
+
+                  // change status in grid without reload
+                  this.dataSource.forEach((dataItem) => {
+                    if (sendRows.includes(dataItem.certificateId)) {
+                      dataItem.status = 'Обробка';
+                    }
+                  });
+                  grid.refresh();
+                }
+                else {
+                  this.snackbarConfig.icon = 'mdi-alert-circle';
+                  this.snackbarConfig.color = 'red';
+                  this.snackbarConfig.message = res.error_message;
+                  this.snackbar = true;
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+          else {
+            this.snackbarConfig.icon = 'mdi-alert-circle';
+            this.snackbarConfig.color = 'red';
+            this.snackbarConfig.message = 'Змiнити статус на "Обробка" можливо тiльки для сертифiкатiв зi статусом "Чернетка"!';
+            this.snackbar = true;
+          }
+        }
+        else {
+          this.snackbarConfig.icon = 'mdi-alert-circle';
+          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
+          this.snackbar = true;
+        }
+      },
+
+      exportGrid(isSelection, exportType) {
+        let grid = this.$refs.certsGrid.tableInstance;
+
+        this.exportType = exportType;
+        grid.exportToExcel((typeof isSelection === 'boolean') ? isSelection : false);
+      },
+
+      printGrid(gridRef) {
+
+        // TODO: Refactor to pure js
+        let $grid = this.$refs[`${gridRef}`].tableInstance._$element,
+            $head = $('.dx-datagrid-headers', $grid),
+            $rows = $('.dx-datagrid-rowsview', $grid),
+            mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+        mywindow.document.write('</head><body >');
+        mywindow.document.write('<h1>' + document.title  + '</h1>');
+        mywindow.document.write(`${$head.html()}${$rows.html()}`);
+        mywindow.document.write('</body></html>');
+
+        mywindow.document.close();
+        mywindow.focus();
+
+        mywindow.print();
+        mywindow.close();
+
+        return true;
       }
-      else {
-        this.snackbarConfig.icon = 'mdi-alert-circle';
-        this.snackbarConfig.color = 'red';
-        this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
-        this.snackbar = true;
-      }
-    },
-
-    exportGrid(isSelection, exportType) {
-      let grid = this.$refs.certsGrid.tableInstance;
-
-      this.exportType = exportType;
-      grid.exportToExcel((typeof isSelection === 'boolean') ? isSelection : false);
-    },
-
-    printGrid(gridRef) {
-
-      // TODO: Refactor to pure js
-      let $grid = this.$refs[`${gridRef}`].tableInstance._$element,
-          $head = $('.dx-datagrid-headers', $grid),
-          $rows = $('.dx-datagrid-rowsview', $grid),
-          mywindow = window.open('', 'PRINT', 'height=400,width=600');
-
-      mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-      mywindow.document.write('</head><body >');
-      mywindow.document.write('<h1>' + document.title  + '</h1>');
-      mywindow.document.write(`${$head.html()}${$rows.html()}`);
-      mywindow.document.write('</body></html>');
-
-      mywindow.document.close();
-      mywindow.focus();
-
-      mywindow.print();
-      mywindow.close();
-
-      return true;
     }
   }
-}
 </script>
