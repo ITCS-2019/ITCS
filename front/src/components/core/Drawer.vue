@@ -117,8 +117,13 @@ export default {
         text: 'Напрямки Підготовки'
       },
       {
+        to: '/mariner/app/training-organizations',
+        icon: 'mdi-ship-wheel',
+        text: 'НТЗ'
+      },
+      {
         to: '/mariner/app/sailors',
-        icon: 'mdi-account',
+        icon: 'mdi-ferry',
         text: 'Моряки'
       },
       {

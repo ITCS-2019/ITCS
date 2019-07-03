@@ -38,5 +38,10 @@ export default [
     path: '/mariner/app/sailors',
     name: 'Sailors',
     view: 'Sailors'
+  },
+  {
+    path: '/mariner/app/training-organizations',
+    name: 'Training Organizations',
+    view: 'TrainingOrganizations'
   }
 ]
