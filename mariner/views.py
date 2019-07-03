@@ -92,9 +92,9 @@ def crm_createUser(request):
 		userSurname = request.POST.get('userSurname')
 		userGroup = request.POST.get('userGroup')
 		userNTZName = request.POST.get('userNTZName')
-		print(userName)
-		print(userPass)
-		print(userMail)
+		#print(userName)
+		#print(userPass)
+		#print(userMail)
 		if userName and userPass and userMail:
 			print('Try Create User')
 			# user = User.objects.create_user(userName, userMail, userPass)
@@ -103,7 +103,7 @@ def crm_createUser(request):
 				print('User Created')
 				u.set_password(userPass)
 				u.first_name = userFirstName
-				u.last_name = userFirstName
+				u.last_name = userSurname
 				group = Group.objects.get(name=userGroup)
 				print(group)
 				u.groups.add(group)#!!!!Rewrite and get from list

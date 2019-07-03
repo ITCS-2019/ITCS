@@ -61,15 +61,43 @@ class CurrentUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		serializer = UserSerializer(current_user)
 		return Response({"user": serializer.data})
 
+	def get_permissions(self):
+		if self.request.method == 'GET':
+			return [permissions.IsAuthenticated()]
+		else:
+			return [permissions.IsAdminUser()]
+
 class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
-	#lookup_field = User.USERNAME_FIELD
-	#lookup_url_kwarg = User.USERNAME_FIELD
+	"""
+    Returns list of users.
+    If user from training organisations return list of users of this organisation.
+    """
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+
+	def list(self, request):
+		users = User()
+		users_count = int()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			users = User.objects.get(id = request.user.id)#TODO: get users of organisation
+			serializer = UserSerializer(users)
+			return Response({"users": serializer.data})
+		else:
+			users = User.objects.all()
+			serializer = UserSerializer(users, many=True)#TODO: check if len(users) count > 1
+			return Response({"users": serializer.data})
+
+	def get_permissions(self):
+		if self.request.method == 'GET':
+			return [permissions.IsAuthenticated()]
+		else:
+			return [permissions.IsAdminUser()]
+			
 
 class SailorViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = Sailor.objects.all()
 	serializer_class = SailorSerializer
+
 
 class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	"""
@@ -86,8 +114,14 @@ class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			directions = trainigOrganisation.directions.all()
 		else:
 			directions = TrainigDirections.objects.all()
-		serializer = TrainigDirectionSerializer(directions, many=True)
+		serializer = TrainigDirectionSerializer(directions, many=True)#TODO: check if len(directions) count > 1
 		return Response({"directions": serializer.data})
+
+	# def get_permissions(self):
+	# 	if self.request.method == 'GET':
+	# 		return [permissions.IsAuthenticated()]
+	# 	else:
+	# 		return [permissions.IsAdminUser()] #TODO: use custom permission class for Admin|Inspectors
 
 
 class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
@@ -102,10 +136,19 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisations = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
 			organisations = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			serializer = TrainigOrganisationSerializer(organisations)
+			return Response({"organisations": serializer.data})
 		else:
 			organisations = TrainigOrganisation.objects.all()
-		serializer = TrainigOrganisationSerializer(organisations)
-		return Response({"organisations": serializer.data})
+			serializer = TrainigOrganisationSerializer(organisations, many=True)
+			return Response({"organisations": serializer.data})
+
+	# def get_permissions(self):
+	# 	if self.request.method == 'GET':
+	# 		return [permissions.IsAuthenticated()]
+	# 	else:
+	# 		return [permissions.IsAdminUser()] #TODO: use custom permission class for Admin|Inspectors
+			
 
 class CertificateViewSet(viewsets.ModelViewSet):
 	"""
@@ -120,7 +163,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 	def list(self, request):
 		certs = Certificate()
-		certsDataArr = []
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
@@ -200,9 +242,12 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			form_number=request.data.get('form_number'),
 			)
 		if created:
+			certification.inn = request.data.get('inn')
 			certification.save()
 		
 		return Response({"message": "Add Certificate"}, status=200)
+
+
 
 
 """
