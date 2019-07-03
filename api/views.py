@@ -8,7 +8,7 @@ from django.http import HttpResponse, JsonResponse
 
 from django.template.loader import render_to_string
 
-from rest_framework import permissions, viewsets#, authentication 
+from rest_framework import permissions, viewsets, mixins#, authentication 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import decorators
@@ -55,6 +55,14 @@ class CurrentUserViewSet(DefaultsMixin, viewsets.ModelViewSet):
     """
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+
+	def retrieve(self, request, pk):
+		print('--------------------')
+		print(pk)
+		current_user = User.objects.get(id = request.user.id)
+		serializer = UserSerializer(current_user)
+		return Response({"User": "You can't get user by id"}, status=200)
+		#return Response({"user": serializer.data})
 
 	def list(self, request):
 		current_user = User.objects.get(id = request.user.id)
@@ -325,7 +333,8 @@ def trainingOrganisationsInfo(request):
 			}
 			directionsDataArr.append(directionData)
 		organisationData = {
-		'organisation_id': organisation.id,
+		'id': organisation.id,
+		'organisation_id': organisation.organisation_id,
 		'organisation_name': organisation.organisation_name,
 		'organisation_activated': organisation.activated,
 		'organisation_active_till': organisation.active_till,
