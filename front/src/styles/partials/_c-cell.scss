@@ -18,6 +18,13 @@
 .c-cell__text {
   flex: 1;
   padding: 5px 0px;
+  &.c-cell__text--link {
+    color: $c-linkBlue;
+    transition: 0.3s;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 }
 
 .c-cell__amount {

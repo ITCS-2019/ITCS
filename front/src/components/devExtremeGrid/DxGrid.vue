@@ -16,7 +16,7 @@
                 Остання
             </button>
         </div>
-        <div id="dev-extreme-grid"></div>
+        <div id="dev-extreme-grid" class="dx-selection-disabled"></div>
     </div>
 </template>
 

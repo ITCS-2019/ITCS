@@ -6,41 +6,67 @@
     <v-layout justify-center wrap>
       <v-flex md12>
         <material-card>
-          <v-layout id="grid-controls"
-          justify-space-between
+          <v-layout justify-space-between
           wrap>
-
-            <!--Grid btns row left side-->
-            <div>
-            </div>
-
-            <!--Grid btns row right side-->
-            <div>
-              <v-btn color="success" small :depressed="true"
-              to="/mariner/app/training-organisations/edit/0">
-                <v-icon>
-                  mdi-plus-box
-                </v-icon>
-                <span class="font-weight-bold ml-1">
-                Додати
-              </span>
-              </v-btn>
-            </div>
           </v-layout>
-          <DxGrid :tableConfig="tableConfig"
-          v-on:init="gridInited()"
-          ref="trainingOrganizationsGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
+
+    <!--Notifications-->
+    <v-snackbar :color="snackbarConfig.color"
+    :top="true"
+    v-model="snackbar"
+    dark>
+      <v-icon color="white"
+      class="mr-3">
+        {{snackbarConfig.icon}}
+      </v-icon>
+      <div>
+        {{snackbarConfig.message}}
+      </div>
+      <v-icon size="16"
+      v-on:click="snackbar = false">
+        mdi-close-circle
+      </v-icon>
+    </v-snackbar>
+
+    <!--Training organization form modal-->
+    <v-dialog v-model="sailorFormModal" persistent max-width="95%"
+    v-on:keydown.esc="sailorFormModal = false">
+      <v-card>
+        <v-card-text>
+          <SailorForm ref="sailorForm">
+          </SailorForm>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" flat v-on:click="sailorFormModal = false">Вiдхилити</v-btn>
+          <v-btn color="success" v-on:click="saveSailor">Зберегти</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+  import SailorForm from '@/components/forms/SailorForm.vue'
+
   export default {
+    components: {
+      SailorForm
+    },
+
     data() {
       return {
+        sailorFormModal: false,
         dataSource: [],
+        snackbar: false,
+        snackbarConfig: {
+          color: null,
+          icon: null,
+          message: null
+        },
         tableConfig: {
           dataSource: [],
           allowColumnReordering: false,
@@ -221,8 +247,7 @@
                       });
 
                       element.append(`<div class="c-cell__row">
-                                          <a class="c-cell__text c-cell__text--link" href="javascript:void(0);"
-                                          onclick="window.vue.$router.push('/mariner/app/training-organisations/edit/${directionInfo.direction_id}')">
+                                          <a class="c-cell__text c-cell__text--link" href="javascript:void(0);" onclick="window.vue.$router.push('/mariner/app/dashboard')">
                                               ${directionInfo.dirction_name}
                                           </a>
                                           <span class="c-cell__amount">
@@ -313,6 +338,46 @@
     },
 
     methods: {
+      saveSailor() {
+        let formData = {
+          first_name_en: this.$refs.sailorForm.first_name_en,
+          last_name_en: this.$refs.sailorForm.last_name_en,
+          last_name_ukr: this.$refs.sailorForm.last_name_ukr,
+          first_name_ukr: this.$refs.sailorForm.first_name_ukr,
+          second_name_ukr: this.$refs.sailorForm.second_name_ukr,
+          born: this.$refs.sailorForm.resetFormatDate(this.$refs.sailorForm.born),
+          inn: this.$refs.sailorForm.inn,
+          sex: this.$refs.sailorForm.sex,
+          died: null
+        };
+
+        axios({
+          method: 'post',
+          url: `/mariner/api/sailors/`,
+          data: formData
+        })
+                .then(res => {
+                  this.loadGridData(true);
+                  this.sailorFormModal = false;
+
+                  this.snackbarConfig.icon = 'mdi-check-circle';
+                  this.snackbarConfig.color = 'success';
+                  this.snackbarConfig.message = 'Моряк успішно внесений!';
+                  this.snackbar = true;
+                })
+                .catch((err) => {
+                  console.log(err);
+                  this.snackbarConfig.icon = 'mdi-alert-circle';
+                  this.snackbarConfig.color = 'red';
+                  this.snackbarConfig.message = err;
+                  this.snackbar = true;
+                });
+      },
+
+      showSailorFormModal() {
+        this.sailorFormModal = true;
+      },
+
       gridInited() {
         let grid = this.$refs.trainingOrganizationsGrid.tableInstance;
 

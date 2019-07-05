@@ -81,6 +81,11 @@ export default {
         case 'Training Organisations':
           this.title = 'Навчально-Тренувальні Заклади'
           break
+        case 'Edit Training Organisations':
+          this.title = (this.$route.params.id ===  '0')
+                         ? 'Створення Навчально-Тренувального Закладу'
+                         : 'Редагування Навчально-Тренувального Закладу'
+          break
       }
     }
   },

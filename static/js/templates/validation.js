@@ -133,9 +133,9 @@ $(function() {
         cyrLettersValid($(this));
     });
 
-    $('#id_form_number').on('keyup', function() {
-        numbersValid($(this));
-    });
+    // $('#id_form_number').on('keyup', function() {
+    //     numbersValid($(this));
+    // });
 
     $('#id_certf_number').on('keyup', function() {
         numbersValid($(this));

@@ -43,5 +43,10 @@ export default [
     path: '/mariner/app/training-organisations',
     name: 'Training Organisations',
     view: 'TrainingOrganisations'
+  },
+  {
+    path: '/mariner/app/training-organisations/edit/:id',
+    name: 'Edit Training Organisations',
+    view: 'EditTrainingOrganisations'
   }
 ]
