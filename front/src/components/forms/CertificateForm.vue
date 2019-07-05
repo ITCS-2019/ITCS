@@ -140,7 +140,6 @@
             <v-layout wrap>
               <v-flex xs12 md4>
                 <v-text-field label="Номер бланку документу"
-                mask="##########"
                 v-model="form_number"/>
               </v-flex>
               <v-flex xs12 md4>
@@ -286,6 +285,16 @@ export default {
 
         this.$set(this, 'last_name_ukr', newVal);
         this.$set(this, 'last_name_en', this.translitToEn(newVal));
+      });
+    },
+
+    form_number(val) {
+      let regExp = /[^a-zA-Z0-9-///]/g;
+
+      this.$nextTick(() => {
+        let newVal = val.replace(regExp, '');
+
+        this.$set(this, 'form_number', newVal);
       });
     }
   },

@@ -54,7 +54,7 @@
           active-class="info"
           avatar
           class="v-list-item"
-          v-bind:class="{hide: userRole === 'НТЗ' && link.text === 'Моряки'}"
+          v-bind:class="{hide: userRole === 'НТЗ' && (link.text === 'Моряки' || link.text === 'НТЗ')}"
         >
           <v-list-tile-action>
             <v-icon>{{ link.icon }}</v-icon>
