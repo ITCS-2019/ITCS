@@ -9,7 +9,6 @@ import './components'
 import './plugins'
 window.axios = require('axios')
 Vue.prototype.axios = window.axios
-
 window.axios.defaults.headers.common['X-CSRFToken'] = `${gToken.token}`
 
 // Sync router with store

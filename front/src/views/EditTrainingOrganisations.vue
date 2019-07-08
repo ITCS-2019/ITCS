@@ -6,9 +6,8 @@
     <v-layout justify-center wrap>
       <v-flex md12>
         <material-card>
-          <v-layout justify-space-between
-          wrap>
-          </v-layout>
+          <OrganisationForm ref="organisationForm">
+          </OrganisationForm>
         </material-card>
       </v-flex>
     </v-layout>
@@ -32,29 +31,29 @@
     </v-snackbar>
 
     <!--Training organization form modal-->
-    <v-dialog v-model="sailorFormModal" persistent max-width="95%"
-    v-on:keydown.esc="sailorFormModal = false">
-      <v-card>
-        <v-card-text>
-          <SailorForm ref="sailorForm">
-          </SailorForm>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="success" flat v-on:click="sailorFormModal = false">Вiдхилити</v-btn>
-          <v-btn color="success" v-on:click="saveSailor">Зберегти</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <!--<v-dialog v-model="sailorFormModal" persistent max-width="95%"-->
+    <!--v-on:keydown.esc="sailorFormModal = false">-->
+      <!--<v-card>-->
+        <!--<v-card-text>-->
+          <!--<SailorForm ref="sailorForm">-->
+          <!--</SailorForm>-->
+        <!--</v-card-text>-->
+        <!--<v-card-actions>-->
+          <!--<v-spacer></v-spacer>-->
+          <!--<v-btn color="success" flat v-on:click="sailorFormModal = false">Вiдхилити</v-btn>-->
+          <!--<v-btn color="success" v-on:click="saveSailor">Зберегти</v-btn>-->
+        <!--</v-card-actions>-->
+      <!--</v-card>-->
+    <!--</v-dialog>-->
   </v-container>
 </template>
 
 <script>
-  import SailorForm from '@/components/forms/SailorForm.vue'
+  import OrganisationForm from '@/components/forms/TrainingOrganisation.vue'
 
   export default {
     components: {
-      SailorForm
+      OrganisationForm
     },
 
     data() {
@@ -331,10 +330,6 @@
           ]
         }
       }
-    },
-
-    mounted() {
-
     },
 
     methods: {
