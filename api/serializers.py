@@ -94,6 +94,7 @@ class TrainigOrganisationSerializer(serializers.ModelSerializer):
 		depth = 1
 		fields = (
 			'id',
+			'organisation_id',
 			'logo_pic',
 			'organisation_name',
 			'organisation_name_eng',
