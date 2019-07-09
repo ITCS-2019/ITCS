@@ -291,15 +291,10 @@
               buttons: [{
                 hint: 'Редагувати',
                 icon: 'edit',
-                onClick: function(e) {
-                  if (gUserRole === 'Інспектор' || gUserRole === 'Адміністратор') {
-                    let trainingOrganisationName = e.row.data.organisation_name.split('|')[0];
+                onClick: e => {
+                  let organisationId = e.row.data.id;
 
-                    window.location.replace(`/mariner/editTrainigOrganisation/${trainingOrganisationName}`);
-                  }
-                  else {
-                    window.location.replace(`/mariner/editTrainigOrganisation/${e.row.data.organisation_name}`);
-                  }
+                  window.vue.$router.push(`/mariner/app/training-organisations/edit/${organisationId}`)
                 }
               }]
             }

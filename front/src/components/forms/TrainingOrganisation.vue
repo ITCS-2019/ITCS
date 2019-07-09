@@ -216,6 +216,7 @@ export default {
 
   data(){
     return {
+      isProfile: (this.$route.name === 'User Profile') ? true : false,
       certId: ~~this.$route.params.id,
       activeTillDatepicker: false,
       activeTillNotFormatted: null,
@@ -242,7 +243,6 @@ export default {
         mail_adress_ukr: null,
         mail_adress_eng: null,
         logo_pic: null,
-        directions: [],
         phone1: null,
         phone2: null,
         orgnisation_email: null,
@@ -304,45 +304,64 @@ export default {
   mounted() {
     this.loadDirections();
 
-    // TODO: refactor to method
-    axios.get(`/mariner/api/organisations/`)
-      .then(res => {
-        let organizationData = res.data.organisations;
+    console.log(this.$route.name);
 
-        if (this.certId && this.certId !== 0)
-            this.organization['id'] = organizationData.id;
-
-        this.organization.organisation_name = organizationData.organisation_name;
-        this.organization.organisation_name_eng = organizationData.organisation_name_eng;
-        this.organization.mail_adress_ukr = organizationData.mail_adress_ukr;
-        this.organization.mail_adress_eng = organizationData.mail_adress_eng;
-        // this.organization.logo_pic = organizationData.logo_pic;
-        this.organization.phone1 = organizationData.phone1;
-        this.organization.phone2 = organizationData.phone2;
-        this.organization.orgnisation_email = organizationData.orgnisation_email;
-        this.organization.site_link = organizationData.site_link;
-        this.organization.checking_number = organizationData.checking_number;
-        this.organization.bank_name = organizationData.bank_name;
-        this.organization.mfo = organizationData.mfo;
-        this.organization.okpo = organizationData.okpo;
-        this.organization.inn = organizationData.inn;
-        this.organization.nds_number = organizationData.nds_number;
-        this.organization.head_full_name = organizationData.head_full_name;
-        this.organization.head_position = organizationData.head_position;
-        this.organization.accountant_full_name = organizationData.accountant_full_name;
-        this.organization.activated = organizationData.activated;
-        this.organization.active_till = organizationData.active_till;
-        this.langs[0].organization_name = organizationData.organisation_name;
-        this.langs[1].organization_name = organizationData.organisation_name_eng;
-        this.langs[0].mail_adress = organizationData.mail_adress_ukr;
-        this.langs[1].mail_adress = organizationData.mail_adress_eng;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (this.isProfile || this.certId !== 0)
+      this.loadOrganisation();
   },
 
   methods: {
+    loadOrganisation() {
+      let route = (this.isProfile) ? `/mariner/api/organisations/` : `/mariner/api/organisations/${this.certId}`;
+
+      console.log(route);
+
+      axios.get(route)
+        .then(res => {
+          let organizationData = (this.isProfile) ? res.data.organisations : res.data;
+
+          if (this.isProfile || this.certId !== 0)
+            this.organization['id'] = organizationData.id;
+
+          this.organization.accountant_full_name = organizationData.accountant_full_name;
+          this.activatedNotFormatted = organizationData.activated;
+          this.activeTillNotFormatted = organizationData.active_till;
+          this.organization.bank_name = organizationData.bank_name;
+          this.organization.checking_number = organizationData.checking_number;
+          this.organization.head_full_name = organizationData.head_full_name;
+          this.organization.head_position = organizationData.head_position;
+          this.organization.inn = organizationData.inn;
+          this.organization.mail_adress_eng = organizationData.mail_adress_eng;
+          this.organization.mail_adress_ukr = organizationData.mail_adress_ukr;
+          this.organization.mfo = organizationData.mfo;
+          this.organization.nds_number = organizationData.nds_number;
+          this.organization.okpo = organizationData.okpo;
+          this.organization.organisation_id = organizationData.organisation_id;
+          this.organization.organisation_name = organizationData.organisation_name;
+          this.organization.organisation_name_eng = organizationData.organisation_name_eng;
+          this.organization.orgnisation_email = organizationData.orgnisation_email;
+          this.organization.phone1 = organizationData.phone1;
+          this.organization.phone2 = organizationData.phone2;
+          this.organization.site_link = organizationData.site_link;
+          this.langs[0].organization_name = organizationData.organisation_name;
+          this.langs[1].organization_name = organizationData.organisation_name_eng;
+          this.langs[0].mail_adress = organizationData.mail_adress_ukr;
+          this.langs[1].mail_adress = organizationData.mail_adress_eng;
+
+          if (!this.isProfile) {
+            organizationData.directions.forEach((direction) => {
+              this.selectedDirections.push({
+                caption: direction.direction_title,
+                value: direction.id
+              });
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     saveOrganisation() {
       if (this.certId !== 0)
         this.organization['id'] = this.certId;
@@ -364,7 +383,7 @@ export default {
         });
 
         directionFull['range_numbers'] = [];
-        this.organization.directions.push(directionFull);
+        this.organization['directions'].push(directionFull);
       });
 
       console.log(this.organization);
@@ -376,12 +395,6 @@ export default {
       })
         .then(res => {
           this.$router.push('/mariner/app/training-organisations');
-          // this.snackbarConfig.icon = 'mdi-check-circle';
-          // this.snackbarConfig.color = 'success';
-          // this.snackbarConfig.message = (this.certId === 0)
-          //   ? 'Навчально-Тренувальний заклад успiшно створено!'
-          //   : 'Навчально-Тренувальний заклад успiшно вiдредаговано!';
-          // this.snackbar = true;
         })
         .catch((err) => {
           console.log(err);
@@ -442,7 +455,8 @@ export default {
       this.organization.mail_adress_ukr = this.langs[0].mail_adress;
       this.organization.mail_adress_eng = this.langs[1].mail_adress;
 
-      axios.put(`/mariner/api/organisations/${this.organization.id}/`, this.organization)
+      axios.put(`/mariner/api/organisations/${this.organization.id}/`,
+      this.organization)
         .then(res => {
           this.showNotification({
             icon: 'mdi-check-circle',
