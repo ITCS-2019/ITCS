@@ -3,21 +3,12 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
-from mariner.models import Certificate, TrainigOrganisation, TrainigDirections, Sailor
+from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
 from accounts.models import Profile
 
 User = get_user_model()
 
-# class TrainigDirectionsSerializer(serializers.ModelSerializer):
-# 	class Meta:
-# 		model = TrainigDirections
-# 		fields = ("price_id", "direction_title", "level", "allow_functions", "price")
 
-# class CertificatesSerializer(serializers.ModelSerializer):
-# 	class Meta:
-# 		model = Certificate
-# 		depth = 1
-# 		fields = ("certf_number", "form_number", "ntz_number", "sailor", "trainigOrganisation", "training_direction")
 class ProfileSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Profile
@@ -31,12 +22,12 @@ class UserSerializer(serializers.ModelSerializer):
 		model = User
 		fields = ('id', 'username', 'full_name', 'is_active', 'profile', )
 
-	def get_links(self, obj):
-		request = self.context['request']
-		return {
-			'self': reverse('user-detail', kwargs={'pk': obj.pk},
-				request=request),
-		}
+	# def get_links(self, obj):
+	# 	request = self.context['request']
+	# 	return {
+	# 		'self': reverse('user-detail', kwargs={'pk': obj.pk},
+	# 			request=request),
+	# 	}
 
 	# def get_links(self, obj):
 	# 	request = self.context['request']
@@ -63,8 +54,6 @@ class SailorSerializer(serializers.ModelSerializer):
 		)
 
 class TrainigDirectionSerializer(serializers.ModelSerializer):
-	#level_display = serializers.SerializerMethodField('get_level_display')
-	#links = serializers.SerializerMethodField('get_links')
 	class Meta:
 		model = TrainigDirections
 		fields = (
@@ -78,17 +67,20 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 			'status',
 		)
 
-	# def get_level_display(self, obj):
-	# 	return obj.get_level_display()
-
-	def get_links(self, obj):
-		request = self.context['request']
-		return {
-			'self': reverse('trainigDirections-detail', kwargs={'pk': obj.pk},
-				request=request),
-		}
+class RangeNumberSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = RangeNumber
+		fields = (
+			'id',
+			'number',
+			'organisation_id',
+			'organisation_name',
+			'direction_id',
+			'direction_name',
+		)
 
 class TrainigOrganisationSerializer(serializers.ModelSerializer):
+	directions = TrainigDirectionSerializer
 	class Meta:
 		model = TrainigOrganisation
 		depth = 1
@@ -119,7 +111,7 @@ class TrainigOrganisationSerializer(serializers.ModelSerializer):
 		)
 
 class CertificateSerializer(serializers.ModelSerializer):
-	#links = serializers.SerializerMethodField('get_links')
+	
 	class Meta:
 		model = Certificate
 		depth = 1
@@ -144,9 +136,9 @@ class CertificateSerializer(serializers.ModelSerializer):
 			'status', 
 		)
 
-	def get_links(self, obj):
-		request = self.context['request']
-		return {
-			'self': reverse('certificate-detail', kwargs={'pk': obj.pk},
-				request=request),
-		}
+	# def get_links(self, obj):
+	# 	request = self.context['request']
+	# 	return {
+	# 		'self': reverse('certificate-detail', kwargs={'pk': obj.pk},
+	# 			request=request),
+	# 	}

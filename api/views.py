@@ -14,10 +14,10 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
+from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
 
 from accounts.models import Profile
-from mariner.models import Certificate, TrainigOrganisation, TrainigDirections, Sailor
+from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
 
 # from django.core.files.storage import FileSystemStorage
 
@@ -133,6 +133,24 @@ class SailorViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = Sailor.objects.all()
 	serializer_class = SailorSerializer
 
+class RangeNumberViewSet(DefaultsMixin, viewsets.ModelViewSet):
+	"""
+    Returns list of all range numbers in DB.
+    If user from training organisations return list of range numbers of this organisation.
+    """
+	queryset = RangeNumber.objects.all()
+	serializer_class = RangeNumberSerializer
+
+	def list(self, request):
+		numbers = RangeNumber()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			numbers = RangeNumber.objects.filter(organisation_id=trainigOrganisation.id)
+		else:
+			numbers = RangeNumber.objects.all()
+		serializer = RangeNumberSerializer(numbers, many=True)#TODO: check if len(directions) count > 1
+		return Response({"range_numbers": serializer.data})
+
 
 class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	"""
@@ -177,6 +195,19 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			organisations = TrainigOrganisation.objects.all()
 			serializer = TrainigOrganisationSerializer(organisations, many=True)
 			return Response({"organisations": serializer.data})
+
+	def perform_create(self, serializer):
+		print('---------')
+		print(self.request.data['directions'])
+		serializer.save(directions=self.request.data['directions'])
+
+
+	# def create(self, request, format=None):
+	# 	if request.user.groups.all()[0].name == 'НТЗ':
+	# 		return Response({"Message": "You can't create organisation"}, status=200)
+	# 	else:
+	# 		print('---------------')
+	# 		print(request.data.get('directions'))
 
 	# def get_permissions(self):
 	# 	if self.request.method == 'GET':
