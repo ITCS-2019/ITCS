@@ -304,8 +304,6 @@ export default {
   mounted() {
     this.loadDirections();
 
-    console.log(this.$route.name);
-
     if (this.isProfile || this.certId !== 0)
       this.loadOrganisation();
   },
@@ -374,6 +372,9 @@ export default {
       this.organization.active_till = this.activeTillNotFormatted;
 
       this.organization.directions = [];
+
+      console.log(this.directionsFull);
+
       this.selectedDirections.forEach(directionId => {
         let directionFull = this.directionsFull.find(direction => {
           if (typeof directionId === 'object')
@@ -383,6 +384,7 @@ export default {
         });
 
         directionFull['range_numbers'] = [];
+        // this.organization['directions'].push(directionFull);
         this.organization['directions'].push(directionFull);
       });
 
@@ -394,7 +396,7 @@ export default {
         data: this.organization
       })
         .then(res => {
-          this.$router.push('/mariner/app/training-organisations');
+          // this.$router.push('/mariner/app/training-organisations');
         })
         .catch((err) => {
           console.log(err);

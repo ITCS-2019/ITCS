@@ -196,10 +196,10 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			serializer = TrainigOrganisationSerializer(organisations, many=True)
 			return Response({"organisations": serializer.data})
 
-	def perform_create(self, serializer):
-		print('---------')
-		print(self.request.data['directions'])
-		serializer.save(directions=self.request.data['directions'])
+	#def perform_create(self, serializer):
+		#print('---------')
+		#print(self.request.data['directions'])
+		#serializer.save(directions=self.request.data['directions'])
 
 
 	# def create(self, request, format=None):
