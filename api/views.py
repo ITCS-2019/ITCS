@@ -196,10 +196,44 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			serializer = TrainigOrganisationSerializer(organisations, many=True)
 			return Response({"organisations": serializer.data})
 
-	def perform_create(self, serializer):
-		print('---------')
-		print(self.request.data['directions'])
-		serializer.save(directions=self.request.data['directions'])
+	def create(self, request, format=None):
+		organisation = TrainigOrganisation()
+		organisation.organisation_id = request.data.get('organisation_id')
+		#organisation.logo_pic = request.data.get('organisation_id')
+		organisation.organisation_name = request.data.get('organisation_name')
+		organisation.organisation_name_eng = request.data.get('organisation_name_eng')
+		organisation.mail_adress_ukr = request.data.get('mail_adress_ukr')
+		organisation.mail_adress_eng = request.data.get('mail_adress_eng')
+		organisation.phone1 = request.data.get('phone1')
+		organisation.phone2 = request.data.get('phone2')
+		organisation.orgnisation_email = request.data.get('orgnisation_email')
+		organisation.site_link = request.data.get('site_link')
+		organisation.checking_number = request.data.get('checking_number')
+		organisation.bank_name = request.data.get('bank_name')
+		organisation.mfo = request.data.get('mfo')
+		organisation.okpo = request.data.get('okpo')
+		organisation.inn = request.data.get('inn')
+		organisation.nds_number = request.data.get('nds_number')
+		organisation.head_full_name = request.data.get('head_full_name')
+		organisation.head_position = request.data.get('head_position')
+		organisation.accountant_full_name = request.data.get('accountant_full_name')
+		organisation.activated = request.data.get('activated')
+		organisation.active_till = request.data.get('active_till')
+		organisation.save()
+		directions = self.request.data['directions']
+		for direction in directions:
+		 	print('---------')
+		 	print(direction)
+		 	#print(direction.id)
+		 	# create instance of model
+		 	d = TrainigDirections(**direction)
+		 	#d.range_numbers.clear()
+		 	d.save()
+		 	#d = TrainigDirections.objects.get(id=direction.get('id'))
+		 	organisation.directions.add(d)
+		organisation.save()
+		return Response({"message": "Organisation created"}, status=200)
+		#serializer.save(directions=self.request.data['directions'])
 
 
 	# def create(self, request, format=None):

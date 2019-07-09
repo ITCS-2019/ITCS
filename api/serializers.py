@@ -80,7 +80,7 @@ class RangeNumberSerializer(serializers.ModelSerializer):
 		)
 
 class TrainigOrganisationSerializer(serializers.ModelSerializer):
-	directions = TrainigDirectionSerializer
+	#directions = TrainigDirectionSerializer(read_only=True, many=True)
 	class Meta:
 		model = TrainigOrganisation
 		depth = 1
