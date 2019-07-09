@@ -39,7 +39,7 @@
                     multiple>
                         <template v-slot:prepend-item>
                             <v-list-tile ripple
-                                         v-on:click="toggle">
+                            v-on:click="toggle">
                                 <v-list-tile-action>
                                     <v-icon :color="selectedDirections.length > 0 ? 'indigo darken-4' : ''">
                                         {{ icon }}
@@ -120,9 +120,6 @@
                 <v-flex xs12 md6>
                     <v-text-field label="E-mail"
                     v-model="organization.orgnisation_email"/>
-                    <!--<v-text-field label="Email адреса"-->
-                    <!--v-model="lang.organization_name"-->
-                    <!--prepend-inner-icon="mdi-email-outline"/>-->
                 </v-flex>
                 <v-flex xs12 md6>
                     <v-text-field label="Сайт"
@@ -178,7 +175,7 @@
                         <!--Вiдхилити-->
                     <!--</v-btn>-->
                     <v-btn class="mx-0 font-weight-light ml-1"
-                    v-on:click="saveOrganizationInfo"
+                    v-on:click="(userRole === 'НТЗ') ? saveOrganisationInfo() : saveOrganisation()"
                     color="success">
                         Зберегти
                     </v-btn>
@@ -219,6 +216,7 @@ export default {
 
   data(){
     return {
+      certId: ~~this.$route.params.id,
       activeTillDatepicker: false,
       activeTillNotFormatted: null,
       activeTill: null,
@@ -232,16 +230,19 @@ export default {
         icon: null,
         message: null
       },
+      directionsFull: [],
       directions: [],
       selectedDirections: [],
+
+      // TODO: rename organization to organisation
       organization: {
-        id: null,
         organisation_id: null,
         organisation_name: null,
         organisation_name_eng: null,
         mail_adress_ukr: null,
         mail_adress_eng: null,
         logo_pic: null,
+        directions: [],
         phone1: null,
         phone2: null,
         orgnisation_email: null,
@@ -308,7 +309,9 @@ export default {
       .then(res => {
         let organizationData = res.data.organisations;
 
-        this.organization.id = organizationData.id;
+        if (this.certId && this.certId !== 0)
+            this.organization['id'] = organizationData.id;
+
         this.organization.organisation_name = organizationData.organisation_name;
         this.organization.organisation_name_eng = organizationData.organisation_name_eng;
         this.organization.mail_adress_ukr = organizationData.mail_adress_ukr;
@@ -340,6 +343,51 @@ export default {
   },
 
   methods: {
+    saveOrganisation() {
+      if (this.certId !== 0)
+        this.organization['id'] = this.certId;
+
+      this.organization.organisation_name = this.langs[0].organization_name;
+      this.organization.organisation_name_eng = this.langs[1].organization_name;
+      this.organization.mail_adress_ukr = this.langs[0].mail_adress;
+      this.organization.mail_adress_eng = this.langs[1].mail_adress;
+      this.organization.activated = this.activatedNotFormatted;
+      this.organization.active_till = this.activeTillNotFormatted;
+
+      this.organization.directions = [];
+      this.selectedDirections.forEach(directionId => {
+        let directionFull = this.directionsFull.find(direction => {
+          if (typeof directionId === 'object')
+            return direction.id === directionId.value
+          else
+            return direction.id === directionId
+        });
+
+        directionFull['range_numbers'] = [];
+        this.organization.directions.push(directionFull);
+      });
+
+      console.log(this.organization);
+
+      axios({
+        method: (this.certId === 0) ? 'POST' : 'PUT',
+        url: `/mariner/api/organisations/${(this.certId === 0) ? '' : `${this.certId}/`}`,
+        data: this.organization
+      })
+        .then(res => {
+          this.$router.push('/mariner/app/training-organisations');
+          // this.snackbarConfig.icon = 'mdi-check-circle';
+          // this.snackbarConfig.color = 'success';
+          // this.snackbarConfig.message = (this.certId === 0)
+          //   ? 'Навчально-Тренувальний заклад успiшно створено!'
+          //   : 'Навчально-Тренувальний заклад успiшно вiдредаговано!';
+          // this.snackbar = true;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
     formatDate(date) {
       if (!date)
         return null;
@@ -364,9 +412,9 @@ export default {
     loadDirections() {
       axios.get(`/mariner/api/directionsInfo/`)
         .then(res => {
-          let directions = res.data.trainigDirections;
+          this.directionsFull = res.data.trainigDirections
 
-          directions.forEach((direction) => {
+          this.directionsFull.forEach((direction) => {
             this.directions.push({
               caption: direction.direction_title,
               value: direction.id
@@ -388,7 +436,7 @@ export default {
       })
     },
 
-    saveOrganizationInfo() {
+    saveOrganisationInfo() {
       this.organization.organisation_name = this.langs[0].organization_name;
       this.organization.organisation_name_eng = this.langs[1].organization_name;
       this.organization.mail_adress_ukr = this.langs[0].mail_adress;

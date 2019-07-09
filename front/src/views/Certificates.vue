@@ -515,7 +515,7 @@
 
     methods: {
       resetTableConfig() {
-        localStorage.setItem('certGridConfig', undefined);
+        localStorage.removeItem('certGridConfig');
         this.snackbarConfig.icon = 'mdi-check-circle';
         this.snackbarConfig.color = 'success';
         this.snackbarConfig.message = 'Застосована стандартна конфiгурацiя таблицi!';
@@ -564,8 +564,6 @@
             grid.columnOption(col.index, 'width', (col.width) ? col.width : undefined);
             grid.columnOption(col.index, 'sortOrder', (col.sortOrder) ? col.sortOrder : undefined);
           });
-
-
         }
       },
 
@@ -641,7 +639,7 @@
         };
 
         axios({
-          method: (this.certId === 0) ? 'POST' : 'PATCH',
+          method: (this.certId === 0) ? 'POST' : 'PUT',
           url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
           data: formData
         })
@@ -653,7 +651,7 @@
             this.snackbarConfig.color = 'success';
             this.snackbarConfig.message = (this.certId === 0)
                                             ? 'Сертифiкат успiшно створено!'
-                                            : 'Сертифiкат успiшно Вiдредаговано!';
+                                            : 'Сертифiкат успiшно вiдредаговано!';
             this.snackbar = true;
           })
           .catch((err) => {
