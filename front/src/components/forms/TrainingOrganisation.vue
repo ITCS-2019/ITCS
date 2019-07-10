@@ -373,8 +373,6 @@ export default {
 
       this.organization.directions = [];
 
-      console.log(this.directionsFull);
-
       this.selectedDirections.forEach(directionId => {
         let directionFull = this.directionsFull.find(direction => {
           if (typeof directionId === 'object')
@@ -383,12 +381,8 @@ export default {
             return direction.id === directionId
         });
 
-        directionFull['range_numbers'] = [];
-        // this.organization['directions'].push(directionFull);
         this.organization['directions'].push(directionFull);
       });
-
-      console.log(this.organization);
 
       axios({
         method: (this.certId === 0) ? 'POST' : 'PUT',
@@ -396,7 +390,7 @@ export default {
         data: this.organization
       })
         .then(res => {
-          // this.$router.push('/mariner/app/training-organisations');
+          this.$router.push('/mariner/app/training-organisations');
         })
         .catch((err) => {
           console.log(err);

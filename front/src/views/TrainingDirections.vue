@@ -6,18 +6,89 @@
     <v-layout justify-center wrap>
       <v-flex md12>
         <material-card>
-          <DxGrid :tableConfig="tableConfig" ref="directionsGrid"/>
+          <v-layout id="grid-controls"
+          justify-space-between
+          wrap>
+
+            <!--Grid btns row left side-->
+            <div>
+            </div>
+
+            <!--Grid btns row right side-->
+            <div>
+              <v-btn color="success" small :depressed="true"
+              v-on:click="showCertFormModal(0)">
+                <v-icon>
+                  mdi-plus-box
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                Додати
+              </span>
+              </v-btn>
+            </div>
+          </v-layout>
+          <DxGrid :tableConfig="tableConfig"
+          v-on:init="gridInited()"
+          ref="directionsGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
+
+    <!--Notifications-->
+    <v-snackbar :color="snackbarConfig.color"
+    :top="true"
+    v-model="snackbar"
+    dark>
+      <v-icon color="white"
+      class="mr-3">
+        {{snackbarConfig.icon}}
+      </v-icon>
+      <div>
+        {{snackbarConfig.message}}
+      </div>
+      <v-icon size="16"
+      v-on:click="snackbar = false">
+        mdi-close-circle
+      </v-icon>
+    </v-snackbar>
+
+    <!--Certificate form modal-->
+    <v-dialog v-model="directionFormModal" persistent max-width="95%"
+    v-on:keydown.esc="directionFormModal = false">
+      <v-card>
+        <v-card-text>
+          <DirectionForm :directionId="directionId"
+          ref="directionForm">
+          </DirectionForm>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="success" flat v-on:click="directionFormModal = false">Вiдхилити</v-btn>
+          <v-btn color="success" v-on:click="saveDirection">Зберегти</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import DirectionForm from '@/components/forms/DirectionForm.vue'
 
 export default {
+  components: {
+    DirectionForm
+  },
+
   data() {
     return {
+      snackbar: false,
+      snackbarConfig: {
+        color: null,
+        icon: null,
+        message: null
+      },
+      directionId: 0,
+      directionFormModal: false,
       dataSource: [],
       tableConfig: {
         dataSource: [],
@@ -59,40 +130,42 @@ export default {
         rowAlternationEnabled: true,
         onSelectionChanged: function (e) {
           let grid = e.component,
-                  selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+              selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
           grid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
         },
         onCellClick: function (data) {
           switch (data.column.dataField) {
             case 'status':
-              let grid = data.component,
-                  newStatus = (~~data.data.status === 0) ? 1 : 0;
+              if (gUserRole === 'НТЗ') {
+                let grid = data.component,
+                    newStatus = (~~data.data.status === 0) ? 1 : 0;
 
-              axios.get(`/mariner/api/changeTrainigDirectionStatus/`,
-              {
-                params: {
-                  certID: data.data.id,
-                  dirStatus: newStatus
-                }
-              })
-                .then(res => {
-                  let trainigDirections = grid.option('dataSource');
-
-                  trainigDirections.some((direction) => {
-                    if (~~direction.id === ~~data.data.id) {
-                      direction.status = newStatus;
-                    }
-                  });
-                  grid.option('dataSource', trainigDirections);
+                axios.get(`/mariner/api/changeTrainigDirectionStatus/`,
+                {
+                  params: {
+                    certID: data.data.id,
+                    dirStatus: newStatus
+                  }
                 })
-                .catch((err) => {
-                  console.log(err);
-                });
-              break;
+                  .then(res => {
+                    let trainigDirections = grid.option('dataSource');
+
+                    trainigDirections.some((direction) => {
+                      if (~~direction.id === ~~data.data.id) {
+                        direction.status = newStatus;
+                      }
+                    });
+                    grid.option('dataSource', trainigDirections);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+                break;
+              }
           }
         },
-        onContentReady: function (e) {
+        onContentReady: function(e) {
           function changePage(page) {
             e.component.pageIndex(page);
           }
@@ -232,8 +305,9 @@ export default {
             buttons: [{
               hint: 'Редагувати',
               icon: 'edit',
-              onClick: function (e) {
-                window.location.replace(`/mariner/editDirection/${e.row.data.id}`);
+              onClick: (e) => {
+                this.showCertFormModal(e.row.data.id);
+                // window.location.replace(`/mariner/editDirection/${e.row.data.id}`);
               }
             }]
           }
@@ -242,35 +316,83 @@ export default {
     }
   },
 
-  mounted() {
-    axios.get(`/mariner/api/directionsInfo/`)
-      .then(res => {
-        let directions = res.data.trainigDirections;
+  methods: {
+    loadGridData(refresh = false) {
+      axios.get(`/mariner/api/directionsInfo/`)
+        .then(res => {
+          let directions = res.data.trainigDirections;
 
-        directions.forEach((direction) => {
-          this.dataSource.push({
-            id: direction.direction_id,
-            price_id: direction.price_id,
-            direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
-            direction_reviewCertCount: direction.direction_reviewCertCount,
-            direction_issuedCertCount: direction.direction_issuedCertCount,
-            direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
-            allow_functions: direction.allow_functions,
-            level: direction.level,
-            status: direction.status
+          this.dataSource = [];
+          directions.forEach((direction) => {
+            this.dataSource.push({
+              id: (gUserRole === 'НТЗ') ? direction.direction_id : direction.id,
+              price_id: direction.price_id,
+              direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
+              direction_reviewCertCount: direction.direction_reviewCertCount,
+              direction_issuedCertCount: direction.direction_issuedCertCount,
+              direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
+              allow_functions: direction.allow_functions,
+              level: direction.level,
+              status: direction.status
+            });
           });
+
+          let grid = this.$refs.directionsGrid.tableInstance,
+              selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
+          grid.option('dataSource', this.dataSource);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+          grid.endCustomLoading();
+
+          if (refresh) {
+            grid.refresh();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
         });
+    },
 
-        let grid = this.$refs.directionsGrid.tableInstance,
-            selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+    gridInited() {
+      this.loadGridData();
+    },
 
-        grid.option('dataSource', this.dataSource);
-        grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
-        grid.endCustomLoading();
-      })
-      .catch((err) => {
-        console.log(err);
+    showCertFormModal(directionId) {
+      this.directionId = directionId;
+      this.directionFormModal = true;
+      this.$nextTick(() => {
+        this.$refs.directionForm.loadFormData();
       });
+    },
+
+    saveDirection() {
+      let formData = {
+        direction_title: this.$refs.directionForm.direction_title,
+        price_id: this.$refs.directionForm.price_id,
+        level: this.$refs.directionForm.level,
+        allow_functions: this.$refs.directionForm.allow_functions
+      };
+
+      axios({
+        method: (this.directionId === 0) ? 'POST' : 'PUT',
+        url: `/mariner/api/directions/${(this.directionId === 0) ? '' : `${this.directionId}/`}`,
+        data: formData
+      })
+        .then(res => {
+          this.loadGridData(true);
+          this.directionFormModal = false;
+
+          this.snackbarConfig.icon = 'mdi-check-circle';
+          this.snackbarConfig.color = 'success';
+          this.snackbarConfig.message = (this.certId === 0)
+                  ? 'Сертифiкат успiшно створено!'
+                  : 'Сертифiкат успiшно вiдредаговано!';
+          this.snackbar = true;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 }
 </script>
