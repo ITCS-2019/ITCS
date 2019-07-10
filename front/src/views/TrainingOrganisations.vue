@@ -92,22 +92,12 @@
             text: 'Завантаження...'
           },
           rowAlternationEnabled: true,
-          onSelectionChanged: function(e) {
-            // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
-            //
-            // e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
-          },
-          onCellClick: function (e) {
-            // if (e.column.dataField && (gUserRole !== 'Інспектор' || 'Адміністратор')) {
-            //   window.location.replace(`/mariner/trainigOrganisation/${e.data.organisation_name}`);
-            // }
-            // else if ((gUserRole === 'Інспектор' || 'Адміністратор')
-            // && e.column.dataField
-            // && e.column.dataField === 'organisation_name'
-            // && typeof e.value !== 'boolean') {
-            //   let trainingOrganisationName = e.value.split('|')[0];
-            //   window.location.replace(`/mariner/trainigOrganisation/${trainingOrganisationName}`);
-            // }
+          onCellClick: (e) => {
+            if (typeof e.value !== 'boolean') {
+              let organisationId = e.data.collapsedItems[0].id;
+
+              window.vue.$router.push(`/mariner/app/training-organisations/${organisationId}`);
+            }
           },
           onContentReady: function(e) {
             function changePage(page) {
@@ -164,10 +154,6 @@
 
               $customPagination.fadeIn('fast');
             }
-
-            // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
-            //
-            // e.component.option('pager.infoText', `Всього: ${trainigOrganisations.length}${selected}`);
           },
           columns: [
             {

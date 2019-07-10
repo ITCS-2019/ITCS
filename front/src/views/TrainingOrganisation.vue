@@ -1,0 +1,383 @@
+<template>
+  <v-container fill-height
+  fluid
+  grid-list-xl
+  pt-0>
+    <v-layout justify-center wrap>
+      <v-flex md12>
+        <material-card>
+
+        </material-card>
+        <material-card>
+          <DxGrid :tableConfig="tableConfig"
+          v-on:init="gridInited()"
+          ref="certsOnReviewGrid"/>
+        </material-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        organisationId: this.$route.params.id,
+        dataSource: [],
+        tableConfig: {
+          dataSource: [],
+          allowColumnReordering: false,
+          allowColumnResizing: true,
+          columnAutoWidth: false,
+          showBorders: true,
+          showRowLines: true,
+          editing: {
+            mode: "cell",
+            allowUpdating: true
+          },
+          onCellPrepared: function (data) {
+            if (data.isEditing) {
+              let editInput = data.cellElement.find('input')[0];
+
+              editInput.setSelectionRange(0, editInput.value.length);
+            }
+          },
+          onRowUpdated: function(options) {
+            $.ajax({
+              url: '/mariner/api/changeCertNumber/',
+              method: 'GET',
+              data: {
+                certID: options.key.certificateId,
+                certNumber: options.data.certificateNumber
+              },
+              dataType: 'json',
+              success: function (data) {
+              }
+            });
+          },
+          selection: {
+            mode: "multiple",
+            showCheckBoxesMode: 'always'
+          },
+          paging: {
+            enabled: true,
+            pageSize: 10
+          },
+          pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [10, 20, 50, 100],
+            showInfo: true,
+            visible: true
+          },
+          searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Шукати..."
+          },
+          export: {
+            enabled: false,
+            fileName: "certificates",
+            allowExportSelectedData: true
+          },
+          rowAlternationEnabled: true,
+          customizeExportData: function(cols, rows) {
+            let certIDs = [],
+                $clickedItem = $('.dropdown-item--clicked', '#export-type-group'),
+                exportType = $clickedItem.attr('data-type');
+
+            if (rows.length > 0) {
+
+              // Assign certs
+              if (exportType === 'Assign') {
+                rows.forEach(row => certIDs.push(row.data.certificateId));
+
+                $.ajax({
+                  url: '/mariner/api/giveCertNumber/',
+                  method: 'GET',
+                  data: {
+                    certIDs: certIDs.join(',')
+                  },
+                  dataType: 'json',
+                  success: function (res) {
+                    if (!res.error) {
+                      // window.location.reload();
+                    }
+                    else {
+                      $modalText.html(res.error_message);
+                      $('#error-grid-popup').modal('show');
+                    }
+                  }
+                });
+              }
+
+              // Upload to register/issue certs
+              else {
+                let specialty = rows[0].data.specialty,
+                    isSameSpecialties = true;
+
+                rows.some((row) => {
+                  if (row.data.specialty === specialty) {
+                    certIDs.push(row.data.certificateId);
+                  }
+                  else {
+                    isSameSpecialties = false;
+                    return true;
+                  }
+                });
+
+                if (isSameSpecialties) {
+                  let element = document.createElement('a');
+                  element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
+                  element.style.display = 'none';
+                  document.body.appendChild(element);
+                  element.click();
+                  document.body.removeChild(element);
+                }
+                else {
+                  $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
+                  $('#error-grid-popup').modal('show');
+                }
+              }
+            }
+
+            $clickedItem.removeClass('dropdown-item--clicked');
+          },
+          onFileSaving: function (e) {
+            e.cancel = true;
+          },
+          headerFilter: {
+            visible: true
+          },
+          filterRow: {
+            visible: true,
+            applyFilter: "auto"
+          },
+          hoverStateEnabled: true,
+          wordWrapEnabled: true,
+          columnAutoWidth: true,
+          onSelectionChanged: function(e) {
+            // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+            //
+            // e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+          },
+          onCellClick: function (e) {
+            // let component = e.component;
+            //
+            // function initialClick() {
+            //   component.clickCount = 1;
+            //   component.clickKey = e.key;
+            //   component.clickDate = new Date();
+            //   clickDelay = setTimeout(() => {
+            //     if (e.column.dataField && e.column.dataField !== 'certificateNumber') {
+            //       if (e.row.isSelected) {
+            //         certificatesOnReviewGrid.deselectRows([e.key]);
+            //       }
+            //       else {
+            //         certificatesOnReviewGrid.selectRows([e.key], true);
+            //       }
+            //     }
+            //   }, 300);
+            // }
+            //
+            // function doubleClick() {
+            //   clearTimeout(clickDelay);
+            //   component.clickCount = 0;
+            //   component.clickKey = 0;
+            //   component.clickDate = null;
+            //   switch (e.column.dataField) {
+            //           // case 'certificateNumber':
+            //           //     window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+            //           //     return;
+            //     case 'sailor':
+            //       window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
+            //       return;
+            //     case 'ntz':
+            //       window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
+            //       return;
+            //   }
+            //
+            //   if (e.column.dataField && e.column.dataField !== 'certificateNumber') {
+            //     if (e.data) {
+            //       window.location.replace(`/mariner/editCertification/${e.data.certificateId}`);
+            //     }
+            //   }
+            // }
+            //
+            // if ((!component.clickCount) || (component.clickCount != 1) || (component.clickKey != e.key) ) {
+            //   initialClick();
+            // }
+            // else if (component.clickKey == e.key) {
+            //   if (((new Date()) - component.clickDate) <= 300) {
+            //     doubleClick();
+            //   }
+            //   else {
+            //     initialClick();
+            //   }
+            // }
+          },
+          onContentReady: function(e) {
+            function changePage(page) {
+              e.component.pageIndex(page);
+            }
+
+            let $customPagination = $('.custom-pagination.custom-pagination--certificates'),
+                    $select = $('.custom-pagination__select', $customPagination),
+                    pageCount = e.component.pageCount(),
+                    currentPage = e.component.pageIndex(),
+                    $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+                    $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+                    $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+                    $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+                    $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                            ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                            : e.element.find('.dx-datagrid-header-panel'),
+                    $appendedPagination = $('.custom-pagination.custom-pagination--certificates', $gridToolbar);
+
+            if (pageCount > 1) {
+              $select.empty();
+              for (let i = 0; i < pageCount; i++) {
+                (i === currentPage)
+                        ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
+                        : $select.append(`<option value="${i}">${i + 1}</option>>`);
+              }
+
+              $appendedPagination.remove();
+              $gridToolbar.append($customPagination);
+
+              if (currentPage === 0) {
+                $firstPageBtn.attr('disabled', true);
+                $prevPageBtn.attr('disabled', true);
+              }
+              else {
+                $firstPageBtn.attr('disabled', false);
+                $prevPageBtn.attr('disabled', false);
+              }
+
+              if ((currentPage + 1) === pageCount) {
+                $lastPageBtn.attr('disabled', true);
+                $nextPageBtn.attr('disabled', true);
+              }
+              else {
+                $lastPageBtn.attr('disabled', false);
+                $nextPageBtn.attr('disabled', false);
+              }
+
+              $select.on('change', function() {changePage($(this).val(), pageCount)});
+              $firstPageBtn.on('click', function() {changePage(0, pageCount)});
+              $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
+              $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
+              $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
+
+              $customPagination.fadeIn('fast');
+            }
+
+            // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
+            //
+            // e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+          },
+          columns: [
+            {
+              dataField: 'certificateId',
+              visible: false
+            },
+            {
+              dataField: 'certificateNumber',
+              caption: '№ Сертифіката',
+              allowEditing: true,
+              allowFiltering: true
+            },
+            {
+              dataField: 'formNumber',
+              caption: '№ Форми',
+              allowEditing: false,
+              allowFiltering: true
+            },
+            {
+              dataField: 'issueDate',
+              caption: 'Дата видачі',
+              dataType: 'date',
+              allowEditing: false,
+              format: 'dd.MM.yyyy'
+            },
+            {
+              dataField: 'specialty',
+              caption: 'Напрямок підготовки',
+              allowEditing: false,
+              allowFiltering: true
+            },
+            {
+              dataField: 'sailorId',
+              visible: false
+            },
+            {
+              dataField: 'sailor',
+              caption: 'Моряк',
+              allowEditing: false,
+              allowFiltering: true
+            },
+            {
+              dataField: 'status',
+              caption: 'Статус',
+              allowEditing: false
+            }
+          ]
+        }
+      }
+    },
+
+    mounted() {
+
+    },
+
+    methods: {
+      gridInited() {
+        let grid = this.$refs.certsOnReviewGrid.tableInstance;
+
+        this.loadGridData();
+      },
+
+      loadGridData(refresh = false) {
+        axios.get(`mariner/api/organisationCerts/${this.organisationId}?format=json`)
+          .then(res => {
+            console.log(res);
+
+            // let organisations = res.data.organisations;
+            //
+            // organisations.forEach((organisation) => {
+            //   let organisationData = {
+            //         id: organisation.id,
+            //         organisation_id: organisation.organisation_id,
+            //         organisation_name: organisation.organisation_name,
+            //         activated: organisation.organisation_activated,
+            //         active_till: organisation.organisation_active_till,
+            //         directions: []
+            //       },
+            //       directions = organisation.organisation_directions;
+            //
+            //   directions.forEach((direction) => {
+            //     organisationData.directions.push({
+            //       directionId: direction.direction_id
+            //     });
+            //   });
+            //
+            //   this.dataSource.push(organisationData);
+            // });
+            //
+            // let grid = this.$refs.trainingOrganizationsGrid.tableInstance,
+            //     selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+            //
+            // grid.option('dataSource', this.dataSource);
+            // grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+            // grid.endCustomLoading();
+            //
+            // if (refresh) {
+            //   grid.refresh();
+            // }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
+  }
+</script>

@@ -572,6 +572,8 @@
           .then(res => {
             let certs = res.data.certificates;
 
+            console.log(certs);
+
             certs.forEach((cert) => {
               let status;
 
@@ -599,7 +601,7 @@
                 trainingDirection: cert.training_direction.direction_title,
                 sailorId: cert.sailor_id,
                 sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
-                trainigOrganisation: cert.trainigOrganisation_name,
+                trainigOrganisation: cert.trainigOrganisation.organisation_name,
                 status: status
               });
             });
