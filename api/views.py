@@ -222,18 +222,25 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisation.save()
 		directions = self.request.data['directions']
 		for direction in directions:
-		 	print('---------')
-		 	print(direction)
-		 	#print(direction.id)
-		 	# create instance of model
+		 	# create instance of model from dict
 		 	d = TrainigDirections(**direction)
-		 	#d.range_numbers.clear()
 		 	d.save()
-		 	#d = TrainigDirections.objects.get(id=direction.get('id'))
 		 	organisation.directions.add(d)
 		organisation.save()
 		return Response({"message": "Organisation created"}, status=200)
 		#serializer.save(directions=self.request.data['directions'])
+
+	def update(self, request, pk, format=None):
+		organisation = TrainigOrganisation.objects.get(id=pk)
+
+		organisation.directions.clear()
+		directions = self.request.data['directions']
+		for direction in directions:
+		 	d = TrainigDirections(**direction)
+		 	d.save()
+		 	organisation.directions.add(d)
+		organisation.save()
+		return Response({"message": "Organisation updated"}, status=200)
 
 
 	# def create(self, request, format=None):
