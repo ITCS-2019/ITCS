@@ -14,6 +14,7 @@ router.register(r'sailors', views.SailorViewSet)
 router.register(r'directions', views.TrainigDirectionViewSet)
 router.register(r'organisations', views.TrainigOrganisationViewSet)
 router.register(r'rangeNumbers', views.RangeNumberViewSet)
+router.register(r'ranger', views.RangeViewSet, base_name='ranger')
 router.register(r'organisationCerts', views.CertificatesOfOrganisation, base_name='organisationCerts')
 router.register(r'certificates', views.CertificateViewSet)
 

@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
+from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
 
 from accounts.models import Profile
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
@@ -48,6 +48,7 @@ class DefaultsMixin(object):
 	paginate_by = 25
 	paginate_by_param = 'page_size'
 	max_paginate_by = 100
+
 
 class CurrentUserViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 	"""
@@ -151,6 +152,55 @@ class RangeNumberViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		serializer = RangeNumberSerializer(numbers, many=True)#TODO: check if len(directions) count > 1
 		return Response({"range_numbers": serializer.data})
 
+class RangeViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+	queryset = RangeNumber.objects.all()
+	serializer_class = RangeSerializer
+
+	def create(self, request, format=None):
+		print(request.data)
+		orgId = request.data.get('organisation_id')
+		directionID = request.data.get('direction_id')
+		startFromNumber = request.data.get('startRange')
+		endAtNumber = request.data.get('endRange')
+		# print('Organisation ID: ', orgId)
+		# print('Direction ID: ', directionID)
+		# print('Start From Number: ', startFromNumber)
+		# print('End At Number: ', endAtNumber)
+		# if not (startFromNumber.isdigit()):
+		# 	print('rangeStartNumber not digit')
+		# 	form = RangeNumberForm(orgId)
+		# 	organisation = TrainigOrganisation.objects.get(id=orgId)
+		# 	return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeStartNumber not digit"})
+		# if not (endAtNumber.isdigit()):
+		# 	print('rangeEndNumber not digit')
+		# 	form = RangeNumberForm(orgId)
+		# 	organisation = TrainigOrganisation.objects.get(id=orgId)
+		# 	return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeEndNumber not digit"})
+		# if int(endAtNumber) < int(startFromNumber):
+		# 	print('endAtNumber < startFromNumber')
+		# 	form = RangeNumberForm(orgId)
+		# 	organisation = TrainigOrganisation.objects.get(id=orgId)
+		# 	return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "endAtNumber < startFromNumber"})
+		#print('--------------------')
+		organisation = TrainigOrganisation.objects.get(id=orgId)
+		direction = organisation.directions.get(id=directionID)
+		#print(organisation)
+		#print(direction)
+		#print('--------------------')
+		for i in range(int(startFromNumber), int(endAtNumber)+1):
+			print(i, ' - current number')
+			rangeNum,created = RangeNumber.objects.get_or_create(number=i, organisation_id=orgId , organisation_name=organisation.organisation_name, direction_id=directionID, direction_name=direction.direction_title)
+			if created:
+				rangeNum.save()
+				print('Created')
+				organisation.range_numbers.add(rangeNum)
+				print('Add to ranges')
+			else:
+				print('already created')
+		return Response({"message": "Range created"}, status=200)
+
+	def destroy(self, request, pk, format=None):
+		print(request.data)
 
 class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	"""
