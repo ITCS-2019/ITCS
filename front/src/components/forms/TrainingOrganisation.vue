@@ -312,8 +312,6 @@ export default {
     loadOrganisation() {
       let route = (this.isProfile) ? `/mariner/api/organisations/` : `/mariner/api/organisations/${this.certId}`;
 
-      console.log(route);
-
       axios.get(route)
         .then(res => {
           let organizationData = (this.isProfile) ? res.data.organisations : res.data;

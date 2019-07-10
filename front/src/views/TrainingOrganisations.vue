@@ -319,8 +319,6 @@
           .then(res => {
             let organisations = res.data.organisations;
 
-            console.log(organisations);
-
             organisations.forEach((organisation) => {
               let organisationData = {
                     id: organisation.id,
