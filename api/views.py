@@ -321,7 +321,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 	def list(self, request):
 		certs = Certificate()
 		if request.user.groups.all()[0].name == 'НТЗ':
-			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			trainigOrganisation = TrainigOrganisation.objects.prefetch_related('directions').prefetch_related('range_numbers').get(organisation_name=request.user.profile.organization_name)
 			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').filter(trainigOrganisation=trainigOrganisation).order_by('-id')
 		elif request.user.groups.all()[0].name == 'Інспектор':
 			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).order_by('-id')
@@ -499,7 +499,7 @@ def dashInfo(request):
 
 @login_required(login_url="login/")
 def trainingOrganisationsInfo(request):
-	trainigOrganisations = TrainigOrganisation.objects.all()
+	trainigOrganisations = TrainigOrganisation.objects.all().prefetch_related('directions').prefetch_related('range_numbers')
 	organisationDataArr = []
 	organisationDirections = []
 	
