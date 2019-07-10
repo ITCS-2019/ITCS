@@ -78,9 +78,20 @@ class RangeNumberSerializer(serializers.ModelSerializer):
 			'direction_id',
 			'direction_name',
 		)
+class RangeSerializer(serializers.ModelSerializer):
+	startRange = serializers.IntegerField(max_value=None, min_value=None) 
+	endRange = serializers.IntegerField(max_value=None, min_value=None)
+	class Meta:
+		model = RangeNumber
+		fields = (
+			'organisation_id',
+			'direction_id',
+			'startRange',
+			'endRange',
+		)
 
 class TrainigOrganisationSerializer(serializers.ModelSerializer):
-	#directions = TrainigDirectionSerializer(read_only=True, many=True)
+	
 	class Meta:
 		model = TrainigOrganisation
 		depth = 1
@@ -108,6 +119,7 @@ class TrainigOrganisationSerializer(serializers.ModelSerializer):
 			'activated',
 			'active_till',
 			'directions',
+			'range_numbers',
 		)
 
 class CertificateSerializer(serializers.ModelSerializer):

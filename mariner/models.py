@@ -84,8 +84,6 @@ class TrainigDirections(models.Model):
     price = models.IntegerField(null=True, blank=True)
 
     status = models.IntegerField(choices=DIRECTSTATUS, null=True, default=ACT)
-
-    range_numbers = models.ManyToManyField(to='RangeNumber', related_name='ranged', blank=True)
     
     def __str__(self):
         return u"%s / %s / %s /" % (self.direction_title, self.get_allow_functions_display(), self.get_level_display())
@@ -101,27 +99,28 @@ admin.site.register(TrainigDirections, TrainigDirectionsDocAdmin)
 #//////////////////////////////////////////////////////////
 class TrainigOrganisation(models.Model):
     logo_pic = models.ImageField(upload_to = 'orgLogo/', default = 'orgLogo/no-img.jpg', blank=True, null=True)
-    organisation_id = models.CharField(max_length=140, blank=True)
+    organisation_id = models.CharField(max_length=140, null=True, blank=True)
     organisation_name = models.CharField(max_length=140, blank=True) #*
     organisation_name_eng = models.CharField(max_length=140, blank=True) #*
     mail_adress_ukr = models.CharField(max_length=140, blank=True)#*
     mail_adress_eng = models.CharField(max_length=140, blank=True)#*
     phone1 = models.CharField(max_length=140, blank=True) #*
-    phone2 = models.CharField(max_length=140, blank=True)
+    phone2 = models.CharField(max_length=140, null=True, blank=True)
     orgnisation_email = models.CharField(max_length=140, blank=True) #*
-    site_link = models.CharField(max_length=140, blank=True)
-    checking_number = models.CharField(max_length=140, blank=True)
-    bank_name = models.CharField(max_length=140, blank=True)
-    mfo = models.CharField(max_length=140, blank=True)
-    okpo = models.CharField(max_length=140, blank=True)
-    inn = models.CharField(max_length=140, blank=True)
-    nds_number = models.CharField(max_length=140, blank=True)
-    head_full_name = models.CharField(max_length=140, blank=True)
-    head_position = models.CharField(max_length=140, blank=True)
-    accountant_full_name = models.CharField(max_length=140, blank=True)
+    site_link = models.CharField(max_length=140, null=True, blank=True)
+    checking_number = models.CharField(max_length=140, null=True, blank=True)
+    bank_name = models.CharField(max_length=140, null=True, blank=True)
+    mfo = models.CharField(max_length=140, null=True, blank=True)
+    okpo = models.CharField(max_length=140, null=True, blank=True)
+    inn = models.CharField(max_length=140, null=True, blank=True)
+    nds_number = models.CharField(max_length=140, null=True, blank=True)
+    head_full_name = models.CharField(max_length=140, null=True, blank=True)
+    head_position = models.CharField(max_length=140, null=True, blank=True)
+    accountant_full_name = models.CharField(max_length=140, null=True, blank=True)
     activated = models.DateField(null=True, blank=True)
     active_till = models.DateField(null=True, blank=True)
     directions = models.ManyToManyField(to='TrainigDirections', related_name='directioned', blank=True)
+    range_numbers = models.ManyToManyField(to='RangeNumber', related_name='ranged', blank=True)
 
     def get_certInReview(self):
         return self.trained.filter(status__startswith=1)
