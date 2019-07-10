@@ -326,8 +326,8 @@
                     id: organisation.id,
                     organisation_id: organisation.organisation_id,
                     organisation_name: organisation.organisation_name,
-                    activated: organisation.activated,
-                    active_till: organisation.active_till,
+                    activated: organisation.organisation_activated,
+                    active_till: organisation.organisation_active_till,
                     directions: []
                   },
                   directions = organisation.organisation_directions;
