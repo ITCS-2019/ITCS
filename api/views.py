@@ -322,11 +322,11 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certs = Certificate()
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').filter(trainigOrganisation=trainigOrganisation).order_by('-id')
 		elif request.user.groups.all()[0].name == 'Інспектор':
-			certs = Certificate.objects.exclude(status=0).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).order_by('-id')
 		else:
-			certs = Certificate.objects.all().select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').all().order_by('-id')
 		serializer = CertificateSerializer(certs, many=True)
 		return Response({"certificates": serializer.data})
 
@@ -514,7 +514,7 @@ def trainingOrganisationsInfo(request):
 		for direction in organisation.directions.all():
 			reviewCertCount = reviewCertIDs.count(direction.id)
 			issuedCertCount = issuedCertIDs.count(direction.id)
-			certsLeftCount = direction.range_numbers.count()
+			certsLeftCount = 0 #direction.range_numbers.count()
 			directionData = {
 			'direction_id': direction.id,
 			'dirction_name': direction.direction_title,
