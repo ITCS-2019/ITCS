@@ -250,9 +250,11 @@ export default {
       let regExp = /[^[a-zA-Z\-\'\s]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'last_name_en', newVal);
+          this.$set(this, 'last_name_en', newVal);
+        }
       });
     },
 
@@ -324,9 +326,11 @@ export default {
             });
           });
 
-          // Current direction
+          // Current certificate
           if (this.certId) {
             let cert = certRes.data;
+
+            console.log(cert);
 
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;

@@ -352,25 +352,13 @@
               certsGrid.clickKey = 0;
               certsGrid.clickDate = null;
 
-              switch (e.column.dataField && e.data.status === 'Чернетка') {
-                case 'certificateNumber':
-                  _this.showCertFormModal(e.data.certificateId)
-                  return;
-                case 'sailor':
-                  if (gUserRole === 'НТЗ' && e.data.status === 'Чернетка') {
-                    _this.showCertFormModal(e.data.certificateId)
-                  }
-                  else {
-                    window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-                  }
-                  return;
-                case 'trainigOrganisation':
-                  window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
-                  return;
-              }
-
               if (e.column.dataField && e.data.status === 'Чернетка') {
                 _this.showCertFormModal(e.data.certificateId)
+              } else if (e.column.dataField && e.data.status !== 'Чернетка') {
+                _this.snackbarConfig.icon = 'mdi-alert-circle';
+                _this.snackbarConfig.color = 'warning';
+                _this.snackbarConfig.message = `Дозволено редагувати тiльки сертифiкати з статусом "Чернетка"!`;
+                _this.snackbar = true;
               }
             }
 
@@ -571,8 +559,6 @@
         axios.get(`/mariner/api/certificates/`)
           .then(res => {
             let certs = res.data.certificates;
-
-            console.log(certs);
 
             certs.forEach((cert) => {
               let status;
