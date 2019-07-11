@@ -143,8 +143,10 @@ def update_user(request, userID):
 @login_required(login_url="login/")
 def application(request):
 	context = {'debugMode':settings.DEBUG,}
-	return render(request, "application.html", context)
-	#return render(request, "application_app.html", context)
+	if settings.DEBUG:
+		return render(request, "application.html", context)
+	else:
+		return render(request, "application_app.html", context)
 
 #/////////////////TrainigOrganisation//////////////////////
 @login_required(login_url="login/")

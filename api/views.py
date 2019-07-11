@@ -636,6 +636,30 @@ def changeCertNumber(request):
 	return JsonResponse(data)
 
 @login_required(login_url="login/")
+def setRangeNumbers(request):
+	certIDsList = request.GET.get('certIDs').split(',')
+	hasError = False
+	errorMessage = "No Error"
+	if certIDsList != '':
+		certsInChange = Certificate.objects.filter(pk__in=certIDsList)
+		for cert in certsInChange:
+			print('----------------------')
+			print(cert.training_direction.direction_title)
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
+	else:
+		hasError = True
+		errorMessage = "Empty certIDs"
+		data = {
+			'error' : hasError,
+			'error_message' : errorMessage,
+		}
+		return JsonResponse(data)
+
+@login_required(login_url="login/")
 def giveCertNumber(request):
 	certIDsList = request.GET.get('certIDs').split(',')
 	hasError = False
