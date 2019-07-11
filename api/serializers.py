@@ -136,8 +136,8 @@ class TrainigOrganisationSerializer(serializers.Serializer):
 	accountant_full_name = serializers.CharField()
 	activated = serializers.DateField()
 	active_till = serializers.DateField()
-	#directions',
-	#range_numbers',
+	directions = TrainigDirectionSerializer(many=True)
+	range_numbers = RangeNumberSerializer(many=True)
 
 # class TrainigOrganisationModelSerializer(serializers.ModelSerializer):
 	

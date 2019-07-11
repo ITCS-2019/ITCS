@@ -31,6 +31,7 @@ urlpatterns = [
     path('changeTrainigDirectionStatus/', views.changeTrainigDirectionStatus, name="api-changeTrainigDirectionStatus"),
     path('changeToReviewStatus/', views.changeToReviewStatus, name="api-changeToReviewStatus"),
     path('removeDraftCerts/', views.removeDraftCerts, name="api-removeDraftCerts"),
+    path('setRangeNumbers/', views.setRangeNumbers, name="api-setRangeNumbers"),
     path('exportXLS/', views.exportXLS, name='api-exportXLS'),
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
     # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
