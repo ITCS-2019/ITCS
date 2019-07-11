@@ -28,29 +28,29 @@ from transliterate import translit, get_available_language_codes
 
 @login_required(login_url="login/")
 def crm_home(request):
-	return redirect('app')
-	# profile, created = Profile.objects.get_or_create(user=request.user)
-	# if request.user.groups.all()[0].name == 'НТЗ':
-	# 	if request.user.profile.organization_name == '':
-	# 		return redirect('update_profile')
-	# 	else:
-	# 		sailorsCount = Sailor.objects.all().count
-	# 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-	# 		trainigDirectionsCount = trainigOrganisation.directions.count
-	# 		certCount = trainigOrganisation.trained.filter(status__startswith=2).count
-	# 		certsInDraftCount = trainigOrganisation.trained.filter(status__startswith=0).count
-	# 		certsInReviewCount = trainigOrganisation.get_certInReview().count
-	# 		context = {'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInDraftCount': certsInDraftCount, 'certsInReviewCount': certsInReviewCount,}
-	# 		return render(request, "crm_dashboard.html", context)
-	# else:
-	# 	sailorsCount = Sailor.objects.all().count
-	# 	certCount = Certificate.objects.filter(status__startswith=2).count
-	# 	certsInReviewCount = Certificate.objects.filter(status__startswith=1).count
-	# 	trainigDirectionsCount = TrainigDirections.objects.all().count
-	# 	# certsInReview = Certificate.objects.filter(status__startswith=1)
-	# 	trainigOrganisations = TrainigOrganisation.objects.all()
-	# 	context = {'trainigOrganisations': trainigOrganisations, 'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInReviewCount': certsInReviewCount,}
-	# 	return render(request, "crm_dashboard.html", context)
+	#return redirect('app')
+	profile, created = Profile.objects.get_or_create(user=request.user)
+	if request.user.groups.all()[0].name == 'НТЗ':
+		if request.user.profile.organization_name == '':
+			return redirect('update_profile')
+		else:
+			sailorsCount = Sailor.objects.all().count
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			trainigDirectionsCount = trainigOrganisation.directions.count
+			certCount = trainigOrganisation.trained.filter(status__startswith=2).count
+			certsInDraftCount = trainigOrganisation.trained.filter(status__startswith=0).count
+			certsInReviewCount = trainigOrganisation.get_certInReview().count
+			context = {'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInDraftCount': certsInDraftCount, 'certsInReviewCount': certsInReviewCount,}
+			return render(request, "crm_dashboard.html", context)
+	else:
+		sailorsCount = Sailor.objects.all().count
+		certCount = Certificate.objects.filter(status__startswith=2).count
+		certsInReviewCount = Certificate.objects.filter(status__startswith=1).count
+		trainigDirectionsCount = TrainigDirections.objects.all().count
+		# certsInReview = Certificate.objects.filter(status__startswith=1)
+		trainigOrganisations = TrainigOrganisation.objects.all()
+		context = {'trainigOrganisations': trainigOrganisations, 'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInReviewCount': certsInReviewCount,}
+		return render(request, "crm_dashboard.html", context)
 
 @login_required(login_url="login/")
 def crm_profile(request):
@@ -143,8 +143,10 @@ def update_user(request, userID):
 @login_required(login_url="login/")
 def application(request):
 	context = {'debugMode':settings.DEBUG,}
-	return render(request, "application.html", context)
-	#return render(request, "application_app.html", context)
+	if settings.DEBUG:
+		return render(request, "application.html", context)
+	else:
+		return render(request, "application_app.html", context)
 
 #/////////////////TrainigOrganisation//////////////////////
 @login_required(login_url="login/")
