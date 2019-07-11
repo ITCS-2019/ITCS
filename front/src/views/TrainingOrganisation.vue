@@ -8,7 +8,7 @@
         <material-card>
 
         </material-card>
-        <material-card>
+        <material-card class="mt-3">
           <DxGrid :tableConfig="tableConfig"
           v-on:init="gridInited()"
           ref="certsOnReviewGrid"/>
@@ -156,9 +156,12 @@
           wordWrapEnabled: true,
           columnAutoWidth: true,
           onSelectionChanged: function(e) {
-            // let selected = (e.component._options.selection.mode === 'multiple') ? `, Вибрано: ${e.component.getSelectedRowKeys().length}` : '';
-            //
-            // e.component.option('pager.infoText', `Всього: ${certifications.length}${selected}`);
+            let grid = e.component,
+                selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
+            this.certsCelected = grid.getSelectedRowKeys().length;
+
+            grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
           },
           onCellClick: function (e) {
             // let component = e.component;
@@ -325,10 +328,6 @@
       }
     },
 
-    mounted() {
-
-    },
-
     methods: {
       gridInited() {
         let grid = this.$refs.certsOnReviewGrid.tableInstance;
@@ -336,43 +335,49 @@
         this.loadGridData();
       },
 
-      loadGridData(refresh = false) {
-        axios.get(`mariner/api/organisationCerts/${this.organisationId}?format=json`)
+      loadGridData() {
+        axios.get(`/mariner/api/organisationCerts/${this.organisationId}`)
           .then(res => {
-            console.log(res);
+            let certs = res.data.certificates;
 
-            // let organisations = res.data.organisations;
-            //
-            // organisations.forEach((organisation) => {
-            //   let organisationData = {
-            //         id: organisation.id,
-            //         organisation_id: organisation.organisation_id,
-            //         organisation_name: organisation.organisation_name,
-            //         activated: organisation.organisation_activated,
-            //         active_till: organisation.organisation_active_till,
-            //         directions: []
-            //       },
-            //       directions = organisation.organisation_directions;
-            //
-            //   directions.forEach((direction) => {
-            //     organisationData.directions.push({
-            //       directionId: direction.direction_id
-            //     });
-            //   });
-            //
-            //   this.dataSource.push(organisationData);
-            // });
-            //
-            // let grid = this.$refs.trainingOrganizationsGrid.tableInstance,
-            //     selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
-            //
-            // grid.option('dataSource', this.dataSource);
-            // grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
-            // grid.endCustomLoading();
-            //
-            // if (refresh) {
-            //   grid.refresh();
-            // }
+            console.log(certs);
+
+            certs.forEach((cert) => {
+              let status;
+
+              switch (cert.status) {
+                case 0:
+                  status = 'Чернетка';
+                  break;
+                case 1:
+                  status = 'Обробка';
+                  break;
+                case 2:
+                  status = 'Видан';
+                  break;
+                case 3:
+                  status = 'Анульований';
+                  break;
+              }
+
+              this.dataSource.push({
+                certificateId: cert.id,
+                certificateNumber: cert.certf_number,
+                formNumber: cert.form_number,
+                issueDate: cert.date_of_issue,
+                specialty: cert.training_direction.direction_title,
+                sailorId: cert.sailor.id,
+                sailor: `${cert.sailor.last_name_ukr} ${cert.sailor.first_name_ukr}`,
+                status: status,
+              });
+            });
+
+            let grid = this.$refs.certsOnReviewGrid.tableInstance,
+            selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
+            grid.option('dataSource', this.dataSource);
+            grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+            grid.endCustomLoading();
           })
           .catch((err) => {
             console.log(err);
