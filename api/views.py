@@ -362,16 +362,16 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 		else:
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
-		certification.trainigOrganisation = trainigOrganisation
-		certification.date_of_issue = request.data.get('date_of_issue'),
-		certification.valid_date =  request.data.get('valid_date'),
-		certification.valid_type = request.data.get('valid_type'),
+		certificate.trainigOrganisation = trainigOrganisation
+		certificate.date_of_issue = request.data.get('date_of_issue'),
+		certificate.valid_date =  request.data.get('valid_date'),
+		certificate.valid_type = request.data.get('valid_type'),
 
-		certification.direction_level = request.data.get('direction_level'),
-		certification.direction_allow_functions = request.data.get('direction_allow_functions'),
-		certification.training_direction = TrainigDirections.objects.get(id=request.data.get('training_direction'))
+		certificate.direction_level = request.data.get('direction_level'),
+		certificate.direction_allow_functions = request.data.get('direction_allow_functions'),
+		certificate.training_direction = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 
-		certification.status = request.data.get('status'),
+		certificate.status = request.data.get('status'),
 
 		certificate.save()
 
