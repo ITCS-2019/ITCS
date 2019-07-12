@@ -9,7 +9,29 @@
           <div class="title font-weight-regular">
             {{organisationName}}
           </div>
+          <div class="body-2 font-weight-regular mt-3">
+            Діючи Напрямки Підготовки
+          </div>
+          <v-data-table :headers="headers"
+          :items="directions"
+          hide-actions
+          :expand="true"
+          class="elevation-1 mt-1">
+            <template v-slot:items="props">
+              <td>{{ props.item.directionId }}</td>
+              <td class="text-xs-left">{{ props.item.direction_title }}</td>
+              <td class="justify-center layout px-0"
+              v-if="false">
+                <v-icon small
+                class="mr-2"
+                @click="alert();">
+                mdi-edit
+                </v-icon>
+              </td>
+            </template>
+          </v-data-table>
         </material-card>
+
         <material-card class="mt-3">
           <div class="title font-weight-regular">
             Сертифікати на підтвердження
@@ -17,7 +39,6 @@
           <v-layout id="grid-controls"
           justify-space-between
           wrap>
-
             <!--Grid btns row left side-->
             <div>
               <v-menu offset-y
@@ -172,6 +193,25 @@
 
     data() {
       return {
+        headers: [
+          {
+            text: 'ID',
+            align: 'left',
+            sortable: false,
+            value: 'directionId'
+          },
+          {
+            text: 'Напрямок Підготовки',
+            align: 'left',
+            sortable: false,
+            value: 'direction_title'
+          },
+          // { text: 'Actions',
+          //   value: 'name',
+          //   sortable: false
+          // }
+        ],
+        directions: [],
         organisationName: null,
         exportType: null,
         snackbar: false,
@@ -312,39 +352,6 @@
               _this.snackbarConfig.message = `Не обрано жодного сертифiката!`;
               _this.snackbar = true;
             }
-
-            // if (rows.length > 0) {
-            //
-              // Upload to register/issue certs
-              // else {
-              //   let specialty = rows[0].data.specialty,
-              //       isSameSpecialties = true;
-              //
-              //   rows.some((row) => {
-              //     if (row.data.specialty === specialty) {
-              //       certIDs.push(row.data.certificateId);
-              //     }
-              //     else {
-              //       isSameSpecialties = false;
-              //       return true;
-              //     }
-              //   });
-              //
-              //   if (isSameSpecialties) {
-              //     let element = document.createElement('a');
-              //     element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-              //     element.style.display = 'none';
-              //     document.body.appendChild(element);
-              //     element.click();
-              //     document.body.removeChild(element);
-              //   }
-              //   else {
-              //     $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
-              //     $('#error-grid-popup').modal('show');
-              //   }
-              // }
-            // }
-
           },
           onFileSaving: function (e) {
             e.cancel = true;
@@ -517,6 +524,129 @@
               allowEditing: false
             }
           ]
+        },
+        tableOrganisationConfig: {
+          dataSource: [],
+          allowColumnReordering: false,
+          allowColumnResizing: true,
+          columnAutoWidth: false,
+          showBorders: true,
+          showRowLines: true,
+          paging: {
+            enabled: true,
+            pageSize: 10
+          },
+          pager: {
+            showPageSizeSelector: true,
+            allowedPageSizes: [10, 20, 50, 100],
+            showInfo: true,
+            visible: true
+          },
+          searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Шукати..."
+          },
+          rowAlternationEnabled: true,
+          headerFilter: {
+            visible: false
+          },
+          filterRow: {
+            visible: false,
+            applyFilter: "auto"
+          },
+          hoverStateEnabled: true,
+          wordWrapEnabled: true,
+          columnAutoWidth: true,
+          onContentReady: function(e) {
+            function changePage(page) {
+              e.component.pageIndex(page);
+            }
+
+            let $customPagination = $('.custom-pagination.custom-pagination--certificates'),
+                    $select = $('.custom-pagination__select', $customPagination),
+                    pageCount = e.component.pageCount(),
+                    currentPage = e.component.pageIndex(),
+                    $firstPageBtn = $('.custom-pagination__btn--first-page', $customPagination),
+                    $lastPageBtn = $('.custom-pagination__btn--last-page', $customPagination),
+                    $nextPageBtn = $('.custom-pagination__btn--next', $customPagination),
+                    $prevPageBtn = $('.custom-pagination__btn--prev', $customPagination),
+                    $gridToolbar = (e.element.find('.dx-toolbar-items-container').length > 0)
+                            ? e.element.find('.dx-datagrid-header-panel .dx-toolbar-items-container')
+                            : e.element.find('.dx-datagrid-header-panel'),
+                    $appendedPagination = $('.custom-pagination.custom-pagination--certificates', $gridToolbar);
+
+            if (pageCount > 1) {
+              $select.empty();
+              for (let i = 0; i < pageCount; i++) {
+                (i === currentPage)
+                        ? $select.append(`<option selected="selected" value="${i}">${i + 1}</option>>`)
+                        : $select.append(`<option value="${i}">${i + 1}</option>>`);
+              }
+
+              $appendedPagination.remove();
+              $gridToolbar.append($customPagination);
+
+              if (currentPage === 0) {
+                $firstPageBtn.attr('disabled', true);
+                $prevPageBtn.attr('disabled', true);
+              }
+              else {
+                $firstPageBtn.attr('disabled', false);
+                $prevPageBtn.attr('disabled', false);
+              }
+
+              if ((currentPage + 1) === pageCount) {
+                $lastPageBtn.attr('disabled', true);
+                $nextPageBtn.attr('disabled', true);
+              }
+              else {
+                $lastPageBtn.attr('disabled', false);
+                $nextPageBtn.attr('disabled', false);
+              }
+
+              $select.on('change', function() {changePage($(this).val(), pageCount)});
+              $firstPageBtn.on('click', function() {changePage(0, pageCount)});
+              $lastPageBtn.on('click', function() {changePage(pageCount - 1)});
+              $nextPageBtn.on('click', function() {changePage(currentPage + 1)});
+              $prevPageBtn.on('click', function() {changePage(currentPage - 1)});
+
+              $customPagination.fadeIn('fast');
+            }
+          },
+          columns: [
+            {
+              dataField: 'certificateId',
+              visible: false
+            },
+            {
+              dataField: 'certificateNumber',
+              caption: '№ Сертифіката',
+              allowEditing: true,
+              allowFiltering: true
+            },
+            {
+              dataField: 'formNumber',
+              caption: '№ Форми',
+              allowEditing: false,
+              allowFiltering: true
+            },
+            {
+              type: "buttons",
+              width: 110,
+              cssClass: 'center-vertical',
+              visible: false,
+              buttons: [{
+                hint: 'Редагувати',
+                icon: 'edit',
+                onClick: e => {
+                  let organisationId = e.row.data.id;
+
+                  window.vue.$router.push(`/mariner/app/training-organisations/edit/${organisationId}`)
+                }
+              }]
+            }
+          ]
         }
       }
     },
@@ -529,7 +659,18 @@
       loadOrganisation() {
         axios.get(`/mariner/api/organisations/${this.organisationId}`)
           .then(res => {
-            console.log(res);
+            let organisationInfo = res.data,
+                directions = res.data.directions;
+
+            this.organisationName = organisationInfo.organisation_name;
+
+            this.directions = [];
+            directions.forEach((direction) => {
+              this.directions.push({
+                directionId: direction.id,
+                direction_title: direction.direction_title
+              });
+            });
           })
           .catch((err) => {
             console.log(err);
