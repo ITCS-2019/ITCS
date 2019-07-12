@@ -174,6 +174,7 @@ class Certificate(models.Model):
     sailor = models.ForeignKey(to='Sailor', null=True, on_delete=models.SET_NULL, related_name='certificated', blank=True)
     
     trainigOrganisation = models.ForeignKey(to='TrainigOrganisation', null=True, on_delete=models.SET_NULL, related_name='trained', blank=True)
+    organisation_name_cert = models.CharField(max_length=140, null=True, blank=True)
     
     date_of_issue = models.DateField(null=True, blank=True)
     valid_date = models.DateField(null=True, blank=True)
@@ -182,6 +183,8 @@ class Certificate(models.Model):
     direction_level = models.CharField(max_length=20, choices=LEVELS, default='Отримання')
     direction_allow_functions = models.CharField(max_length=20, choices=ALLOWS, default='---')
     training_direction = models.ForeignKey(to='TrainigDirections', null=True, on_delete=models.SET_NULL, related_name='directed', blank=True)
+    direction_title_cert = models.CharField(max_length=200, null=True, blank=True)
+    
 
     status = models.IntegerField(choices=STATUSES, null=True, default=DRF)
 
