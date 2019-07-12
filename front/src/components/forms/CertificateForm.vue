@@ -330,8 +330,6 @@ export default {
           if (this.certId) {
             let cert = certRes.data;
 
-            console.log(cert);
-
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;
             this.date_of_issue = this.formatDate(cert.date_of_issue);

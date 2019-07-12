@@ -556,8 +556,10 @@
       },
 
       loadGridData(refresh = false) {
-        axios.get(`/mariner/api/certificates/`)
+        axios.get(`/mariner/api/tableCertificates/`)
           .then(res => {
+            console.log(res);
+
             let certs = res.data.certificates;
 
             certs.forEach((cert) => {
@@ -584,10 +586,10 @@
                 blankNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
                 validDate: cert.valid_date,
-                trainingDirection: cert.training_direction.direction_title,
+                trainingDirection: cert.direction_title_cert,
                 sailorId: cert.sailor_id,
                 sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
-                trainigOrganisation: cert.trainigOrganisation.organisation_name,
+                trainigOrganisation: cert.organisation_name_cert,
                 status: status
               });
             });
