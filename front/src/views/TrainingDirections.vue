@@ -307,7 +307,6 @@ export default {
               icon: 'edit',
               onClick: (e) => {
                 this.showCertFormModal(e.row.data.id);
-                // window.location.replace(`/mariner/editDirection/${e.row.data.id}`);
               }
             }]
           }

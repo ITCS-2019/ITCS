@@ -612,7 +612,6 @@
 
       saveCert() {
         let formData = {
-          trainigOrganisation: this.$refs.certForm.training_organisation.value,
           first_name_en: this.$refs.certForm.first_name_en,
           last_name_en: this.$refs.certForm.last_name_en,
           last_name_ukr: this.$refs.certForm.last_name_ukr,
@@ -627,6 +626,10 @@
           certf_number: this.$refs.certForm.certf_number,
           status: this.$refs.certForm.status
         };
+
+        if (gUserRole !== 'НТЗ') {
+          formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
+        }
 
         axios({
           method: (this.certId === 0) ? 'POST' : 'PUT',

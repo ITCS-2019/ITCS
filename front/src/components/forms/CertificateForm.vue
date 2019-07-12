@@ -128,7 +128,7 @@
 
             <v-layout wrap>
               <v-flex xs12 md6
-              v-if="~~certId === 0">
+              v-if="~~certId === 0 && userRole !== 'НТЗ'">
                 <v-combobox v-model="training_organisation"
                 :items="organisations"
                 label="Навчально-Тренувальний Заклад"
@@ -137,7 +137,7 @@
                 ></v-combobox>
               </v-flex>
               <v-flex xs12
-              :md6="(~~certId === 0) ? true : false">
+              :md6="(~~certId === 0 && userRole !== 'НТЗ') ? true : false">
                 <v-combobox v-model="training_direction"
                 :items="directions"
                 label="Напрямок підготовки"
@@ -186,14 +186,15 @@ export default {
   data() {
     return {
 
+      userRole: gUserRole,
       // TODO: refactor to one object
       minValidDate: new Date().toISOString().substr(0, 10),
       inn: null,
-      certf_number: null,
+      certf_number: '',
       first_name_ukr: null,
       last_name_ukr: null,
       second_name_ukr: null,
-      form_number: null,
+      form_number: '',
       last_name_en: null,
       first_name_en: null,
       born: null,
@@ -371,10 +372,12 @@ export default {
               caption: cert.training_direction.direction_title,
               value: cert.training_direction.id
             };
-            this.training_organisation = {
-              caption: cert.trainigOrganisation.organisation_name,
-              value: cert.trainigOrganisation.id
-            };
+            if (this.userRole !== 'НТЗ') {
+              this.training_organisation = {
+                caption: cert.trainigOrganisation.organisation_name,
+                value: cert.trainigOrganisation.id
+              };
+            }
             this.valid_date = this.formatDate(cert.valid_date);
           }
 
@@ -382,12 +385,14 @@ export default {
           else {
             let organisations = res.data.organisations;
 
-            organisations.forEach((organisation) => {
-              this.organisations.push({
-                caption: organisation.organisation_name,
-                value: organisation.id
+            if (this.userRole !== 'НТЗ') {
+              organisations.forEach((organisation) => {
+                this.organisations.push({
+                  caption: organisation.organisation_name,
+                  value: organisation.id
+                });
               });
-            });
+            }
 
             this.born = null;
             this.certf_number = null;
