@@ -527,50 +527,13 @@
 
     methods: {
       loadOrganisation() {
-        // axios.get(`/mariner/api/organisationCerts/${this.organisationId}`)
-        //   .then(res => {
-        //     let certs = res.data.certificates;
-        //
-        //     certs.forEach((cert) => {
-        //       let status;
-        //
-        //       switch (cert.status) {
-        //         case 0:
-        //           status = 'Чернетка';
-        //           break;
-        //         case 1:
-        //           status = 'Обробка';
-        //           break;
-        //         case 2:
-        //           status = 'Видан';
-        //           break;
-        //         case 3:
-        //           status = 'Анульований';
-        //           break;
-        //       }
-        //
-        //       this.dataSource.push({
-        //         certificateId: cert.id,
-        //         certificateNumber: cert.certf_number,
-        //         formNumber: cert.form_number,
-        //         issueDate: cert.date_of_issue,
-        //         specialty: cert.training_direction.direction_title,
-        //         sailorId: cert.sailor.id,
-        //         sailor: `${cert.sailor.last_name_ukr} ${cert.sailor.first_name_ukr}`,
-        //         status: status,
-        //       });
-        //     });
-        //
-        //     let grid = this.$refs.certsOnReviewGrid.tableInstance,
-        //             selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
-        //
-        //     grid.option('dataSource', this.dataSource);
-        //     grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
-        //     grid.endCustomLoading();
-        //   })
-        //   .catch((err) => {
-        //     console.log(err);
-        //   });
+        axios.get(`/mariner/api/organisations/${this.organisationId}`)
+          .then(res => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       },
 
       newTab(href) {
