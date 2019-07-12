@@ -328,6 +328,7 @@ export default {
         .then(res => {
           let sailors = res.data;
 
+          this.dataSource = [];
           sailors.forEach((sailor) => {
             this.dataSource.push({
               id: sailor.id,

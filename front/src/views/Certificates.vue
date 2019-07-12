@@ -560,6 +560,7 @@
           .then(res => {
             let certs = res.data.certificates;
 
+            this.dataSource = [];
             certs.forEach((cert) => {
               let status;
 
@@ -611,6 +612,7 @@
 
       saveCert() {
         let formData = {
+          trainigOrganisation: this.$refs.certForm.training_organisation.value,
           first_name_en: this.$refs.certForm.first_name_en,
           last_name_en: this.$refs.certForm.last_name_en,
           last_name_ukr: this.$refs.certForm.last_name_ukr,

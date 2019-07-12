@@ -127,7 +127,17 @@
             </v-layout>
 
             <v-layout wrap>
-              <v-flex md12>
+              <v-flex xs12 md6
+              v-if="~~certId === 0">
+                <v-combobox v-model="training_organisation"
+                :items="organisations"
+                label="Навчально-Тренувальний Заклад"
+                item-text="caption"
+                item-value="value"
+                ></v-combobox>
+              </v-flex>
+              <v-flex xs12
+              :md6="(~~certId === 0) ? true : false">
                 <v-combobox v-model="training_direction"
                 :items="directions"
                 label="Напрямок підготовки"
@@ -197,6 +207,8 @@ export default {
       validDatepicker: false,
       training_direction: null,
       directions: [],
+      training_organisation: null,
+      organisations: [],
       status: null,
       statuses: [
         {
@@ -240,9 +252,11 @@ export default {
       let regExp = /[^[a-zA-Z\-\'\s]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'first_name_en', newVal);
+          this.$set(this, 'first_name_en', newVal);
+        }
       });
     },
 
@@ -262,10 +276,12 @@ export default {
       let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'first_name_ukr', newVal);
-        this.$set(this, 'first_name_en', this.translitToEn(newVal));
+          this.$set(this, 'first_name_ukr', newVal);
+          this.$set(this, 'first_name_en', this.translitToEn(newVal));
+        }
       });
     },
 
@@ -273,9 +289,11 @@ export default {
       let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'second_name_ukr', newVal);
+          this.$set(this, 'second_name_ukr', newVal);
+        }
       });
     },
 
@@ -283,10 +301,12 @@ export default {
       let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'last_name_ukr', newVal);
-        this.$set(this, 'last_name_en', this.translitToEn(newVal));
+          this.$set(this, 'last_name_ukr', newVal);
+          this.$set(this, 'last_name_en', this.translitToEn(newVal));
+        }
       });
     },
 
@@ -294,9 +314,11 @@ export default {
       let regExp = /[^a-zA-Z0-9-///]/g;
 
       this.$nextTick(() => {
-        let newVal = val.replace(regExp, '');
+        if (val) {
+          let newVal = val.replace(regExp, '');
 
-        this.$set(this, 'form_number', newVal);
+          this.$set(this, 'form_number', newVal);
+        }
       });
     }
   },
@@ -312,9 +334,12 @@ export default {
       if (this.certId) {
         requests.push(axios.get(`/mariner/api/certificates/${this.certId}`));
       }
+      else {
+        requests.push(axios.get(`/mariner/api/organisations/`));
+      }
 
       axios.all(requests)
-        .then(axios.spread((directionsRes, certRes) => {
+        .then(axios.spread((directionsRes, res) => {
 
           // Directions
           let directions = directionsRes.data.directions;
@@ -328,7 +353,7 @@ export default {
 
           // Current certificate
           if (this.certId) {
-            let cert = certRes.data;
+            let cert = res.data;
 
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;
@@ -346,9 +371,24 @@ export default {
               caption: cert.training_direction.direction_title,
               value: cert.training_direction.id
             };
+            this.training_organisation = {
+              caption: cert.trainigOrganisation.organisation_name,
+              value: cert.trainigOrganisation.id
+            };
             this.valid_date = this.formatDate(cert.valid_date);
           }
+
+          // Organisations for select
           else {
+            let organisations = res.data.organisations;
+
+            organisations.forEach((organisation) => {
+              this.organisations.push({
+                caption: organisation.organisation_name,
+                value: organisation.id
+              });
+            });
+
             this.born = null;
             this.certf_number = null;
             this.date_of_issue = null;

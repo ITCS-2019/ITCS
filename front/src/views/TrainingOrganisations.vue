@@ -305,6 +305,7 @@
           .then(res => {
             let organisations = res.data.organisations;
 
+            this.dataSource = [];
             organisations.forEach((organisation) => {
               let organisationData = {
                     id: organisation.id,
