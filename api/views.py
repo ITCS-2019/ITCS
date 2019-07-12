@@ -306,6 +306,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 	def update(self, request, pk, format=None):
 		certificate = Certificate.objects.get(id=pk)
 
+		print("Update: get id")
+
 		certificate.certf_number = request.data.get('certf_number'),
 		certificate.form_number =request.data.get('form_number'),
 		certificate.ntz_number = request.data.get('ntz_number'),
@@ -333,19 +335,23 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		trainigOrganisation = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			print("Update: set organisation NTZ")
 		else:
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
+			print("Update: set organisation ID")
 		certificate.trainigOrganisation = trainigOrganisation
+		print("Update: set dates")
 		certificate.date_of_issue = request.data.get('date_of_issue'),
 		certificate.valid_date =  request.data.get('valid_date'),
 		certificate.valid_type = request.data.get('valid_type'),
 
+		print("Update: direction_level")
 		certificate.direction_level = request.data.get('direction_level'),
 		certificate.direction_allow_functions = request.data.get('direction_allow_functions'),
 		certificate.training_direction = TrainigDirections.objects.get(id=request.data.get('training_direction'))
-
+		print("Update: status")
 		certificate.status = request.data.get('status'),
-
+		print("Update: save")
 		certificate.save()
 
 		return Response({"Certificate": "Updated"}, status=200)
@@ -806,7 +812,7 @@ def exportXLS(request):
 						print('Cert number is Empty')
 				else:
 					print('Cert number is None')
-			return redirect('crm_home')
+			return HttpResponse(status=204)
 		else:
 			#ErrorMessage: "Zero Certs"
 			print('Zero Certs')
