@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, SailorSerializer, TrainigOrganisationSerializer
+from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer
 
 from accounts.models import Profile
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
@@ -102,33 +102,6 @@ class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 			return [permissions.IsAuthenticated()]
 		else:
 			return [permissions.IsAdminUser()]
-			
-class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
-	"""
-    Return a list of organisation certificates.
-    Use organisation id for retrieve certificates.
-    If user from training organisations return list of certificates of this organisation.
-    """
-	serializer = CertificateSerializer
-
-	def list(self, request):
-		certs = Certificate()
-		if request.user.groups.all()[0].name == 'НТЗ':
-			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
-			serializer = CertificateSerializer(certs, many=True)
-			return Response({"certificates": serializer.data})
-		else:
-			return Response({"Message": "Use organisation id for retrieve certificates"}, status=200)
-
-	def retrieve(self, request, pk):
-		if request.user.groups.all()[0].name != 'НТЗ':
-			trainigOrganisation = TrainigOrganisation.objects.get(id=pk)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
-			serializer = CertificateSerializer(certs, many=True)
-			return Response({"certificates": serializer.data})
-		else:
-			return Response({"Message": "You can't get certificates of organisation"}, status=200) 
 
 class SailorViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	queryset = Sailor.objects.all()
@@ -451,6 +424,48 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		
 		return Response({"message": "Add Certificate"}, status=200)
 
+class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+	"""
+    Return a list of organisation certificates.
+    Use organisation id for retrieve certificates.
+    If user from training organisations return list of certificates of this organisation.
+    """
+	serializer = CertificateSerializer
+
+	def list(self, request):
+		certs = Certificate()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			serializer = CertificateSerializer(certs, many=True)
+			return Response({"certificates": serializer.data})
+		else:
+			return Response({"Message": "Use organisation id for retrieve certificates"}, status=200)
+
+	def retrieve(self, request, pk):
+		if request.user.groups.all()[0].name != 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(id=pk)
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			serializer = CertificateSerializer(certs, many=True)
+			return Response({"certificates": serializer.data})
+		else:
+			return Response({"Message": "You can't get certificates of organisation"}, status=200) 
+
+class CertificatesOfTable(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+
+	serializer = CertificateCustomSerializer
+
+	def list(self, request):
+		certs = Certificate()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.prefetch_related('directions').prefetch_related('range_numbers').get(organisation_name=request.user.profile.organization_name)
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').filter(trainigOrganisation=trainigOrganisation).order_by('-id')
+		elif request.user.groups.all()[0].name == 'Інспектор':
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).order_by('-id')
+		else:
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').all().order_by('-id')
+		serializer = CertificateCustomSerializer(certs, many=True)
+		return Response({"certificates": serializer.data})
 """
 AJAX Requests
 """
@@ -851,6 +866,16 @@ def exportToPrint(request):
 	else:
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
+
+@login_required(login_url="login/")
+def updateCertForTable(request):
+	certs = Certificate.objects.all()
+
+	for cert in certs:
+		cert.direction_title_cert = cert.training_direction.direction_title
+		cert.organisation_name_cert = cert.trainigOrganisation.organisation_name
+		cert.save()
+	return HttpResponse(status=204)
 
 
 """
