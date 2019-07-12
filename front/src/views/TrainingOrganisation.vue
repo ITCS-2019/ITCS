@@ -6,7 +6,9 @@
     <v-layout justify-center wrap>
       <v-flex md12>
         <material-card>
-
+          <div class="title font-weight-regular">
+            {{organisationName}}
+          </div>
         </material-card>
         <material-card class="mt-3">
           <div class="title font-weight-regular">
@@ -44,45 +46,78 @@
                   </v-list>
                 </v-card>
               </v-menu>
+              <v-btn color="success" small
+              v-on:click="e => newTab('http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert')">
+                <v-icon>
+                  mdi-certificate
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Замовлення сертифікатів
+                </span>
+              </v-btn>
               <v-menu offset-y
-                      content-class="dropdown-menu"
-                      transition="slide-y-transition">
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
                 <v-btn slot="activator"
-                       color="success"
-                       small>
+                color="success"
+                small>
                   <v-icon left>
-                    mdi-file-pdf
+                    mdi-download
                   </v-icon>
                   <span class="font-weight-bold ml-1">
-                    PDF
+                    Вигрузка у Реєстр
                   </span>
                 </v-btn>
                 <v-card>
                   <v-list dense>
                     <v-list-tile key="all"
-                                 v-on:click="e => exportGrid(false, 'PdfExp')">
-                      <v-list-tile-title v-text="`Експортувати все`"/>
+                    v-on:click="e => exportGrid(false, 'Register')">
+                      <v-list-tile-title v-text="`Вигрузити всi`"/>
                     </v-list-tile>
                     <v-list-tile key="checked"
-                                 v-on:click="e => exportGrid(true, 'PdfExp')">
-                      <v-list-tile-title v-text="`Експортувати обране`"/>
+                    v-on:click="e => exportGrid(true, 'Register')">
+                      <v-list-tile-title v-text="`Вигрузити обранi`"/>
                     </v-list-tile>
                   </v-list>
                 </v-card>
               </v-menu>
               <v-btn color="success" small
-                     v-on:click="printGrid('certsGrid')">
+              v-on:click="e => newTab('http://registr-itcs.ddns.net/sidebar/Templates/CertSeafarers')">
                 <v-icon>
-                  mdi-printer
+                  mdi-import
                 </v-icon>
                 <span class="font-weight-bold ml-1">
-                  Друкувати
+                  Імпорт до Реєстру
                 </span>
               </v-btn>
+              <v-menu offset-y
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
+                <v-btn slot="activator"
+                color="success"
+                small>
+                  <v-icon left>
+                    mdi-checkbox-marked-outline
+                  </v-icon>
+                  <span class="font-weight-bold ml-1">
+                    Видати Сертифікати
+                  </span>
+                </v-btn>
+                <v-card>
+                  <v-list dense>
+                    <v-list-tile key="all"
+                    v-on:click="e => exportGrid(false, 'GiveCerts')">
+                      <v-list-tile-title v-text="`Видати всi`"/>
+                    </v-list-tile>
+                    <v-list-tile key="checked"
+                    v-on:click="e => exportGrid(true, 'GiveCerts')">
+                      <v-list-tile-title v-text="`Видати обранi`"/>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-menu>
             </div>
           </v-layout>
-
-
           <DxGrid :tableConfig="tableConfig"
           v-on:init="gridInited()"
           ref="certsOnReviewGrid"/>
@@ -137,6 +172,7 @@
 
     data() {
       return {
+        organisationName: null,
         exportType: null,
         snackbar: false,
         snackbarConfig: {
@@ -238,6 +274,37 @@
                   }
                 });
               }
+
+              // Upload to register/issue certs
+              if (_this.exportType === 'Register' || _this.exportType === 'GiveCerts') {
+                let specialty = rows[0].data.specialty,
+                    isSameSpecialties = true;
+
+                rows.some((row) => {
+                  if (row.data.specialty === specialty) {
+                    certIDs.push(row.data.certificateId);
+                  }
+                  else {
+                    isSameSpecialties = false;
+                    return true;
+                  }
+                });
+
+                if (isSameSpecialties) {
+                  let element = document.createElement('a');
+                  element.setAttribute('href', `/mariner/api/exportXLS?exportType=${_this.exportType}&certIDs=${certIDs.join(',')}`);
+                  element.style.display = 'none';
+                  document.body.appendChild(element);
+                  element.click();
+                  document.body.removeChild(element);
+                }
+                else {
+                  _this.snackbarConfig.icon = 'mdi-alert-circle';
+                  _this.snackbarConfig.color = 'warning';
+                  _this.snackbarConfig.message = `Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!`;
+                  _this.snackbar = true;
+                }
+              }
             }
             else {
               _this.snackbarConfig.icon = 'mdi-alert-circle';
@@ -248,34 +315,34 @@
 
             // if (rows.length > 0) {
             //
-            //   // Upload to register/issue certs
-            //   else {
-            //     let specialty = rows[0].data.specialty,
-            //         isSameSpecialties = true;
-            //
-            //     rows.some((row) => {
-            //       if (row.data.specialty === specialty) {
-            //         certIDs.push(row.data.certificateId);
-            //       }
-            //       else {
-            //         isSameSpecialties = false;
-            //         return true;
-            //       }
-            //     });
-            //
-            //     if (isSameSpecialties) {
-            //       let element = document.createElement('a');
-            //       element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
-            //       element.style.display = 'none';
-            //       document.body.appendChild(element);
-            //       element.click();
-            //       document.body.removeChild(element);
-            //     }
-            //     else {
-            //       $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
-            //       $('#error-grid-popup').modal('show');
-            //     }
-            //   }
+              // Upload to register/issue certs
+              // else {
+              //   let specialty = rows[0].data.specialty,
+              //       isSameSpecialties = true;
+              //
+              //   rows.some((row) => {
+              //     if (row.data.specialty === specialty) {
+              //       certIDs.push(row.data.certificateId);
+              //     }
+              //     else {
+              //       isSameSpecialties = false;
+              //       return true;
+              //     }
+              //   });
+              //
+              //   if (isSameSpecialties) {
+              //     let element = document.createElement('a');
+              //     element.setAttribute('href', `${exportRoute}?exportType=${exportType}&certIDs=${certIDs.join(',')}`);
+              //     element.style.display = 'none';
+              //     document.body.appendChild(element);
+              //     element.click();
+              //     document.body.removeChild(element);
+              //   }
+              //   else {
+              //     $('#modal-text').html('Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!');
+              //     $('#error-grid-popup').modal('show');
+              //   }
+              // }
             // }
 
           },
@@ -454,7 +521,64 @@
       }
     },
 
+    mounted() {
+      this.loadOrganisation();
+    },
+
     methods: {
+      loadOrganisation() {
+        // axios.get(`/mariner/api/organisationCerts/${this.organisationId}`)
+        //   .then(res => {
+        //     let certs = res.data.certificates;
+        //
+        //     certs.forEach((cert) => {
+        //       let status;
+        //
+        //       switch (cert.status) {
+        //         case 0:
+        //           status = 'Чернетка';
+        //           break;
+        //         case 1:
+        //           status = 'Обробка';
+        //           break;
+        //         case 2:
+        //           status = 'Видан';
+        //           break;
+        //         case 3:
+        //           status = 'Анульований';
+        //           break;
+        //       }
+        //
+        //       this.dataSource.push({
+        //         certificateId: cert.id,
+        //         certificateNumber: cert.certf_number,
+        //         formNumber: cert.form_number,
+        //         issueDate: cert.date_of_issue,
+        //         specialty: cert.training_direction.direction_title,
+        //         sailorId: cert.sailor.id,
+        //         sailor: `${cert.sailor.last_name_ukr} ${cert.sailor.first_name_ukr}`,
+        //         status: status,
+        //       });
+        //     });
+        //
+        //     let grid = this.$refs.certsOnReviewGrid.tableInstance,
+        //             selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+        //
+        //     grid.option('dataSource', this.dataSource);
+        //     grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+        //     grid.endCustomLoading();
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+      },
+
+      newTab(href) {
+        let newTab = window.open(href, '_blank');
+
+        newTab.focus();
+      },
+
       exportGrid(isSelection, exportType) {
         let grid = this.$refs.certsOnReviewGrid.tableInstance;
 
@@ -516,8 +640,6 @@
         axios.get(`/mariner/api/organisationCerts/${this.organisationId}`)
           .then(res => {
             let certs = res.data.certificates;
-
-            console.log(certs);
 
             certs.forEach((cert) => {
               let status;
