@@ -15,18 +15,39 @@
           <v-data-table :headers="headers"
           :items="directions"
           hide-actions
-          :expand="true"
           class="elevation-1 mt-1">
             <template v-slot:items="props">
               <td>{{ props.item.directionId }}</td>
               <td class="text-xs-left">{{ props.item.direction_title }}</td>
-              <td class="justify-center layout px-0"
-              v-if="false">
-                <v-icon small
-                class="mr-2"
-                @click="alert();">
-                mdi-edit
-                </v-icon>
+              <td class="justify-center pl-2 pr-2">
+                <v-edit-dialog large
+                lazy
+                v-on:save="e => setRangeNumbers(props.item.directionId, props.item.rangeNumStart, props.item.rangeNumEnd)"
+                v-on:close="close">
+                  <v-btn color="success"
+                   small>
+                    <v-icon left>
+                      mdi-plus-box
+                    </v-icon>
+                    <span class="font-weight-bold ml-1">
+                      Присвоїти номери
+                    </span>
+                  </v-btn>
+                  <template v-slot:input>
+                    <div class="mt-3 title">Присвоїти номери</div>
+                  </template>
+                  <template v-slot:input>
+                    <v-text-field v-model="props.item.rangeNumStart"
+                    label="Початок діапазону"
+                    single-line
+                    autofocus
+                    ></v-text-field>
+                    <v-text-field v-model="props.item.rangeNumEnd"
+                    label="Кінець діапазону"
+                    single-line
+                    ></v-text-field>
+                  </template>
+                </v-edit-dialog>
               </td>
             </template>
           </v-data-table>
@@ -206,10 +227,11 @@
             sortable: false,
             value: 'direction_title'
           },
-          // { text: 'Actions',
-          //   value: 'name',
-          //   sortable: false
-          // }
+          {
+            text: 'Сервiс',
+            sortable: false,
+            value: 'name',
+          }
         ],
         directions: [],
         organisationName: null,
@@ -656,6 +678,34 @@
     },
 
     methods: {
+      setRangeNumbers (directionId, startRange, endRange) {
+        axios.post(`/mariner/api/ranger/`,
+        {
+          organisation_id: this.organisationId,
+          direction_id: directionId,
+          startRange: startRange,
+          endRange: endRange
+        })
+          .then(res => {
+            this.snackbarConfig.icon = 'mdi-check-circle';
+            this.snackbarConfig.color = 'success';
+            this.snackbarConfig.message = 'Номери присвоєно успiшно';
+            this.snackbar = true;
+          })
+          .catch((err) => {
+            console.log(err);
+            this.snackbarConfig.icon = 'mdi-alert-circle';
+            this.snackbarConfig.color = 'red';
+            this.snackbarConfig.message = 'Помилка при присвоєннi!';
+            this.snackbar = true;
+          });
+      },
+
+      // TODO: Remove if don't needed
+      close () {
+        // console.log('Dialog closed')
+      },
+
       loadOrganisation() {
         axios.get(`/mariner/api/organisations/${this.organisationId}`)
           .then(res => {
@@ -668,7 +718,9 @@
             directions.forEach((direction) => {
               this.directions.push({
                 directionId: direction.id,
-                direction_title: direction.direction_title
+                direction_title: direction.direction_title,
+                rangeNumStart: null,
+                rangeNumEnd: null
               });
             });
           })
