@@ -287,7 +287,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
     If user from inspectors group return list of certificates exlude drafts status.
     """
 	
-	permission_classes = (permissions.IsAuthenticated,)
+	#permission_classes = (permissions.IsAuthenticated,)
 	queryset = Certificate.objects.order_by('-id')
 	serializer_class = CertificateSerializer
 
@@ -305,8 +305,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 	def update(self, request, pk, format=None):
 		certificate = Certificate.objects.get(id=pk)
-
-		print("Update: get id")
 
 		certificate.certf_number = request.data.get('certf_number'),
 		certificate.form_number =request.data.get('form_number'),
@@ -340,18 +338,16 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
 			print("Update: set organisation ID")
 		certificate.trainigOrganisation = trainigOrganisation
-		print("Update: set dates")
-		certificate.date_of_issue = request.data.get('date_of_issue'),
-		certificate.valid_date =  request.data.get('valid_date'),
-		certificate.valid_type = request.data.get('valid_type'),
-
-		print("Update: direction_level")
+		
+		
+		# certificate.date_of_issue = request.data.get('date_of_issue'),
+		# certificate.valid_date =  request.data.get('valid_date'),
+		# certificate.valid_type = request.data.get('valid_type'),
+		
 		certificate.direction_level = request.data.get('direction_level'),
 		certificate.direction_allow_functions = request.data.get('direction_allow_functions'),
 		certificate.training_direction = TrainigDirections.objects.get(id=request.data.get('training_direction'))
-		print("Update: status")
-		certificate.status = request.data.get('status'),
-		print("Update: save")
+		#certificate.status = request.data.get('status'),
 		certificate.save()
 
 		return Response({"Certificate": "Updated"}, status=200)
