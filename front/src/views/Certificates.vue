@@ -558,8 +558,6 @@
       loadGridData(refresh = false) {
         axios.get(`/mariner/api/tableCertificates/`)
           .then(res => {
-            console.log(res);
-
             let certs = res.data.certificates;
 
             certs.forEach((cert) => {

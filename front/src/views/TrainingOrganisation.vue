@@ -34,7 +34,7 @@
                     </span>
                   </v-btn>
                   <template v-slot:input>
-                    <div class="mt-3 title">Присвоїти номери</div>
+                    <div class="mt-3 title">Додати номери</div>
                   </template>
                   <template v-slot:input>
                     <v-text-field v-model="props.item.rangeNumStart"
@@ -158,6 +158,15 @@
                   </v-list>
                 </v-card>
               </v-menu>
+              <v-btn color="success" small
+              v-on:click="exportGrid(true, 'setCertsNumbers')">
+              <v-icon>
+                mdi-counter
+              </v-icon>
+              <span class="font-weight-bold ml-1">
+                №-№
+              </span>
+            </v-btn>
             </div>
           </v-layout>
           <DxGrid :tableConfig="tableConfig"
@@ -366,6 +375,7 @@
                   else {
                     axios.get(`/mariner/api/exportXLS?exportType=${_this.exportType}&certIDs=${certIDs.join(',')}`)
                       .then(res => {
+                        _this.loadGridData(true);
                         _this.snackbarConfig.icon = 'mdi-check-circle';
                         _this.snackbarConfig.color = 'success';
                         _this.snackbarConfig.message = `Сертифiкати успiшно виданi!`;
@@ -380,6 +390,41 @@
                   _this.snackbarConfig.icon = 'mdi-alert-circle';
                   _this.snackbarConfig.color = 'warning';
                   _this.snackbarConfig.message = `Сертифiкати на вигрузку повиннi мати однаковi напрямки пiдготовки!`;
+                  _this.snackbar = true;
+                }
+              }
+
+              // Set Certificates range numbers
+              if (_this.exportType === 'setCertsNumbers') {
+                let isEmptyNumbers = true;
+
+                rows.some((row) => {
+                  if (row.data.certificateNumber === null || row.data.certificateNumber === '') {
+                    certIDs.push(row.data.certificateId);
+                  }
+                  else {
+                    isEmptyNumbers = false;
+                    return true;
+                  }
+                });
+
+                if (isEmptyNumbers) {
+                  axios.get(`/mariner/api/setRangeNumbers/?certIDs=${certIDs.join(',')}`)
+                    .then(res => {
+                      _this.loadGridData(true);
+                      _this.snackbarConfig.icon = 'mdi-check-circle';
+                      _this.snackbarConfig.color = 'success';
+                      _this.snackbarConfig.message = `Номера успiшно присвоєнi!`;
+                      _this.snackbar = true;
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                }
+                else {
+                  _this.snackbarConfig.icon = 'mdi-alert-circle';
+                  _this.snackbarConfig.color = 'warning';
+                  _this.snackbarConfig.message = `Номера сертифiкатiв повиннi бути пустими!`;
                   _this.snackbar = true;
                 }
               }
@@ -421,7 +466,7 @@
               grid.clickKey = e.key;
               grid.clickDate = new Date();
               _this.clickDelay = setTimeout(() => {
-                if (e.column.dataField) {
+                if (e.column.dataField && e.column.dataField !== 'certificateNumber') {
                   if (e.row.isSelected) {
                     grid.deselectRows([e.key]);
                   }
@@ -685,11 +730,12 @@
         this.loadGridData();
       },
 
-      loadGridData() {
+      loadGridData(refresh = false) {
         axios.get(`/mariner/api/organisationCerts/${this.organisationId}`)
           .then(res => {
             let certs = res.data.certificates;
 
+            this.dataSource = [];
             certs.forEach((cert) => {
               let status;
 
@@ -726,6 +772,10 @@
             grid.option('dataSource', this.dataSource);
             grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
             grid.endCustomLoading();
+
+            if (refresh) {
+              grid.refresh();
+            }
           })
           .catch((err) => {
             console.log(err);
