@@ -599,6 +599,35 @@ def trainingDirectionsInfo(request):
 		return JsonResponse(data)
 
 @login_required(login_url="login/")
+def organisationDirectionsStat(request):
+	orgID = request.GET.get('orgID')
+	trainigOrganisation = TrainigOrganisation.objects.get(id=orgID)
+	reviewCertIDs = []
+	for reviewCert in trainigOrganisation.get_certInReview():
+		reviewCertIDs.append(reviewCert.training_direction.id)
+	issuedCertIDs = []
+	for issuedCert in trainigOrganisation.get_issuedCerts():
+		issuedCertIDs.append(issuedCert.training_direction.id)
+	directionsDataArr = []
+	for direction in trainigOrganisation.directions.all():
+		reviewCertCount = reviewCertIDs.count(direction.id)
+		issuedCertCount = issuedCertIDs.count(direction.id)
+		certsLeftCount = 0 #direction.range_numbers.count()
+		directionData = {
+			'direction_id': direction.id,
+			'dirction_name': direction.direction_title,
+			'direction_reviewCertCount': reviewCertCount,
+			'direction_issuedCertCount': issuedCertCount,
+			'direction_reviewAndIssuedCertsCount': reviewCertCount + issuedCertCount,
+			'direction_certsLeftCount': certsLeftCount,
+			'direction_allCertsCount': reviewCertCount + issuedCertCount + certsLeftCount,
+		}
+		directionsDataArr.append(directionData)
+	data = {'organisation_directions': directionsDataArr,}
+	return JsonResponse(data)
+
+
+@login_required(login_url="login/")
 def issuedCerts(request):
 	if request.user.groups.all()[0].name == 'НТЗ':
 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)

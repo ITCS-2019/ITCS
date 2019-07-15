@@ -26,6 +26,7 @@ urlpatterns = [
     #path('certificates/', views.CertificateViewSet.as_view(), name="certificates-all"),
     path('allCerts/', views.certificates, name="api-allCerts"),
     path('trainingOrganisationsInfo/', views.trainingOrganisationsInfo, name="api-trainingOrganisationsInfo"),
+    path('organisationDirectionsStat/', views.organisationDirectionsStat, name="api-organisationDirectionsStat"),
     path('issuedCerts/', views.issuedCerts, name="api-issuedCerts"),
     path('changeCertNumber/', views.changeCertNumber, name="api-changeCertNumber"),
     path('giveCertNumber/', views.giveCertNumber, name="api-giveCertNumber"),
