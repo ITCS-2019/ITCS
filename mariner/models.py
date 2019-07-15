@@ -190,7 +190,7 @@ class Certificate(models.Model):
 
 
 class CertificateAdmin(admin.ModelAdmin):
-    list_display = ('form_number', 'last_name_ukr', 'trainigOrganisation',)
+    list_display = ('form_number', 'last_name_ukr', 'trainigOrganisation', 'training_direction')
     search_fields = ('form_number',)
 
 admin.site.register(Certificate, CertificateAdmin)
