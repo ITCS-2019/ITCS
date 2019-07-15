@@ -43,7 +43,7 @@ class SailorSerializer(serializers.ModelSerializer):
 		fields = (
 			'id',
 			'first_name_en',
-			'last_name_ukr',
+			'last_name_en',
 			'last_name_ukr',
 			'first_name_ukr',
 			'second_name_ukr',
