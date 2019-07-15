@@ -577,7 +577,7 @@ def trainingDirectionsInfo(request):
 		for direction in trainigOrganisation.directions.all():
 			reviewCertCount = reviewCertIDs.count(direction.id)
 			issuedCertCount = issuedCertIDs.count(direction.id)
-			certsLeftCount = direction.range_numbers.count()
+			certsLeftCount = 0#direction.range_numbers.count()
 			directionData = {
 			'direction_id': direction.id,
 			'dirction_name': direction.direction_title,
