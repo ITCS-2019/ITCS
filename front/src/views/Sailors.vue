@@ -337,9 +337,9 @@ export default {
                 second_name_ukr: sailor.second_name_ukr,
                 last_name_ukr: sailor.last_name_ukr,
                 first_name_en: sailor.first_name_en,
-                last_name_en: 'last name',
+                last_name_en: sailor.last_name_en,
               },
-              sex: sailor.sex,
+              sex: (sailor.sex === 0) ? 'Чол.' : 'Жiн.',
               born: sailor.born,
               inn: sailor.inn,
             });

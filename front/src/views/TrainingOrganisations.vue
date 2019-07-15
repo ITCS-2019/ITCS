@@ -163,7 +163,9 @@
               allowFiltering: false,
               visible: (gUserRole === 'Інспектор' || gUserRole === 'Адміністратор'),
               cellTemplate: (element, data) => {
-                let grid = this.$refs.trainingOrganizationsGrid.tableInstance;
+                let grid = data.component,
+                    key = grid.getKeyByRowIndex(data.rowIndex),
+                    isExpand = !grid.isRowExpanded(key);
 
                 element.append(`<div class="c-cell__row c-cell__row--min-width-490">
                                     <span class="c-cell__text">
@@ -185,52 +187,72 @@
                                     </span>
                                 </div>`);
 
-                grid.beginCustomLoading();
+                if (isExpand) {
+                  let directions = [];
 
-                // Get training organisations/directions certs info
-                $.ajax({
-                  url: '/mariner/api/trainingOrganisationsInfo/',
-                  method: 'GET',
-                  dataType: 'json',
-                  success: (res) => {
-                    let organisationsInfo = res.organisations;
+                  if (!data.data.directions || data.data.directions.length === 0) {
+                    grid.beginCustomLoading();
 
-                    let directionsData = data.value,
-                        organisationId = data.data.id,
-                        expandedOrganisation = organisationsInfo.find(organisation => {
-                          return organisation.id === organisationId;
+                    // Get training organisations directions info
+                    axios.get(`/mariner/api/organisationDirectionsStat/?orgID=${data.data.id}`)
+                      .then(res => {
+                        let resDirections = res.data.organisation_directions;
+
+                        resDirections.forEach((direction) => {
+                          directions.push({
+                            direction_id: direction.direction_id,
+                            dirction_name: direction.dirction_name,
+                            direction_reviewCertCount: direction.direction_reviewCertCount,
+                            direction_issuedCertCount: direction.direction_issuedCertCount,
+                            direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
+                            direction_certsLeftCount: direction.direction_certsLeftCount,
+                            direction_allCertsCount: direction.direction_allCertsCount
+                          });
                         });
 
-                    directionsData.forEach((direction) => {
-                      let directionInfo = expandedOrganisation.organisation_directions.find(organisationDirection => {
-                        return organisationDirection.direction_id === ~~direction.directionId;
-                      });
+                        this.dataSource.some((row) => {
+                          if (row.id === data.data.id) {
+                            row['directions'] = directions;
+                            grid.option('dataSource', this.dataSource);
 
-                      element.append(`<div class="c-cell__row">
-                                          <a class="c-cell__text c-cell__text--link" href="javascript:void(0);"
-                                          onclick="window.vue.$router.push('/mariner/app/training-organisations/edit/${directionInfo.direction_id}')">
-                                              ${directionInfo.dirction_name}
-                                          </a>
-                                          <span class="c-cell__amount">
-                                              ${directionInfo.direction_reviewCertCount}
-                                          </span>
-                                          <span class="c-cell__amount">
-                                              ${directionInfo.direction_issuedCertCount}
-                                          </span>
-                                          <span class="c-cell__amount">
-                                              ${directionInfo.direction_reviewAndIssuedCertsCount}
-                                          </span>
-                                          <span class="c-cell__amount">
-                                              ${directionInfo.direction_certsLeftCount}
-                                          </span>
-                                          <span class="c-cell__amount">
-                                              ${directionInfo.direction_allCertsCount}
-                                          </span>
-                                      </div>`);
-                    });
-                    grid.endCustomLoading();
+                            return true;
+                          }
+                        });
+
+                        grid.endCustomLoading();
+                      })
+                      .catch((err) => {
+                        console.log(err);
+                      });
                   }
-                });
+                  else {
+                    directions = data.data.directions;
+                  }
+
+                  directions.forEach((direction) => {
+                    element.append(`<div class="c-cell__row">
+                              <a class="c-cell__text c-cell__text--link" href="javascript:void(0);"
+                              onclick="window.vue.$router.push('/mariner/app/training-organisations/edit/${direction.direction_id}')">
+                                  ${direction.dirction_name}
+                              </a>
+                              <span class="c-cell__amount">
+                                  ${direction.direction_reviewCertCount}
+                              </span>
+                              <span class="c-cell__amount">
+                                  ${direction.direction_issuedCertCount}
+                              </span>
+                              <span class="c-cell__amount">
+                                  ${direction.direction_reviewAndIssuedCertsCount}
+                              </span>
+                              <span class="c-cell__amount">
+                                  ${direction.direction_certsLeftCount}
+                              </span>
+                              <span class="c-cell__amount">
+                                  ${direction.direction_allCertsCount}
+                              </span>
+                          </div>`);
+                  });
+                }
               }
             },
             {
@@ -295,13 +317,11 @@
 
     methods: {
       gridInited() {
-        let grid = this.$refs.trainingOrganizationsGrid.tableInstance;
-
         this.loadGridData();
       },
 
       loadGridData(refresh = false) {
-        axios.get(`/mariner/api/trainingOrganisationsInfo/`)
+        axios.get(`/mariner/api/organisations/`)
           .then(res => {
             let organisations = res.data.organisations;
 
@@ -311,17 +331,9 @@
                     id: organisation.id,
                     organisation_id: organisation.organisation_id,
                     organisation_name: organisation.organisation_name,
-                    activated: organisation.organisation_activated,
-                    active_till: organisation.organisation_active_till,
-                    directions: []
-                  },
-                  directions = organisation.organisation_directions;
-
-              directions.forEach((direction) => {
-                organisationData.directions.push({
-                  directionId: direction.direction_id
-                });
-              });
+                    activated: organisation.activated,
+                    active_till: organisation.active_till
+                  };
 
               this.dataSource.push(organisationData);
             });
