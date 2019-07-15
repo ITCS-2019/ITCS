@@ -306,9 +306,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
 	def update(self, request, pk, format=None):
 		certificate = Certificate.objects.get(id=pk)
 
-		certificate.certf_number = request.data.get('certf_number'),
-		certificate.form_number =request.data.get('form_number'),
-		certificate.ntz_number = request.data.get('ntz_number'),
+		certificate.certf_number = request.data.get('certf_number')
+		certificate.form_number =request.data.get('form_number')
+		certificate.ntz_number = request.data.get('ntz_number')
 
 		certificate.first_name_en = request.data.get('first_name_en')
 		certificate.last_name_en = request.data.get('last_name_en')
@@ -338,15 +338,17 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
 			print("Update: set organisation ID")
 		certificate.trainigOrganisation = trainigOrganisation
-		
+		certificate.organisation_name_cert = trainigOrganisation.organisation_name
 		
 		# certificate.date_of_issue = request.data.get('date_of_issue'),
 		# certificate.valid_date =  request.data.get('valid_date'),
 		# certificate.valid_type = request.data.get('valid_type'),
-		
-		certificate.direction_level = request.data.get('direction_level'),
-		certificate.direction_allow_functions = request.data.get('direction_allow_functions'),
-		certificate.training_direction = TrainigDirections.objects.get(id=request.data.get('training_direction'))
+
+		certificate.direction_level = request.data.get('direction_level')
+		certificate.direction_allow_functions = request.data.get('direction_allow_functions')
+		derection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
+		certificate.training_direction = derection
+		certificate.direction_title_cert = derection.direction_title
 		#certificate.status = request.data.get('status'),
 		certificate.save()
 
@@ -402,7 +404,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				sailor.save()
 		certification.sailor = sailor
 		certification.trainigOrganisation = trainigOrganisation
+		certificate.organisation_name_cert = trainigOrganisation.organisation_name
 		certification.training_direction = trainigDirection
+		certificate.direction_title_cert = trainigDirection.direction_title
 		certification, created = Certificate.objects.get_or_create(
 			first_name_en = request.data.get('first_name_en'),
 			last_name_en = request.data.get('last_name_en'),
