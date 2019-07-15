@@ -360,6 +360,7 @@ export default {
       this.directionId = directionId;
       this.directionFormModal = true;
       this.$nextTick(() => {
+        this.$refs.directionForm.clearFormData();
         this.$refs.directionForm.loadFormData();
       });
     },

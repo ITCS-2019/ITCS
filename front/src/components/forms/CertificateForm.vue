@@ -407,6 +407,7 @@ export default {
             this.second_name_ukr = null;
             this.status = null;
             this.training_direction = null;
+            this.training_organisation = null;
             this.valid_date = null;
           }
         }))

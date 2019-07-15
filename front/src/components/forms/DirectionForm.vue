@@ -64,6 +64,13 @@ export default {
   },
 
   methods: {
+    clearFormData() {
+      this.allow_functions = 'Не обрано';
+      this.direction_title = '';
+      this.level = null;
+      this.price_id = null;
+    },
+
     loadFormData() {
       if (this.directionId && this.directionId !== 0) {
         axios({
