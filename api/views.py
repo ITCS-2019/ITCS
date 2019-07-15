@@ -668,9 +668,19 @@ def setRangeNumbers(request):
 			print('Cert ID: ', cert.id)
 			print('Cert organisation ID: ', cert.trainigOrganisation.id)
 			print('Cert direction ID: ', cert.training_direction.id)
-			#rangeNumber = RangeNumber.objects.filter(organisation_id =  cert.trainigOrganisation.id, direction_id = cert.training_direction.id).first()
-			#print('Range number: ', rangeNumber.number)
-			#cert.certf_number = rangeNumber.number
+			rangeNumber = RangeNumber.objects.filter(organisation_id =  cert.trainigOrganisation.id, direction_id = cert.training_direction.id).first()
+			if rangeNumber:
+				if cert.certf_number == '' or cert.certf_number == None:
+					print('Range number: ', rangeNumber.number)
+					cert.certf_number = rangeNumber.number
+					cert.save()
+					org = TrainigOrganisation.objects.get(id = cert.trainigOrganisation.id)
+					org.range_numbers.remove(rangeNumber)
+					rangeNumber.delete()
+				else:
+					print('Cert already has number')
+			else:
+				print('Organisation range is empty for this direction')
 			
 		data = {
 			'error' : hasError,
