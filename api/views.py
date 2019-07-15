@@ -665,7 +665,13 @@ def setRangeNumbers(request):
 		certsInChange = Certificate.objects.filter(pk__in=certIDsList)
 		for cert in certsInChange:
 			print('----------------------')
-			print(cert.training_direction.direction_title)
+			print('Cert ID: ', cert.id)
+			print('Cert organisation ID: ', cert.trainigOrganisation.id)
+			print('Cert direction ID: ', cert.training_direction.id)
+			#rangeNumber = RangeNumber.objects.filter(organisation_id =  cert.trainigOrganisation.id, direction_id = cert.training_direction.id).first()
+			#print('Range number: ', rangeNumber.number)
+			#cert.certf_number = rangeNumber.number
+			
 		data = {
 			'error' : hasError,
 			'error_message' : errorMessage,
