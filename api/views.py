@@ -404,9 +404,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				sailor.save()
 		certification.sailor = sailor
 		certification.trainigOrganisation = trainigOrganisation
-		certificate.organisation_name_cert = trainigOrganisation.organisation_name
+		certification.organisation_name_cert = trainigOrganisation.organisation_name
 		certification.training_direction = trainigDirection
-		certificate.direction_title_cert = trainigDirection.direction_title
+		certification.direction_title_cert = trainigDirection.direction_title
 		certification, created = Certificate.objects.get_or_create(
 			first_name_en = request.data.get('first_name_en'),
 			last_name_en = request.data.get('last_name_en'),
