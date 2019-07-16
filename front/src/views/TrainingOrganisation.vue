@@ -483,12 +483,13 @@
               grid.clickKey = 0;
               grid.clickDate = null;
 
-              if (e.column.dataField && e.data.status === 'Чернетка') {
+              if (e.column.dataField
+              && (e.data.status === 'Чернетка' || e.data.status === 'Видан' || e.data.status === 'Обробка')) {
                 _this.showCertFormModal(e.data.certificateId)
-              } else if (e.column.dataField && e.data.status !== 'Чернетка') {
+              } else if (e.column.dataField) {
                 _this.snackbarConfig.icon = 'mdi-alert-circle';
                 _this.snackbarConfig.color = 'warning';
-                _this.snackbarConfig.message = `Дозволено редагувати тiльки сертифiкати з статусом "Чернетка"!`;
+                _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
                 _this.snackbar = true;
               }
             }
@@ -735,6 +736,8 @@
           .then(res => {
             let certs = res.data.certificates;
 
+            console.log(certs);
+
             this.dataSource = [];
             certs.forEach((cert) => {
               let status;
@@ -760,8 +763,8 @@
                 formNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
                 specialty: cert.training_direction.direction_title,
-                sailorId: cert.sailor.id,
-                sailor: `${cert.sailor.last_name_ukr} ${cert.sailor.first_name_ukr}`,
+                // sailorId: cert.sailor.id,
+                sailor: `${cert.last_name_ukr} ${cert.first_name_ukr}`,
                 status: status,
               });
             });
