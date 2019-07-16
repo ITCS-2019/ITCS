@@ -779,6 +779,12 @@
             if (refresh) {
               grid.refresh();
             }
+
+            if (this.$route.params.directionName) {
+              let directionName = this.$route.params.directionName;
+
+              grid.columnOption('specialty', 'filterValues', [directionName]);
+            }
           })
           .catch((err) => {
             console.log(err);

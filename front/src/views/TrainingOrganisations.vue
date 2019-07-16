@@ -93,7 +93,7 @@
           },
           rowAlternationEnabled: true,
           onCellClick: (e) => {
-            if (typeof e.value !== 'boolean') {
+            if (typeof e.value !== 'boolean' && e.rowType === 'group') {
               let grid = e.component,
                   key = grid.getKeyByRowIndex(e.rowIndex),
                   isExpanded = grid.isRowExpanded(key),
@@ -235,7 +235,15 @@
                   directions.forEach((direction) => {
                     element.append(`<div class="c-cell__row">
                               <a class="c-cell__text c-cell__text--link" href="javascript:void(0);"
-                              onclick="window.vue.$router.push('/mariner/app/training-organisations/edit/${direction.direction_id}')">
+                              data-org-id="${data.data.id}"
+                              data-dir-name="${direction.dirction_name}"
+                              onclick="window.vue.$router.push({
+                                                                    name: 'Training Organisation',
+                                                                    params: {
+                                                                      id: this.getAttribute('data-org-id'),
+                                                                      directionName: this.getAttribute('data-dir-name')
+                                                                    }
+                                                                })">
                                   ${direction.dirction_name}
                               </a>
                               <span class="c-cell__amount">
