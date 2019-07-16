@@ -21,7 +21,12 @@ from mariner.models import Certificate, TrainigOrganisation, RangeNumber, Traini
 
 # from django.core.files.storage import FileSystemStorage
 from django.template.loader import get_template
-from weasyprint import HTML, CSS
+from weasyprint import HTML#, CSS
+
+# Import QRCode from pyqrcode 
+import pyqrcode 
+from pyqrcode import QRCode
+import png
 
 import xlwt
 
@@ -344,11 +349,12 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		# certificate.valid_date =  request.data.get('valid_date'),
 		# certificate.valid_type = request.data.get('valid_type'),
 
-		certificate.direction_level = request.data.get('direction_level')
-		certificate.direction_allow_functions = request.data.get('direction_allow_functions')
+		
 		derection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 		certificate.training_direction = derection
 		certificate.direction_title_cert = derection.direction_title
+		certificate.direction_level = derection.level
+		certificate.direction_allow_functions = derection.allow_functions
 		#certificate.status = request.data.get('status'),
 		certificate.save()
 
@@ -938,24 +944,16 @@ def printCertificate(request, certID):
 	directionTitleEngStr = cert.training_direction.direction_title_eng
 	dateIssueStr = cert.date_of_issue
 	validDateStr = cert.valid_date
-	
-	#html_string = get_template('certificate_general.html')
-	# html_string = render_to_string('certificate_general.html', {'organisationName': organisationNameStr,
-	# 	'organisationNameEng': organisationNameEngStr,
-	# 	'organisationAdress': organisationAdressStr,
-	# 	'organisationAdressEng': organisationAdressEngStr,
-	# 	'organisationPhone1': organisationPhone1Str,
-	# 	'organisationPhone2': organisationPhone2Str,
-	# 	'organisationEmail': organisationEmailStr,
-	# 	'organisationSite': organisationSiteStr,
-	# 	'organisationNumber': organisationNumberStr,
-	# 	'sailorName': sailorNameStr,
-	# 	'sailorNameEng': sailorNameEngStr,
-	# 	'sailorBirthday': sailorBirthdayStr,
-	# 	'directionTitle': directionTitleStr,
-	# 	'directionTitleEng': directionTitleEngStr,
-	# 	'dateIssue': dateIssueStr,
-	# 	'validDate': validDateStr})
+
+	# String which represent the QR code 
+	s = "http://127.0.0.1:8000/mariner/api/printCertificate/" + certID + '/'
+	# Generate QR code 
+	url = pyqrcode.create(s)
+ 
+	# Create and save the png file naming "myqr.png"
+	#url.png('swallow.png', scale=5)
+	qrfilename = 'media/qrcodes/qrCertID' + certID + '.png'
+	url.png(qrfilename, scale=8)
 
 	context = {'organisationName': organisationNameStr,
 		'organisationNameEng': organisationNameEngStr,
@@ -972,17 +970,10 @@ def printCertificate(request, certID):
 		'directionTitle': directionTitleStr,
 		'directionTitleEng': directionTitleEngStr,
 		'dateIssue': dateIssueStr,
-		'validDate': validDateStr}
+		'validDate': validDateStr,
+		'qrImg': qrfilename}
 
 	return render(request, "certificate_general.html", context)
-
-	# html = HTML(string=html_string).write_pdf()
-	# response = HttpResponse(html, content_type='application/pdf')
-	# #fileNamePDF = 'inline; filename=itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.pdf'
-	# #response['Content-Disposition'] = fileNamePDF #"inline; filename=certificates.pdf"
-	# response['Content-Disposition'] = 'filename="certificate.pdf"'
-	# return response
-	# #return HttpResponse(status=204)
 
 @login_required(login_url="login/")
 def updateCertForTable(request):

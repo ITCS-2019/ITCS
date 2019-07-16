@@ -185,7 +185,6 @@ class Certificate(models.Model):
     training_direction = models.ForeignKey(to='TrainigDirections', null=True, on_delete=models.SET_NULL, related_name='directed', blank=True)
     direction_title_cert = models.CharField(max_length=200, null=True, blank=True)
     
-
     status = models.IntegerField(choices=STATUSES, null=True, default=DRF)
 
 
