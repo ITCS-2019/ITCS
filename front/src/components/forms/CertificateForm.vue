@@ -28,14 +28,14 @@
                 v-model="first_name_ukr"/>
               </v-flex>
               <v-flex xs12 md4>
-                <v-text-field label="Прiзвище"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="last_name_ukr"/>
-              </v-flex>
-              <v-flex xs12 md4>
                 <v-text-field label="По батькові"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="second_name_ukr"/>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-text-field label="Прiзвище"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="last_name_ukr"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>

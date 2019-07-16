@@ -19,13 +19,14 @@
             <template v-slot:items="props">
               <td>{{ props.item.directionId }}</td>
               <td class="text-xs-left">{{ props.item.direction_title }}</td>
-              <td class="justify-center pl-2 pr-2">
+              <td class="justify-center pl-2 pr-2 pt-0 pb-0">
                 <v-edit-dialog large
                 lazy
                 v-on:save="e => setRangeNumbers(props.item.directionId, props.item.rangeNumStart, props.item.rangeNumEnd)"
                 v-on:close="close">
                   <v-btn color="success"
-                   small>
+                  class="mt-0 mb-0"
+                  small>
                     <v-icon left>
                       mdi-plus-box
                     </v-icon>
@@ -62,32 +63,6 @@
           wrap>
             <!--Grid btns row left side-->
             <div>
-              <v-menu offset-y
-              content-class="dropdown-menu"
-              transition="slide-y-transition">
-                <v-btn slot="activator"
-                color="success"
-                small>
-                  <v-icon left>
-                    mdi-numeric
-                  </v-icon>
-                  <span class="font-weight-bold ml-1">
-                    Присвоїти номери
-                  </span>
-                </v-btn>
-                <v-card>
-                  <v-list dense>
-                    <v-list-tile key="all"
-                    v-on:click="e => exportGrid(false, 'Assign')">
-                      <v-list-tile-title v-text="`Присвоїти всi`"/>
-                    </v-list-tile>
-                    <v-list-tile key="checked"
-                    v-on:click="e => exportGrid(true, 'Assign')">
-                      <v-list-tile-title v-text="`Присвоїти обраним`"/>
-                    </v-list-tile>
-                  </v-list>
-                </v-card>
-              </v-menu>
               <v-btn color="success" small
               v-on:click="e => newTab('http://registr-itcs.ddns.net/sidebar/Templates/RequestNumbCert')">
                 <v-icon>
@@ -164,7 +139,7 @@
                 mdi-counter
               </v-icon>
               <span class="font-weight-bold ml-1">
-                №-№
+                Присвоїти номери
               </span>
             </v-btn>
             </div>
