@@ -94,7 +94,10 @@
           rowAlternationEnabled: true,
           onCellClick: (e) => {
             if (typeof e.value !== 'boolean') {
-              let organisationId = e.data.collapsedItems[0].id;
+              let grid = e.component,
+                  key = grid.getKeyByRowIndex(e.rowIndex),
+                  isExpanded = grid.isRowExpanded(key),
+                  organisationId = (isExpanded) ? e.row.data.items[0].id : e.data.collapsedItems[0].id;
 
               window.vue.$router.push(`/mariner/app/training-organisations/${organisationId}`);
             }
