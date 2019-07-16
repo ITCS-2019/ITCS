@@ -36,6 +36,7 @@ urlpatterns = [
     path('setRangeNumbers/', views.setRangeNumbers, name="api-setRangeNumbers"),
     path('exportXLS/', views.exportXLS, name='api-exportXLS'),
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
+    path('printCertificate/<certID>/', views.printCertificate, name='api-printCertificate'),
     path('updateCertForTable/', views.updateCertForTable, name='api-updateCertForTable'),
     # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
     # path('logout/', views.LogoutView.as_view(), name="api-logout"),

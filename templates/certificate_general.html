@@ -7,20 +7,21 @@
         <title>ITCS | Certificate</title>
 
 
-        <link href="../static/font-awesome/css/font-awesome.css" rel="stylesheet">
-        <link href="../static/css/custom.css" rel="stylesheet">
+        <!-- <link href="../static/font-awesome/css/font-awesome.css" rel="stylesheet"> -->
+        <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet">
+        <link href="/static/css/custom.css" rel="stylesheet">
     </head>
     <body>
 
         <!--Ukrainian-->
         <div class="c-container-a6"
-        style="background: url('../static/img/cert_background.jpg');background-size: cover;background-position: center;">
+        style="background: url('/static/img/cert_background.jpg');background-size: cover;background-position: center;">
 
             <!--Head-->
             <div class="c-container-a6__head">
                 <div class="c-container-a6__row c-container-a6__row--flex">
                     <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
-                        <img src="../static/img/twitter-png-transparent-4.png" alt="logo"
+                        <img src="/static/img/twitter-png-transparent-4.png" alt="logo"
                              class="img img--logo">
                     </div>
                     <div class="c-container-a6__row-block">
@@ -28,25 +29,25 @@
                             Україна
                         </div>
                         <div class="title">
-                            ТОВ "навчальний центр фахівців морського транспорту"
+                            {{ organisationName }}<!-- ТОВ "навчальний центр фахівців морського транспорту" -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            65000, м.Одеса, вул. Канатна 42
+                            {{ organisationAdress }}<!-- 65000, м.Одеса, вул. Канатна 42 -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            Тел.: +38(000)000 - 00 - 00
+                            {{ organisationPhone1 }}<!-- Тел.: +38(000)000 - 00 - 00 -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            Тел./Факс: +38(000)000 - 00 - 00
+                            {{ organisationPhone2 }}<!-- Тел./Факс: +38(000)000 - 00 - 00 -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            Email: info@papay.com.ua
+                            {{ organisationEmail }}<!-- Email: info@papay.com.ua -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            WWW: http://sea.od.ua
+                            {{ organisationSite }}<!-- WWW: http://sea.od.ua -->
                         </div>
                         <div class="title">
-                            Свiдоцтво №<span>02404</span>
+                            Свiдоцтво №<span>{{ organisationNumber }}<!-- 02404 --></span>
                         </div>
                     </div>
                 </div>
@@ -65,14 +66,14 @@
             <!--Body-->
             <div class="c-container-a6__row c-container-a6__row--margin-top-70">
                 <div class="c-text c-text--uppercase c-text--font-size-35 c-text--align-center c-text--serif">
-                    иванов иван петрович
+                    {{ sailorName }}<!-- иванов иван петрович -->
                 </div>
                 <div class="c-text c-text--margin-top-10">
                     <span class="c-text c-text--font-weight-700">
                         Дата народження:
                     </span>
                     <span>
-                        22.01.1989
+                        {{ sailorBirthday }}<!-- 22.01.1989 -->
                     </span>
                 </div>
                 <div class="c-text c-text--margin-top-10 c-text--serif">
@@ -83,8 +84,8 @@
                     курс пiдготовки за програмою
                 </div>
                 <div class="title title--red">
-                    Підготовка з судноводіння з використанням радіолокатора, радіолокаційної прокладки та використанням
-                    ЗАРП, з роботи в колективі на містку, з пошуку та порятунку
+                    {{ directionTitle }}<!-- Підготовка з судноводіння з використанням радіолокатора, радіолокаційної прокладки та використанням
+                    ЗАРП, з роботи в колективі на містку, з пошуку та порятунку -->
                 </div>
                 <div class="c-text c-text--serif">
                     Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
@@ -113,7 +114,7 @@
                                 Дата видачi<sup>*</sup>:
                             </span>
                             <span class="c-text c-text--margin-left-54">
-                                22.12.22
+                                {{ dateIssue }}<!-- 22.12.22 -->
                             </span>
                         </div>
                         <div class="c-text c-text--margin-top-10">
@@ -121,7 +122,7 @@
                                 Дiйсний до:
                             </span>
                             <span class="c-text c-text--margin-left-70">
-                                22.12.22
+                                {{ validDate }}<!-- 22.12.22 -->
                             </span>
                         </div>
                     </div>
@@ -152,7 +153,7 @@
             <div class="c-container-a6__head">
                 <div class="c-container-a6__row c-container-a6__row--flex">
                     <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
-                        <img src="../static/img/twitter-png-transparent-4.png" alt="logo"
+                        <img src="/static/img/twitter-png-transparent-4.png" alt="logo"
                              class="img img--logo">
                     </div>
                     <div class="c-container-a6__row-block">
@@ -160,25 +161,25 @@
                             Ukraine
                         </div>
                         <div class="title">
-                            Seafarers training center
+                            {{ organisationNameEng }}<!-- Seafarers training center -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            42, Kanatna str., Odessa
+                            {{ organisationAdressEng }}<!-- 42, Kanatna str., Odessa -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            Tel.: +38(000)000 - 00 - 00
+                            {{ organisationPhone1 }}<!-- Tel.: +38(000)000 - 00 - 00 -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            Tel./Fax: +38(000)000 - 00 - 00
+                            {{ organisationPhone2 }}<!-- Tel./Fax: +38(000)000 - 00 - 00 -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            Email: info@papay.com.ua
+                            {{ organisationEmail }}<!-- Email: info@papay.com.ua -->
                         </div>
                         <div class="c-text c-text--align-center">
-                            WWW: http://sea.od.ua
+                            WWW: {{ organisationSite }}<!-- http://sea.od.ua -->
                         </div>
                         <div class="title">
-                            Certificate of proficiency #<span>02404</span>
+                            Certificate of proficiency #<span>{{ organisationNumber }}<!-- 02404 --></span>
                         </div>
                     </div>
                 </div>
@@ -197,14 +198,14 @@
             <!--Body-->
             <div class="c-container-a6__row c-container-a6__row--margin-top-70">
                 <div class="c-text c-text--uppercase c-text--font-size-35 c-text--align-center c-text--serif">
-                    Dmytro Galak
+                    {{ sailorNameEng }}<!-- Dmytro Galak -->
                 </div>
                 <div class="c-text c-text--margin-top-10">
                     <span class="c-text c-text--font-weight-700">
                         Date of birth:
                     </span>
                     <span>
-                        22.01.1989
+                        {{ sailorBirthday }}<!-- 22.01.1989 -->
                     </span>
                 </div>
                 <div class="c-text c-text--margin-top-10 c-text--serif">
@@ -215,7 +216,7 @@
                     on the syllabus
                 </div>
                 <div class="title title--red">
-                    Security training for seafarers with designated security duties
+                    {{ directionTitleEng }}<!-- Security training for seafarers with designated security duties -->
                 </div>
                 <div class="c-text c-text--serif">
                     Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
@@ -230,7 +231,7 @@
             <div class="c-container-a6__footer">
                 <div class="c-container-a6__row c-container-a6__row--flex">
                     <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
-                        <img src="../static/img/pirate.jpg" alt="logo"
+                        <img src="/static/img/pirate.jpg" alt="logo"
                         class="img img--logo">
                     </div>
                     <div class="c-container-a6__row-block c-container-a6__row-block--padding-left-15">
@@ -245,7 +246,7 @@
                                 Date of issue<sup>*</sup>
                             </span>
                             <span class="c-text c-text--margin-left-72">
-                                22.12.22
+                                {{ dateIssueStr }}<!-- 22.12.22 -->
                             </span>
                         </div>
                         <div class="c-text c-text--margin-top-10">
@@ -253,7 +254,7 @@
                                 Date of expire
                             </span>
                             <span class="c-text c-text--margin-left-70">
-                                22.12.22
+                                {{ validDateStr }}<!-- 22.12.22 -->
                             </span>
                         </div>
                     </div>

@@ -20,8 +20,8 @@ from accounts.models import Profile
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
 
 # from django.core.files.storage import FileSystemStorage
-
-from weasyprint import HTML
+from django.template.loader import get_template
+from weasyprint import HTML, CSS
 
 import xlwt
 
@@ -663,6 +663,7 @@ def changeTrainigDirectionStatus(request):
 	}
 	return JsonResponse(data)
 
+@login_required(login_url="login/")
 def changeCertNumber(request):
 	certID = request.GET.get('certID')
 	certNumber = request.GET.get('certNumber')
@@ -917,6 +918,71 @@ def exportToPrint(request):
 	else:
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
+
+
+def printCertificate(request, certID):
+	cert = Certificate.objects.get(id=certID)
+	organisationNameStr = cert.trainigOrganisation.organisation_name
+	organisationNameEngStr = cert.trainigOrganisation.organisation_name_eng
+	organisationAdressStr = cert.trainigOrganisation.mail_adress_ukr
+	organisationAdressEngStr = cert.trainigOrganisation.mail_adress_eng
+	organisationPhone1Str = cert.trainigOrganisation.phone1
+	organisationPhone2Str = cert.trainigOrganisation.phone2
+	organisationEmailStr = cert.trainigOrganisation.orgnisation_email
+	organisationSiteStr = cert.trainigOrganisation.site_link
+	organisationNumberStr = cert.trainigOrganisation.nds_number
+	sailorNameStr = cert.last_name_ukr + ' ' + cert.first_name_ukr + ' ' + cert.second_name_ukr
+	sailorNameEngStr = cert.first_name_en + ' ' + cert.last_name_en
+	sailorBirthdayStr = cert.born
+	directionTitleStr = cert.training_direction.direction_title
+	directionTitleEngStr = cert.training_direction.direction_title_eng
+	dateIssueStr = cert.date_of_issue
+	validDateStr = cert.valid_date
+	
+	#html_string = get_template('certificate_general.html')
+	# html_string = render_to_string('certificate_general.html', {'organisationName': organisationNameStr,
+	# 	'organisationNameEng': organisationNameEngStr,
+	# 	'organisationAdress': organisationAdressStr,
+	# 	'organisationAdressEng': organisationAdressEngStr,
+	# 	'organisationPhone1': organisationPhone1Str,
+	# 	'organisationPhone2': organisationPhone2Str,
+	# 	'organisationEmail': organisationEmailStr,
+	# 	'organisationSite': organisationSiteStr,
+	# 	'organisationNumber': organisationNumberStr,
+	# 	'sailorName': sailorNameStr,
+	# 	'sailorNameEng': sailorNameEngStr,
+	# 	'sailorBirthday': sailorBirthdayStr,
+	# 	'directionTitle': directionTitleStr,
+	# 	'directionTitleEng': directionTitleEngStr,
+	# 	'dateIssue': dateIssueStr,
+	# 	'validDate': validDateStr})
+
+	context = {'organisationName': organisationNameStr,
+		'organisationNameEng': organisationNameEngStr,
+		'organisationAdress': organisationAdressStr,
+		'organisationAdressEng': organisationAdressEngStr,
+		'organisationPhone1': organisationPhone1Str,
+		'organisationPhone2': organisationPhone2Str,
+		'organisationEmail': organisationEmailStr,
+		'organisationSite': organisationSiteStr,
+		'organisationNumber': organisationNumberStr,
+		'sailorName': sailorNameStr,
+		'sailorNameEng': sailorNameEngStr,
+		'sailorBirthday': sailorBirthdayStr,
+		'directionTitle': directionTitleStr,
+		'directionTitleEng': directionTitleEngStr,
+		'dateIssue': dateIssueStr,
+		'validDate': validDateStr}
+
+	return render(request, "certificate_general.html", context)
+
+	# html = HTML(string=html_string).write_pdf()
+	# response = HttpResponse(html, content_type='application/pdf')
+	# #fileNamePDF = 'inline; filename=itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.pdf'
+	# #response['Content-Disposition'] = fileNamePDF #"inline; filename=certificates.pdf"
+	# response['Content-Disposition'] = 'filename="certificate.pdf"'
+	# return response
+	# #return HttpResponse(status=204)
 
 @login_required(login_url="login/")
 def updateCertForTable(request):
