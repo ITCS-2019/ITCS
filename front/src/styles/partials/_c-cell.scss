@@ -39,4 +39,12 @@
   align-content: center;
   justify-content: center;
   flex-wrap: wrap;
+  &.c-cell__amount--link-color {
+    color: $c-linkBlue;
+    transition: 0.3s;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 }

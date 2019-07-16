@@ -736,8 +736,6 @@
           .then(res => {
             let certs = res.data.certificates;
 
-            console.log(certs);
-
             this.dataSource = [];
             certs.forEach((cert) => {
               let status;
@@ -784,6 +782,12 @@
               let directionName = this.$route.params.directionName;
 
               grid.columnOption('specialty', 'filterValues', [directionName]);
+            }
+
+            if (this.$route.params.statusName) {
+              let statusName = this.$route.params.statusName;
+
+              grid.columnOption('status', 'filterValues', [statusName]);
             }
           })
           .catch((err) => {

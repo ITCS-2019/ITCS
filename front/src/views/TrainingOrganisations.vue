@@ -246,7 +246,17 @@
                                                                 })">
                                   ${direction.dirction_name}
                               </a>
-                              <span class="c-cell__amount">
+                              <span class="c-cell__amount c-cell__amount--link-color"
+                              data-org-id="${data.data.id}"
+                              data-dir-name="${direction.dirction_name}"
+                              onclick="window.vue.$router.push({
+                                                                    name: 'Training Organisation',
+                                                                    params: {
+                                                                      id: this.getAttribute('data-org-id'),
+                                                                      directionName: this.getAttribute('data-dir-name'),
+                                                                      statusName: 'Обробка'
+                                                                    }
+                                                                })">
                                   ${direction.direction_reviewCertCount}
                               </span>
                               <span class="c-cell__amount">
