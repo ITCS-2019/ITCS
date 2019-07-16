@@ -1,4 +1,5 @@
 <!--TODO change certsGrid to grid-->
+<!--TODO refactor gUserRole to vue data userRole-->
 <template>
   <v-container
     fill-height
@@ -86,6 +87,7 @@
             <!--Grid btns row right side-->
             <div>
               <v-btn color="success" small :depressed="true"
+              v-if="userRole !== 'Інспектор'"
               v-on:click="showCertFormModal(0)">
                 <v-icon>
                   mdi-plus-box
@@ -95,6 +97,7 @@
                 </span>
               </v-btn>
               <v-btn color="success" small :depressed="true"
+              v-if="userRole !== 'Інспектор'"
               to="/mariner/app/import-certificate">
                 <v-icon>
                   mdi-file-upload
@@ -234,6 +237,7 @@
 
     data() {
       return {
+        userRole: gUserRole,
         certsCelected: 0,
         isSelectedCert: false,
         certId: 0,
