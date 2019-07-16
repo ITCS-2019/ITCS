@@ -352,12 +352,13 @@
               certsGrid.clickKey = 0;
               certsGrid.clickDate = null;
 
-              if (e.column.dataField && e.data.status === 'Чернетка') {
+              if (e.column.dataField
+              && (e.data.status === 'Чернетка' || e.data.status === 'Видан' || e.data.status === 'Обробка')) {
                 _this.showCertFormModal(e.data.certificateId)
-              } else if (e.column.dataField && e.data.status !== 'Чернетка') {
+              } else if (e.column.dataField) {
                 _this.snackbarConfig.icon = 'mdi-alert-circle';
                 _this.snackbarConfig.color = 'warning';
-                _this.snackbarConfig.message = `Дозволено редагувати тiльки сертифiкати з статусом "Чернетка"!`;
+                _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
                 _this.snackbar = true;
               }
             }

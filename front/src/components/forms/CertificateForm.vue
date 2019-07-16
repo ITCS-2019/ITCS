@@ -11,31 +11,37 @@
               <v-flex xs12 md6>
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_en"/>
               </v-flex>
               <v-flex xs12 md6>
                 <v-text-field label="Surname"
                 prepend-inner-icon="mdi-web"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="last_name_en"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>
               <v-flex xs12 md4>
                 <v-text-field label="Iм'я"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_ukr"/>
               </v-flex>
               <v-flex xs12 md4>
                 <v-text-field label="Прiзвище"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="last_name_ukr"/>
               </v-flex>
               <v-flex xs12 md4>
                 <v-text-field label="По батькові"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="second_name_ukr"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>
               <v-flex xs12 md6>
                 <v-menu ref="birthdayDatepicker"
+                :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="birthdayDatepicker"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -64,6 +70,7 @@
               </v-flex>
               <v-flex xs12 md6>
                 <v-text-field label="ІПН"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="inn"
                 mask="#### #### ####"/>
               </v-flex>
@@ -72,6 +79,7 @@
             <v-layout wrap>
               <v-flex xs12 md6>
                 <v-menu v-model="issueDatepicker"
+                :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 lazy
@@ -100,6 +108,7 @@
               </v-flex>
               <v-flex xs12 md6>
                 <v-menu v-model="validDatepicker"
+                :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 lazy
@@ -139,6 +148,7 @@
               <v-flex xs12
               :md6="(~~certId === 0 && userRole !== 'НТЗ') ? true : false">
                 <v-combobox v-model="training_direction"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :items="directions"
                 label="Напрямок підготовки"
                 item-text="caption"
@@ -150,10 +160,12 @@
             <v-layout wrap>
               <v-flex xs12 md4>
                 <v-text-field label="Номер бланку документу"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="form_number"/>
               </v-flex>
               <v-flex xs12 md4>
                 <v-text-field label="Номер сертифікату"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="certf_number"
                 mask="#####"/>
               </v-flex>
@@ -185,8 +197,9 @@ export default {
 
   data() {
     return {
-
+      currentStatus: null,
       userRole: gUserRole,
+
       // TODO: refactor to one object
       minValidDate: new Date().toISOString().substr(0, 10),
       inn: null,
@@ -356,6 +369,35 @@ export default {
           if (this.certId) {
             let cert = res.data;
 
+            this.currentStatus = cert.status;
+
+            switch(this.currentStatus) {
+              case 1:
+                this.statuses = [
+                  {
+                    caption: 'Чернетка',
+                    value: 0
+                  },
+                  {
+                    caption: 'Обробка',
+                    value: 1
+                  },
+                  {
+                    caption: 'Видан',
+                    value: 2
+                  }
+                ];
+                break;
+              case 2:
+                this.statuses = [
+                  {
+                    caption: 'Анульований',
+                    value: 3
+                  }
+                ];
+                break;
+            }
+
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;
             this.date_of_issue = this.formatDate(cert.date_of_issue);
@@ -367,7 +409,7 @@ export default {
             this.last_name_ukr = cert.last_name_ukr;
             this.ntz_number = cert.ntz_number;
             this.second_name_ukr = cert.second_name_ukr;
-            this.status = cert.status;
+            this.status = (this.currentStatus === 2) ? 3 : cert.status;
             this.training_direction = {
               caption: cert.training_direction.direction_title,
               value: cert.training_direction.id
