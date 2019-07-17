@@ -54,6 +54,7 @@
           active-class="info"
           avatar
           class="v-list-item"
+          v-bind:class="{hide: userRole === 'НТЗ' && (link.text === 'Моряки' || link.text === 'НТЗ')}"
         >
           <v-list-tile-action>
             <v-icon>{{ link.icon }}</v-icon>
@@ -114,6 +115,16 @@ export default {
         to: '/mariner/app/training-directions',
         icon: 'mdi-file-tree',
         text: 'Напрямки Підготовки'
+      },
+      {
+        to: '/mariner/app/training-organisations',
+        icon: 'mdi-ship-wheel',
+        text: 'НТЗ'
+      },
+      {
+        to: '/mariner/app/sailors',
+        icon: 'mdi-ferry',
+        text: 'Моряки'
       },
       {
         to: '/mariner/app/certificates',

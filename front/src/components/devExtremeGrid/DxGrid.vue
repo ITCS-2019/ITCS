@@ -16,7 +16,7 @@
                 Остання
             </button>
         </div>
-        <div id="dev-extreme-grid"></div>
+        <div id="dev-extreme-grid" class="dx-selection-disabled"></div>
     </div>
 </template>
 
@@ -24,6 +24,7 @@
 window.$ = window.jQuery = require('jquery')
 window.JSZip = require('jszip')
 require('devextreme/dist/js/dx.all.js')
+import ukMessages from '@/components/devExtremeGrid/uk.json'
 
 export default {
     name: 'DxGrid',
@@ -39,16 +40,16 @@ export default {
             tableInstance: null
         }
     },
-    created(){
-
-    },
     mounted(){
         var _this = this
         $(function(){
-            DevExpress.localization.locale('ru');
-            _this.$nextTick(()=>{
+            // DevExpress.localization.locale('ru');
+            DevExpress.localization.loadMessages(ukMessages);
+            DevExpress.localization.locale('ru-RU');
+            _this.$nextTick(() => {
                 _this.tableInstance = $('#dev-extreme-grid').dxDataGrid(_this.tableConfig).dxDataGrid('instance');
                 _this.tableInstance.beginCustomLoading();
+                _this.$emit('init')
             })
         });
     }

@@ -38,7 +38,8 @@
             </v-container>
           </v-form>
         </material-card>
-        <material-card style="margin-top: 15px;">
+        <material-card style="margin-top: 15px;"
+        v-if="userRole === 'НТЗ'">
           <OrganisationForm ref="organisationForm">
           </OrganisationForm>
         </material-card>

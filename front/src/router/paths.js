@@ -33,5 +33,25 @@ export default [
     path: '/mariner/app/profile',
     name: 'User Profile',
     view: 'UserProfile'
+  },
+  {
+    path: '/mariner/app/sailors',
+    name: 'Sailors',
+    view: 'Sailors'
+  },
+  {
+    path: '/mariner/app/training-organisations',
+    name: 'Training Organisations',
+    view: 'TrainingOrganisations'
+  },
+  {
+    path: '/mariner/app/training-organisations/:id',
+    name: 'Training Organisation',
+    view: 'TrainingOrganisation'
+  },
+  {
+    path: '/mariner/app/training-organisations/edit/:id',
+    name: 'Edit Training Organisations',
+    view: 'EditTrainingOrganisations'
   }
 ]

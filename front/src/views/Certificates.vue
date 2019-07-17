@@ -1,4 +1,5 @@
 <!--TODO change certsGrid to grid-->
+<!--TODO refactor gUserRole to vue data userRole-->
 <template>
   <v-container
     fill-height
@@ -86,6 +87,7 @@
             <!--Grid btns row right side-->
             <div>
               <v-btn color="success" small :depressed="true"
+              v-if="userRole !== 'Інспектор'"
               v-on:click="showCertFormModal(0)">
                 <v-icon>
                   mdi-plus-box
@@ -95,6 +97,7 @@
                 </span>
               </v-btn>
               <v-btn color="success" small :depressed="true"
+              v-if="userRole !== 'Інспектор'"
               to="/mariner/app/import-certificate">
                 <v-icon>
                   mdi-file-upload
@@ -126,10 +129,38 @@
                   Видалити
                 </span>
               </v-btn>
+
+              <v-menu offset-y
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
+                <v-btn slot="activator"
+                color="success"
+                class="v-btn--simple"
+                simple small icon>
+                  <v-icon>
+                    mdi-settings
+                  </v-icon>
+                </v-btn>
+                <v-card>
+                  <v-list dense>
+                    <v-list-tile key="saveTableConfig"
+                    v-on:click="saveTableConfig()">
+                      <v-list-tile-title v-text="`Зберегти конфiгурацiю таблицi`"/>
+                    </v-list-tile>
+                    <v-list-tile key="resetTableConfig"
+                    v-on:click="resetTableConfig()">
+                      <v-list-tile-title v-text="`Стандартна конфiгурацiя`"/>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-menu>
+
             </div>
           </v-layout>
 
-          <DxGrid :tableConfig="tableConfig" ref="certsGrid"/>
+          <DxGrid :tableConfig="tableConfig"
+          v-on:init="gridInited()"
+          ref="certsGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
@@ -178,7 +209,8 @@
     </v-dialog>
 
     <!--Certificate form modal-->
-    <v-dialog v-model="certFormModal" persistent max-width="95%">
+    <v-dialog v-model="certFormModal" persistent max-width="95%"
+    v-on:keydown.esc="certFormModal = false">
       <v-card>
         <v-card-text>
         <CertificateForm :certId="certId"
@@ -205,6 +237,7 @@
 
     data() {
       return {
+        userRole: gUserRole,
         certsCelected: 0,
         isSelectedCert: false,
         certId: 0,
@@ -323,25 +356,18 @@
               certsGrid.clickKey = 0;
               certsGrid.clickDate = null;
 
-              switch (e.column.dataField && e.data.status === 'Чернетка') {
-                case 'certificateNumber':
-                  _this.showCertFormModal(e.data.certificateId)
-                  return;
-                case 'sailor':
-                  if (gUserRole === 'НТЗ' && e.data.status === 'Чернетка') {
-                    _this.showCertFormModal(e.data.certificateId)
-                  }
-                  else {
-                    window.location.replace(`/mariner/sailor/${e.data.sailorId}`);
-                  }
-                  return;
-                case 'trainigOrganisation':
-                  window.location.replace(`/mariner/trainigOrganisation/${e.data.trainigOrganisation}`);
-                  return;
+              if (e.column.dataField
+              && (e.data.status === 'Чернетка' || e.data.status === 'Видан' || e.data.status === 'Обробка')
+              && gUserRole !== 'НТЗ') {
+                _this.showCertFormModal(e.data.certificateId);
+              } else if (e.column.dataField && e.data.status === 'Чернетка') {
+                _this.showCertFormModal(e.data.certificateId);
               }
-
-              if (e.column.dataField && e.data.status === 'Чернетка') {
-                _this.showCertFormModal(e.data.certificateId)
+              else if (e.column.dataField) {
+                _this.snackbarConfig.icon = 'mdi-alert-circle';
+                _this.snackbarConfig.color = 'warning';
+                _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
+                _this.snackbar = true;
               }
             }
 
@@ -484,16 +510,66 @@
       }
     },
 
-    mounted() {
-      this.loadGridData();
-    },
-
     methods: {
+      resetTableConfig() {
+        localStorage.removeItem('certGridConfig');
+        this.snackbarConfig.icon = 'mdi-check-circle';
+        this.snackbarConfig.color = 'success';
+        this.snackbarConfig.message = 'Застосована стандартна конфiгурацiя таблицi!';
+        this.snackbar = true;
+      },
+
+      saveTableConfig() {
+        let grid = this.$refs.certsGrid.tableInstance,
+            cols = grid._options.columns,
+            certGridConfig = [];
+
+        cols.forEach((col, i) => {
+          certGridConfig.push({
+            index: i,
+            width: (grid.columnOption(col.dataField, 'width')) ? grid.columnOption(col.dataField, 'width') : false,
+            sortOrder: (grid.columnOption(i, 'sortOrder')) ? grid.columnOption(i, 'sortOrder') : false
+          });
+        });
+
+        localStorage.setItem('certGridConfig', JSON.stringify(certGridConfig));
+        this.snackbarConfig.icon = 'mdi-check-circle';
+        this.snackbarConfig.color = 'success';
+        this.snackbarConfig.message = 'Конфiгурацiя таблицi збережена!';
+        this.snackbar = true;
+      },
+
+      gridInited() {
+        let grid = this.$refs.certsGrid.tableInstance;
+
+        this.loadGridData();
+
+        if (this.$route.params.columns) {
+          let columns = this.$route.params.columns;
+
+          columns.forEach((column) => {
+            grid.beginUpdate();
+            grid.columnOption(column.dataField, 'filterValue', column.filterValue);
+            grid.endUpdate();
+          });
+        }
+
+        if (localStorage.getItem('certGridConfig')) {
+          let gridConfig = JSON.parse(localStorage.getItem('certGridConfig'));
+
+          gridConfig.forEach((col) => {
+            grid.columnOption(col.index, 'width', (col.width) ? col.width : undefined);
+            grid.columnOption(col.index, 'sortOrder', (col.sortOrder) ? col.sortOrder : undefined);
+          });
+        }
+      },
+
       loadGridData(refresh = false) {
-        axios.get(`/mariner/api/certificates/`)
+        axios.get(`/mariner/api/tableCertificates/`)
           .then(res => {
             let certs = res.data.certificates;
 
+            this.dataSource = [];
             certs.forEach((cert) => {
               let status;
 
@@ -518,27 +594,25 @@
                 blankNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
                 validDate: cert.valid_date,
-                trainingDirection: cert.training_direction.direction_title,
+                trainingDirection: cert.direction_title_cert,
                 sailorId: cert.sailor_id,
                 sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
-                trainigOrganisation: cert.trainigOrganisation_name,
+                trainigOrganisation: cert.organisation_name_cert,
                 status: status
               });
             });
 
-            this.$nextTick(() => {
-              let certsGrid = this.$refs.certsGrid.tableInstance,
-                  selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
+            let certsGrid = this.$refs.certsGrid.tableInstance,
+                selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';
 
-              this.certsCelected = certsGrid.getSelectedRowKeys().length;
-              certsGrid.option('dataSource', this.dataSource);
-              certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
-              certsGrid.endCustomLoading();
+            this.certsCelected = certsGrid.getSelectedRowKeys().length;
+            certsGrid.option('dataSource', this.dataSource);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+            certsGrid.endCustomLoading();
 
-              if (refresh) {
-                certsGrid.refresh();
-              }
-            });
+            if (refresh) {
+              certsGrid.refresh();
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -562,8 +636,12 @@
           status: this.$refs.certForm.status
         };
 
+        if (gUserRole !== 'НТЗ') {
+          formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
+        }
+
         axios({
-          method: (this.certId === 0) ? 'post' : 'put',
+          method: (this.certId === 0) ? 'POST' : 'PUT',
           url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
           data: formData
         })
@@ -575,7 +653,7 @@
             this.snackbarConfig.color = 'success';
             this.snackbarConfig.message = (this.certId === 0)
                                             ? 'Сертифiкат успiшно створено!'
-                                            : 'Сертифiкат успiшно Вiдредаговано!';
+                                            : 'Сертифiкат успiшно вiдредаговано!';
             this.snackbar = true;
           })
           .catch((err) => {
@@ -748,19 +826,40 @@
 
         // TODO: Refactor to pure js
         let $grid = this.$refs[`${gridRef}`].tableInstance._$element,
-            $head = $('.dx-datagrid-headers', $grid),
-            $rows = $('.dx-datagrid-rowsview', $grid),
+            grid = $grid = this.$refs[`${gridRef}`].tableInstance,
             mywindow = window.open('', 'PRINT', 'height=400,width=600');
 
-        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
-        mywindow.document.write('</head><body >');
-        mywindow.document.write('<h1>' + document.title  + '</h1>');
-        mywindow.document.write(`${$head.html()}${$rows.html()}`);
-        mywindow.document.write('</body></html>');
+        let printTable = `<table style="width: 100%; border-collapse: collapse;"><tr>`,
+            cols = grid._options.columns,
+            rows = grid.getVisibleRows();
 
+        cols.forEach((col) => {
+          if (col.visible !== false)
+            printTable += `<th style="border: 1px solid black;">${col.caption}</th>`
+        });
+
+        printTable += '</tr>';
+
+        rows.forEach((row) => {
+          let cells = row.cells;
+
+          printTable += '<tr>';
+          cells.forEach((cell) => {
+            if (cell.displayValue !== false)
+              printTable += `<td style="border: 1px solid black; padding: 5px; font-size: 12px">${(cell.text === '') ? ' ' : cell.text}</td>`
+          });
+          printTable += '</tr>';
+        });
+
+        printTable += '</table>';
+
+        mywindow.document.write('<html><head><title>' + document.title  + '</title>');
+        mywindow.document.write('</head><body>');
+        mywindow.document.write('<h1>' + document.title  + '</h1>');
+        mywindow.document.write(printTable);
+        mywindow.document.write('</body></html>');
         mywindow.document.close();
         mywindow.focus();
-
         mywindow.print();
         mywindow.close();
 

@@ -6,6 +6,9 @@
   justify-content: flex-start;
   flex-wrap: wrap;
   border-top: 1px solid #ddd;
+  &.c-cell__row--min-width-490 {
+    min-width: 490px;
+  }
 }
 
 .c-cell__row:first-child {
@@ -15,6 +18,13 @@
 .c-cell__text {
   flex: 1;
   padding: 5px 0px;
+  &.c-cell__text--link {
+    color: $c-linkBlue;
+    transition: 0.3s;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 }
 
 .c-cell__amount {
@@ -29,4 +39,12 @@
   align-content: center;
   justify-content: center;
   flex-wrap: wrap;
+  &.c-cell__amount--link-color {
+    color: $c-linkBlue;
+    transition: 0.3s;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 }

@@ -11,31 +11,37 @@
               <v-flex xs12 md6>
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_en"/>
               </v-flex>
               <v-flex xs12 md6>
                 <v-text-field label="Surname"
                 prepend-inner-icon="mdi-web"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="last_name_en"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>
               <v-flex xs12 md4>
                 <v-text-field label="Iм'я"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_ukr"/>
               </v-flex>
               <v-flex xs12 md4>
-                <v-text-field label="Прiзвище"
-                v-model="last_name_ukr"/>
+                <v-text-field label="По батькові"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="second_name_ukr"/>
               </v-flex>
               <v-flex xs12 md4>
-                <v-text-field label="По батькові"
-                v-model="second_name_ukr"/>
+                <v-text-field label="Прiзвище"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="last_name_ukr"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>
               <v-flex xs12 md6>
                 <v-menu ref="birthdayDatepicker"
+                :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="birthdayDatepicker"
                 :close-on-content-click="false"
                 :nudge-right="40"
@@ -64,6 +70,7 @@
               </v-flex>
               <v-flex xs12 md6>
                 <v-text-field label="ІПН"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="inn"
                 mask="#### #### ####"/>
               </v-flex>
@@ -72,6 +79,7 @@
             <v-layout wrap>
               <v-flex xs12 md6>
                 <v-menu v-model="issueDatepicker"
+                :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 lazy
@@ -100,6 +108,7 @@
               </v-flex>
               <v-flex xs12 md6>
                 <v-menu v-model="validDatepicker"
+                :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 lazy
@@ -127,8 +136,19 @@
             </v-layout>
 
             <v-layout wrap>
-              <v-flex md12>
+              <v-flex xs12 md6
+              v-if="~~certId === 0 && userRole !== 'НТЗ'">
+                <v-combobox v-model="training_organisation"
+                :items="organisations"
+                label="Навчально-Тренувальний Заклад"
+                item-text="caption"
+                item-value="value"
+                ></v-combobox>
+              </v-flex>
+              <v-flex xs12
+              :md6="(~~certId === 0 && userRole !== 'НТЗ') ? true : false">
                 <v-combobox v-model="training_direction"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :items="directions"
                 label="Напрямок підготовки"
                 item-text="caption"
@@ -140,11 +160,12 @@
             <v-layout wrap>
               <v-flex xs12 md4>
                 <v-text-field label="Номер бланку документу"
-                mask="##########"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="form_number"/>
               </v-flex>
               <v-flex xs12 md4>
                 <v-text-field label="Номер сертифікату"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="certf_number"
                 mask="#####"/>
               </v-flex>
@@ -176,15 +197,17 @@ export default {
 
   data() {
     return {
+      currentStatus: null,
+      userRole: gUserRole,
 
       // TODO: refactor to one object
       minValidDate: new Date().toISOString().substr(0, 10),
       inn: null,
-      certf_number: null,
+      certf_number: '',
       first_name_ukr: null,
       last_name_ukr: null,
       second_name_ukr: null,
-      form_number: null,
+      form_number: '',
       last_name_en: null,
       first_name_en: null,
       born: null,
@@ -198,6 +221,8 @@ export default {
       validDatepicker: false,
       training_direction: null,
       directions: [],
+      training_organisation: null,
+      organisations: [],
       status: null,
       statuses: [
         {
@@ -241,9 +266,11 @@ export default {
       let regExp = /[^[a-zA-Z\-\'\s]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'first_name_en', newVal);
+          this.$set(this, 'first_name_en', newVal);
+        }
       });
     },
 
@@ -251,9 +278,11 @@ export default {
       let regExp = /[^[a-zA-Z\-\'\s]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'last_name_en', newVal);
+          this.$set(this, 'last_name_en', newVal);
+        }
       });
     },
 
@@ -261,10 +290,12 @@ export default {
       let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'first_name_ukr', newVal);
-        this.$set(this, 'first_name_en', this.translitToEn(newVal));
+          this.$set(this, 'first_name_ukr', newVal);
+          this.$set(this, 'first_name_en', this.translitToEn(newVal));
+        }
       });
     },
 
@@ -272,9 +303,11 @@ export default {
       let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'second_name_ukr', newVal);
+          this.$set(this, 'second_name_ukr', newVal);
+        }
       });
     },
 
@@ -282,10 +315,24 @@ export default {
       let regExp = /[^а-щА-ЩЬьЮюЯяЇїІіЄєҐґ -/'/]/g;
 
       this.$nextTick(() => {
-        let newVal = this.capitalize(val.replace(regExp, ''));
+        if (val) {
+          let newVal = this.capitalize(val.replace(regExp, ''));
 
-        this.$set(this, 'last_name_ukr', newVal);
-        this.$set(this, 'last_name_en', this.translitToEn(newVal));
+          this.$set(this, 'last_name_ukr', newVal);
+          this.$set(this, 'last_name_en', this.translitToEn(newVal));
+        }
+      });
+    },
+
+    form_number(val) {
+      let regExp = /[^a-zA-Z0-9-///]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'form_number', newVal);
+        }
       });
     }
   },
@@ -301,9 +348,12 @@ export default {
       if (this.certId) {
         requests.push(axios.get(`/mariner/api/certificates/${this.certId}`));
       }
+      else {
+        requests.push(axios.get(`/mariner/api/organisations/`));
+      }
 
       axios.all(requests)
-        .then(axios.spread((directionsRes, certRes) => {
+        .then(axios.spread((directionsRes, res) => {
 
           // Directions
           let directions = directionsRes.data.directions;
@@ -315,9 +365,38 @@ export default {
             });
           });
 
-          // Current direction
+          // Current certificate
           if (this.certId) {
-            let cert = certRes.data;
+            let cert = res.data;
+
+            this.currentStatus = cert.status;
+
+            switch(this.currentStatus) {
+              case 1:
+                this.statuses = [
+                  {
+                    caption: 'Чернетка',
+                    value: 0
+                  },
+                  {
+                    caption: 'Обробка',
+                    value: 1
+                  },
+                  {
+                    caption: 'Видан',
+                    value: 2
+                  }
+                ];
+                break;
+              case 2:
+                this.statuses = [
+                  {
+                    caption: 'Анульований',
+                    value: 3
+                  }
+                ];
+                break;
+            }
 
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;
@@ -330,14 +409,33 @@ export default {
             this.last_name_ukr = cert.last_name_ukr;
             this.ntz_number = cert.ntz_number;
             this.second_name_ukr = cert.second_name_ukr;
-            this.status = cert.status;
+            this.status = (this.currentStatus === 2) ? 3 : cert.status;
             this.training_direction = {
               caption: cert.training_direction.direction_title,
               value: cert.training_direction.id
             };
+            if (this.userRole !== 'НТЗ') {
+              this.training_organisation = {
+                caption: cert.trainigOrganisation.organisation_name,
+                value: cert.trainigOrganisation.id
+              };
+            }
             this.valid_date = this.formatDate(cert.valid_date);
           }
+
+          // Organisations for select
           else {
+            let organisations = res.data.organisations;
+
+            if (this.userRole !== 'НТЗ') {
+              organisations.forEach((organisation) => {
+                this.organisations.push({
+                  caption: organisation.organisation_name,
+                  value: organisation.id
+                });
+              });
+            }
+
             this.born = null;
             this.certf_number = null;
             this.date_of_issue = null;
@@ -351,6 +449,7 @@ export default {
             this.second_name_ukr = null;
             this.status = null;
             this.training_direction = null;
+            this.training_organisation = null;
             this.valid_date = null;
           }
         }))

@@ -75,6 +75,20 @@ export default {
         case 'User Profile':
           this.title = 'Профiль'
           break
+        case 'Sailors':
+          this.title = 'Моряки'
+          break
+        case 'Training Organisations':
+          this.title = 'Навчально-Тренувальні Заклади'
+          break
+        case 'Training Organisation':
+          this.title = 'Деталi Навчально-Тренувального Закладу'
+          break
+        case 'Edit Training Organisations':
+          this.title = (this.$route.params.id ===  '0')
+                         ? 'Створення Навчально-Тренувального Закладу'
+                         : 'Редагування Навчально-Тренувального Закладу'
+          break
       }
     }
   },
