@@ -133,6 +133,7 @@ class TrainigOrganisationCustomSerializer(serializers.Serializer):
 	id = serializers.IntegerField()
 	organisation_id = serializers.CharField()
 	logo_pic = serializers.ImageField()
+	certBg_pic = serializers.ImageField()
 	organisation_name = serializers.CharField()
 	organisation_name_eng = serializers.CharField()
 	mail_adress_ukr = serializers.CharField()
@@ -164,6 +165,7 @@ class TrainigOrganisationSerializer(serializers.ModelSerializer):
 			'id',
 			'organisation_id',
 			'logo_pic',
+			'certBg_pic',
 			'organisation_name',
 			'organisation_name_eng',
 			'mail_adress_ukr',
