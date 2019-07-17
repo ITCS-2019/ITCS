@@ -942,6 +942,8 @@ def printCertificate(request, certID):
 	sailorBirthdayStr = cert.born
 	directionTitleStr = cert.training_direction.direction_title
 	directionTitleEngStr = cert.training_direction.direction_title_eng
+	directionInfoTextStr = cert.training_direction.infoText
+	directionInfoTextEngStr = cert.training_direction.infoTextEng
 	dateIssueStr = cert.date_of_issue
 	validDateStr = cert.valid_date
 
@@ -969,6 +971,8 @@ def printCertificate(request, certID):
 		'sailorBirthday': sailorBirthdayStr,
 		'directionTitle': directionTitleStr,
 		'directionTitleEng': directionTitleEngStr,
+		'directionInfoText': directionInfoTextStr,
+		'directionInfoTextEng': directionInfoTextEngStr,
 		'dateIssue': dateIssueStr,
 		'validDate': validDateStr,
 		'qrImg': qrfilename}
