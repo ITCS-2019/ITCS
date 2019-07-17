@@ -457,7 +457,7 @@ class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixi
 	def retrieve(self, request, pk):
 		if request.user.groups.all()[0].name != 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(id=pk)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).order_by('-id')
 			serializer = CertificateSerializer(certs, many=True)
 			return Response({"certificates": serializer.data})
 		else:
@@ -953,7 +953,7 @@ def printCertificate(request, certID):
 	# Create and save the png file naming "myqr.png"
 	#url.png('swallow.png', scale=5)
 	qrfilename = 'media/qrcodes/qrCertID' + certID + '.png'
-	url.png(qrfilename, scale=8)
+	url.png(qrfilename, scale=7)
 
 	context = {'organisationName': organisationNameStr,
 		'organisationNameEng': organisationNameEngStr,
