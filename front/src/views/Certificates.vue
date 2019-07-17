@@ -73,15 +73,32 @@
                   </v-list>
                 </v-card>
               </v-menu>
-              <v-btn color="success" small
-              v-on:click="printGrid('certsGrid')">
-                <v-icon>
-                  mdi-printer
-                </v-icon>
-                <span class="font-weight-bold ml-1">
-                  Друкувати
-                </span>
-              </v-btn>
+              <v-menu offset-y
+              content-class="dropdown-menu"
+              transition="slide-y-transition">
+                <v-btn slot="activator"
+                color="success"
+                small>
+                  <v-icon left>
+                    mdi-printer
+                  </v-icon>
+                  <span class="font-weight-bold ml-1">
+                    Друкувати
+                  </span>
+                </v-btn>
+                <v-card>
+                  <v-list dense>
+                    <v-list-tile key="Table"
+                    v-on:click="printGrid('certsGrid')">
+                      <v-list-tile-title v-text="`Таблицю`"/>
+                    </v-list-tile>
+                    <v-list-tile key="Certificates"
+                    v-on:click="e => exportGrid(true, 'PrintCerts')">
+                      <v-list-tile-title v-text="`Обранi сертифiкати`"/>
+                    </v-list-tile>
+                  </v-list>
+                </v-card>
+              </v-menu>
             </div>
 
             <!--Grid btns row right side-->
@@ -300,13 +317,23 @@
                 certIDs.push(row.data.certificateId);
               });
 
-              let element = document.createElement('a');
-              element.setAttribute('href', `/mariner/api/exportToPrint/?exportType=${this.exportType}&certIDs=${certIDs.join(',')}`);
-              element.setAttribute('target', '_blank');
-              element.style.display = 'none';
-              document.body.appendChild(element);
-              element.click();
-              document.body.removeChild(element);
+              if (this.exportType === 'PrintCerts') {
+                certIDs.forEach((certId) => {
+                  let url = `/mariner/api/printCertificate/${certId}/`;
+
+                  window.open(url, '_blank');
+                });
+              }
+              else {
+                let element = document.createElement('a');
+
+                element.setAttribute('href', `/mariner/api/exportToPrint/?exportType=${this.exportType}&certIDs=${certIDs.join(',')}`);
+                element.setAttribute('target', '_blank');
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+              }
             }
           },
           onFileSaving: function (e) {

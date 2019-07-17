@@ -370,7 +370,8 @@ export default {
         direction_title: this.$refs.directionForm.direction_title,
         price_id: this.$refs.directionForm.price_id,
         level: this.$refs.directionForm.level,
-        allow_functions: this.$refs.directionForm.allow_functions
+        allow_functions: this.$refs.directionForm.allow_functions,
+        infoText: this.$refs.directionForm.infoText
       };
 
       axios({
