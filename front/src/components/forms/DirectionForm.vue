@@ -32,11 +32,18 @@
               </v-flex>
             </v-layout>
             <v-layout wrap>
-              <v-flex xs12 md12>
+              <v-flex xs12 md6>
                 <v-textarea box
                 label="Iнформацiя"
                 auto-grow
                 v-model="infoText">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                label="Info(Eng.)"
+                auto-grow
+                v-model="infoTextEng">
                 </v-textarea>
               </v-flex>
             </v-layout>
@@ -65,7 +72,8 @@ export default {
       levelItems: ['Підтвердження', 'Отримання'],
       allow_functions: 'Не обрано',
       allowFunctionsItems: ['Не обрано', 'Управлiння', 'Експлуатація'],
-      infoText: ''
+      infoText: '',
+      infoTextEng: ''
     }
   },
 
@@ -94,6 +102,7 @@ export default {
             this.level = direction.level;
             this.price_id = direction.price_id;
             this.infoText = direction.infoText;
+            this.infoTextEng = direction.infoTextEng;
           })
           .catch((err) => {
             console.log(err);

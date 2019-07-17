@@ -1,6 +1,21 @@
 <template>
     <v-form>
         <v-container py-0>
+            <v-layout wrap>
+                <v-flex md12>
+                    <img :src="logoUrl" height="150" v-if="logoUrl"/>
+                    <v-text-field label="Select Image"
+                    v-on:click="pickLogo"
+                    v-model="logoName"
+                    prepend-inner-icon="mdi-paperclip">
+                    </v-text-field>
+                    <input  type="file"
+                    style="display: none"
+                    ref="logo"
+                    accept="image/*"
+                    @change="onLogoPicked">
+                </v-flex>
+            </v-layout>
             <v-tabs fixed-tabs>
                 <v-tab v-for="lang in langs"
                 :key="lang.lang">
@@ -216,6 +231,11 @@ export default {
 
   data(){
     return {
+      title: "Image Upload",
+      logoName: '',
+      logoUrl: '',
+
+
       isProfile: (this.$route.name === 'User Profile') ? true : false,
       certId: ~~this.$route.params.id,
       activeTillDatepicker: false,
@@ -277,17 +297,17 @@ export default {
 
   computed: {
     selectAllDirections () {
-      return this.selectedDirections.length === this.directions.length
+      return this.selectedDirections.length === this.directions.length;
     },
 
     selectSomeDirections () {
-      return this.selectedDirections.length > 0 && !this.selectAllDirections
+      return this.selectedDirections.length > 0 && !this.selectAllDirections;
     },
 
     icon () {
-      if (this.selectAllDirections) return 'mdi-close-box'
-      if (this.selectSomeDirections) return 'mdi-minus-box'
-      return 'mdi-checkbox-blank-outline'
+      if (this.selectAllDirections) return 'mdi-close-box';
+      if (this.selectSomeDirections) return 'mdi-minus-box';
+      return 'mdi-checkbox-blank-outline';
     }
   },
 
@@ -309,6 +329,33 @@ export default {
   },
 
   methods: {
+    pickLogo () {
+      this.$refs.logo.click();
+    },
+
+    onLogoPicked (e) {
+      const files = e.target.files;
+
+      if(files[0] !== undefined) {
+        this.logoName = files[0].name;
+        if(this.logoName.lastIndexOf('.') <= 0) {
+          return;
+        }
+
+        const fr = new FileReader ();
+
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener('load', () => {
+          this.logoUrl = fr.result;
+          this.organization.logo_pic = files[0];
+        })
+      } else {
+        this.logoName = '';
+        this.organization.logo_pic = '';
+        this.logoUrl = '';
+      }
+    },
+
     loadOrganisation() {
       let route = (this.isProfile) ? `/mariner/api/organisations/` : `/mariner/api/organisations/${this.certId}`;
 
