@@ -84,6 +84,8 @@ class TrainigDirections(models.Model):
     price = models.IntegerField(null=True, blank=True)
 
     status = models.IntegerField(choices=DIRECTSTATUS, null=True, default=ACT)
+
+    infoText = models.TextField(null=True, blank=True)
     
     def __str__(self):
         return u"%s / %s / %s /" % (self.direction_title, self.get_allow_functions_display(), self.get_level_display())
