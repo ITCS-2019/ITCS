@@ -77,6 +77,7 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 			'allow_functions',
 			'price',
 			'status',
+			'infoText',
 		)
 
 class TrainigDirectionCustomSerializer(serializers.Serializer):
@@ -88,6 +89,7 @@ class TrainigDirectionCustomSerializer(serializers.Serializer):
 	allow_functions = serializers.CharField()
 	price = serializers.IntegerField()
 	status = serializers.IntegerField()
+	infoText = serializers.models.TextField()
 
 
 class RangeNumberSerializer(serializers.ModelSerializer):
