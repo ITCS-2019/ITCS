@@ -944,6 +944,12 @@ def printCertificate(request, certID):
 	directionTitleEngStr = cert.training_direction.direction_title_eng
 	directionInfoTextStr = cert.training_direction.infoText
 	directionInfoTextEngStr = cert.training_direction.infoTextEng
+	directionCourseInfoStr = cert.training_direction.courseInfo
+	directionCourseInfoEngStr = cert.training_direction.courseInfoEng
+	directionRegulstionInfoStr = cert.training_direction.regulationInfo
+	directionRegulstionInfoEngStr = cert.training_direction.regulationInfoEng
+	directionInspectionInfoStr = cert.training_direction.inspectionInfo
+	directionInspectionInfoEngStr = cert.training_direction.inspectionInfoEng
 	dateIssueStr = cert.date_of_issue
 	validDateStr = cert.valid_date
 
@@ -973,6 +979,12 @@ def printCertificate(request, certID):
 		'directionTitleEng': directionTitleEngStr,
 		'directionInfoText': directionInfoTextStr,
 		'directionInfoTextEng': directionInfoTextEngStr,
+		# 'directionCourseInfo': directionCourseInfoStr,
+		# 'directionCourseInfoEng': directionCourseInfoEngStr,
+		'directionRegulationInfo': directionRegulationInfoStr,
+		'directionRegulationInfoEng': directionRegulationInfoEngStr,
+		# 'directionInspectionInfo': directionInspectionInfoStr,
+		# 'directionInspectionInfoEng': directionInspectionInfoEngStr,
 		'dateIssue': dateIssueStr,
 		'validDate': validDateStr,
 		'qrImg': qrfilename}

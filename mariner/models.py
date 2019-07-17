@@ -87,6 +87,16 @@ class TrainigDirections(models.Model):
 
     infoText = models.TextField(null=True, blank=True)
     infoTextEng = models.TextField(null=True, blank=True)
+
+    courseInfo = models.TextField(null=True, blank=True)
+    courseInfoEng = models.TextField(null=True, blank=True)
+
+    regulationInfo = models.TextField(null=True, blank=True)
+    regulationInfoEng = models.TextField(null=True, blank=True)
+
+    inspectionInfo = models.TextField(null=True, blank=True)
+    inspectionInfoEng = models.TextField(null=True, blank=True)
+
     
     def __str__(self):
         return u"%s / %s / %s /" % (self.direction_title, self.get_allow_functions_display(), self.get_level_display())
@@ -102,6 +112,7 @@ admin.site.register(TrainigDirections, TrainigDirectionsDocAdmin)
 #//////////////////////////////////////////////////////////
 class TrainigOrganisation(models.Model):
     logo_pic = models.ImageField(upload_to = 'orgLogo/', default = 'orgLogo/no-img.jpg', blank=True, null=True)
+    certBg_pic = models.ImageField(upload_to = 'orgLogo/', default = 'orgLogo/certBg-no-img.jpg', blank=True, null=True)
     organisation_id = models.CharField(max_length=140, null=True, blank=True)
     organisation_name = models.CharField(max_length=140, blank=True) #*
     organisation_name_eng = models.CharField(max_length=140, blank=True) #*

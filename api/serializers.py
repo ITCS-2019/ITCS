@@ -79,6 +79,12 @@ class TrainigDirectionSerializer(serializers.ModelSerializer):
 			'status',
 			'infoText',
 			'infoTextEng',
+			'courseInfo',
+			'courseInfoEng',
+			'regulationInfo',
+			'regulationInfoEng',
+			'inspectionInfo',
+			'inspectionInfoEng',
 		)
 
 class TrainigDirectionCustomSerializer(serializers.Serializer):
@@ -92,6 +98,12 @@ class TrainigDirectionCustomSerializer(serializers.Serializer):
 	status = serializers.IntegerField()
 	infoText = serializers.models.TextField()
 	infoTextEng = serializers.models.TextField()
+	courseInfo = serializers.models.TextField()
+	courseInfoEng = serializers.models.TextField()
+	regulationInfo = serializers.models.TextField()
+	regulationInfoEng = serializers.models.TextField()
+	inspectionInfo = serializers.models.TextField()
+	inspectionInfoEng = serializers.models.TextField()
 
 
 class RangeNumberSerializer(serializers.ModelSerializer):
