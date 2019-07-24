@@ -269,9 +269,6 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		 	organisation.directions.add(d)
 		organisation.save()
 
-		organisation.logo_pic
-
-
 		return Response({"message": "Organisation updated"}, status=200)
 
 
