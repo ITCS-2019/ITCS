@@ -270,10 +270,10 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisation.save()
 
 		print('Update pics:')
-		if request.FILES['logo_pic']:
+		if self.request.data['logo_pic']:
 			print('SAVE LOGO:')
-			print(request.FILES['logo_pic'])
-			logo_file = request.FILES['logo_pic']
+			print(self.request.data['logo_pic'])
+			logo_file = self.request.data['logo_pic']
 			file_name = 'media/orgLogo/' + pk + '-logo.png'
 			organisation.logo_pic.save(file_name, django_file, save=True)
 			organisation.save()
