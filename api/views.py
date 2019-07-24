@@ -946,8 +946,8 @@ def printCertificate(request, certID):
 	directionInfoTextEngStr = cert.training_direction.infoTextEng
 	directionCourseInfoStr = cert.training_direction.courseInfo
 	directionCourseInfoEngStr = cert.training_direction.courseInfoEng
-	directionRegulstionInfoStr = cert.training_direction.regulationInfo
-	directionRegulstionInfoEngStr = cert.training_direction.regulationInfoEng
+	directionRegulationInfoStr = cert.training_direction.regulationInfo
+	directionRegulationInfoEngStr = cert.training_direction.regulationInfoEng
 	directionInspectionInfoStr = cert.training_direction.inspectionInfo
 	directionInspectionInfoEngStr = cert.training_direction.inspectionInfoEng
 	dateIssueStr = cert.date_of_issue
