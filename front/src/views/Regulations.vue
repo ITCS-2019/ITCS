@@ -16,7 +16,8 @@
 
             <!--Grid btns row right side-->
             <div>
-              <v-btn color="success" small :depressed="true">
+              <v-btn color="success" small :depressed="true"
+              to="/mariner/app/regulations/edit/0">
                 <v-icon>
                   mdi-plus-box
                 </v-icon>

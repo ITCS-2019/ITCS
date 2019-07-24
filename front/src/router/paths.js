@@ -58,5 +58,10 @@ export default [
     path: '/mariner/app/regulations',
     name: 'Regulations',
     view: 'Regulations'
+  },
+  {
+    path: '/mariner/app/regulations/edit/:id',
+    name: 'Regulation',
+    view: 'EditRegulations'
   }
 ]
