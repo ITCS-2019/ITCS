@@ -269,6 +269,14 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		 	organisation.directions.add(d)
 		organisation.save()
 
+		if request.FILES['logo_pic']:
+			logo_file = request.FILES['logo_pic']
+			file_name = pk + '-logo.png'
+			organisation.logo_pic.save(file_name, django_file, save=True)
+			organisation.save()
+
+		#bg_file = request.FILES['certBg_pic']
+
 		return Response({"message": "Organisation updated"}, status=200)
 
 
