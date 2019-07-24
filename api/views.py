@@ -268,6 +268,10 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		 	d.save()
 		 	organisation.directions.add(d)
 		organisation.save()
+
+		organisation.logo_pic
+
+
 		return Response({"message": "Organisation updated"}, status=200)
 
 
@@ -979,12 +983,12 @@ def printCertificate(request, certID):
 		'directionTitleEng': directionTitleEngStr,
 		'directionInfoText': directionInfoTextStr,
 		'directionInfoTextEng': directionInfoTextEngStr,
-		# 'directionCourseInfo': directionCourseInfoStr,
-		# 'directionCourseInfoEng': directionCourseInfoEngStr,
+		'directionCourseInfo': directionCourseInfoStr,
+		'directionCourseInfoEng': directionCourseInfoEngStr,
 		'directionRegulationInfo': directionRegulationInfoStr,
 		'directionRegulationInfoEng': directionRegulationInfoEngStr,
-		# 'directionInspectionInfo': directionInspectionInfoStr,
-		# 'directionInspectionInfoEng': directionInspectionInfoEngStr,
+		'directionInspectionInfo': directionInspectionInfoStr,
+		'directionInspectionInfoEng': directionInspectionInfoEngStr,
 		'dateIssue': dateIssueStr,
 		'validDate': validDateStr,
 		'qrImg': qrfilename}
