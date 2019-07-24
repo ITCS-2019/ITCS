@@ -34,16 +34,50 @@
             <v-layout wrap>
               <v-flex xs12 md6>
                 <v-textarea box
-                label="Iнформацiя"
+                rows="1"
+                label="Видано на пiдставi"
                 auto-grow
-                v-model="infoText">
+                v-model="regulationInfo">
                 </v-textarea>
               </v-flex>
               <v-flex xs12 md6>
                 <v-textarea box
-                label="Info(Eng.)"
+                rows="1"
+                label="Regulations(Eng.)"
                 auto-grow
-                v-model="infoTextEng">
+                v-model="regulationInfoEng">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                rows="1"
+                label="Iнформацiя про курс"
+                auto-grow
+                v-model="courseInfo">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                rows="1"
+                label="Course info(Eng.)"
+                auto-grow
+                v-model="courseInfoEng">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                rows="1"
+                label="Iнспекторська iнформацiя"
+                auto-grow
+                v-model="inspectionInfo">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                rows="1"
+                label="Inspector info(Eng.)"
+                auto-grow
+                v-model="inspectionInfoEng">
                 </v-textarea>
               </v-flex>
             </v-layout>
@@ -66,19 +100,93 @@ export default {
 
   data() {
     return {
+      regulationInfo: '',
+      regulationInfoEng: '',
+      courseInfo: '',
+      courseInfoEng: '',
+      inspectionInfo: '',
+      inspectionInfoEng: '',
       direction_title: null,
       price_id: null,
       level: null,
       levelItems: ['Підтвердження', 'Отримання'],
       allow_functions: 'Не обрано',
       allowFunctionsItems: ['Не обрано', 'Управлiння', 'Експлуатація'],
-      infoText: '',
-      infoTextEng: ''
     }
   },
 
-  mounted() {
+  watch: {
+    regulationInfoEng(val) {
+      let regExp = /[^[a-zA-Z\-\'\"()\s]/g;
 
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'regulationInfoEng', newVal);
+        }
+      });
+    },
+
+    courseInfoEng(val) {
+      let regExp = /[^[a-zA-Z\-\'\"()\s]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'courseInfoEng', newVal);
+        }
+      });
+    },
+
+    inspectionInfoEng(val) {
+      let regExp = /[^[a-zA-Z\-\'\"()\s]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'inspectionInfoEng', newVal);
+        }
+      });
+    },
+
+    regulationInfo(val) {
+      let regExp = /[^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ\-\'\"()\s]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'regulationInfo', newVal);
+        }
+      });
+    },
+
+    courseInfo(val) {
+      let regExp = /[^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ\-\'\"()\s]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'courseInfo', newVal);
+        }
+      });
+    },
+
+    inspectionInfo(val) {
+      let regExp = /[^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ\-\'\"()\s]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'inspectionInfo', newVal);
+        }
+      });
+    }
   },
 
   methods: {

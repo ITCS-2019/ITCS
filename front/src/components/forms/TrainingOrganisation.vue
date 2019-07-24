@@ -2,9 +2,9 @@
     <v-form>
         <v-container py-0>
             <v-layout wrap>
-                <v-flex md12>
+                <v-flex xs12 md6>
                     <img :src="logoUrl" height="150" v-if="logoUrl"/>
-                    <v-text-field label="Select Image"
+                    <v-text-field label="Завантажити лого"
                     v-on:click="pickLogo"
                     v-model="logoName"
                     prepend-inner-icon="mdi-paperclip">
@@ -13,7 +13,20 @@
                     style="display: none"
                     ref="logo"
                     accept="image/*"
-                    @change="onLogoPicked">
+                    v-on:change="onLogoPicked">
+                </v-flex>
+                <v-flex xs12 md6>
+                    <img :src="certBackUrl" height="150" v-if="certBackUrl"/>
+                    <v-text-field label="Завантажити фон сертифiката"
+                    v-on:click="pickCertBack"
+                    v-model="certBackName"
+                    prepend-inner-icon="mdi-paperclip">
+                    </v-text-field>
+                    <input  type="file"
+                    style="display: none"
+                    ref="certBack"
+                    accept="image/*"
+                    v-on:change="onCertBackPicked">
                 </v-flex>
             </v-layout>
             <v-tabs fixed-tabs>
@@ -231,9 +244,10 @@ export default {
 
   data(){
     return {
-      title: "Image Upload",
       logoName: '',
       logoUrl: '',
+      certBackName: '',
+      certBackUrl: '',
 
 
       isProfile: (this.$route.name === 'User Profile') ? true : false,
@@ -263,6 +277,7 @@ export default {
         mail_adress_ukr: null,
         mail_adress_eng: null,
         logo_pic: null,
+        certBg_pic: null,
         phone1: null,
         phone2: null,
         orgnisation_email: null,
@@ -353,6 +368,33 @@ export default {
         this.logoName = '';
         this.organization.logo_pic = '';
         this.logoUrl = '';
+      }
+    },
+
+    pickCertBack () {
+      this.$refs.certBack.click();
+    },
+
+    onCertBackPicked (e) {
+      const files = e.target.files;
+
+      if(files[0] !== undefined) {
+        this.certBackName = files[0].name;
+        if(this.certBackName.lastIndexOf('.') <= 0) {
+          return;
+        }
+
+        const fr = new FileReader ();
+
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener('load', () => {
+          this.certBackUrl = fr.result;
+          this.organization.certBg_pic = files[0];
+        })
+      } else {
+        this.certBackName = '';
+        this.organization.certBg_pic = '';
+        this.certBackUrl = '';
       }
     },
 
