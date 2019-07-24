@@ -54,7 +54,10 @@
           active-class="info"
           avatar
           class="v-list-item"
-          v-bind:class="{hide: userRole === 'НТЗ' && (link.text === 'Моряки' || link.text === 'НТЗ')}"
+          v-bind:class="{hide: userRole === 'НТЗ'
+          && (link.to === '/mariner/app/sailors'
+            || link.to === '/mariner/app/training-organisations'
+            || link.to === '/mariner/app/regulations')}"
         >
           <v-list-tile-action>
             <v-icon>{{ link.icon }}</v-icon>
@@ -135,6 +138,11 @@ export default {
         to: '/mariner/app/profile',
         icon: 'mdi-account',
         text: 'Профiль'
+      },
+      {
+        to: '/mariner/app/regulations',
+        icon: 'mdi-file-document-box',
+        text: 'Нормативнi документи'
       }
     ],
     responsive: false,
