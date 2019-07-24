@@ -209,8 +209,12 @@ export default {
             this.direction_title = direction.direction_title;
             this.level = direction.level;
             this.price_id = direction.price_id;
-            this.infoText = direction.infoText;
-            this.infoTextEng = direction.infoTextEng;
+            this.regulationInfo = direction.regulationInfo;
+            this.regulationInfoEng = direction.regulationInfoEng;
+            this.courseInfo = direction.courseInfo;
+            this.courseInfoEng = direction.courseInfoEng;
+            this.inspectionInfo = direction.inspectionInfo;
+            this.inspectionInfoEng = direction.inspectionInfoEng;
           })
           .catch((err) => {
             console.log(err);

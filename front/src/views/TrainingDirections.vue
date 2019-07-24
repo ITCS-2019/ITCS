@@ -371,9 +371,15 @@ export default {
         price_id: this.$refs.directionForm.price_id,
         level: this.$refs.directionForm.level,
         allow_functions: this.$refs.directionForm.allow_functions,
-        infoText: this.$refs.directionForm.infoText,
-        infoTextEng: this.$refs.directionForm.infoTextEng
+        regulationInfo: this.$refs.directionForm.regulationInfo,
+        regulationInfoEng: this.$refs.directionForm.regulationInfoEng,
+        courseInfo: this.$refs.directionForm.courseInfo,
+        courseInfoEng: this.$refs.directionForm.courseInfoEng,
+        inspectionInfo: this.$refs.directionForm.inspectionInfo,
+        inspectionInfoEng: this.$refs.directionForm.inspectionInfoEng
       };
+
+      console.log(formData);
 
       axios({
         method: (this.directionId === 0) ? 'POST' : 'PUT',
