@@ -3,10 +3,10 @@
         <v-container py-0>
             <v-layout wrap>
                 <v-flex xs12 md6>
-                    <img :src="logoUrl" height="150" v-if="logoUrl"/>
+                    <img :src="logo.url" height="150" v-if="logo.url"/>
                     <v-text-field label="Завантажити лого"
                     v-on:click="pickLogo"
-                    v-model="logoName"
+                    v-model="logo.name"
                     prepend-inner-icon="mdi-paperclip">
                     </v-text-field>
                     <input  type="file"
@@ -16,10 +16,10 @@
                     v-on:change="onLogoPicked">
                 </v-flex>
                 <v-flex xs12 md6>
-                    <img :src="certBackUrl" height="150" v-if="certBackUrl"/>
+                    <img :src="certBackground.url" height="150" v-if="certBackground.url"/>
                     <v-text-field label="Завантажити фон сертифiката"
                     v-on:click="pickCertBack"
-                    v-model="certBackName"
+                    v-model="certBackground.name"
                     prepend-inner-icon="mdi-paperclip">
                     </v-text-field>
                     <input  type="file"
@@ -244,11 +244,16 @@ export default {
 
   data(){
     return {
-      logoName: '',
-      logoUrl: '',
-      certBackName: '',
-      certBackUrl: '',
-
+      logo: {
+        name: '',
+        url: '',
+        logo_pic: ''
+      },
+      certBackground: {
+        name: '',
+        url: '',
+        certBg_pic: ''
+      },
 
       isProfile: (this.$route.name === 'User Profile') ? true : false,
       certId: ~~this.$route.params.id,
@@ -276,8 +281,6 @@ export default {
         organisation_name_eng: null,
         mail_adress_ukr: null,
         mail_adress_eng: null,
-        logo_pic: null,
-        certBg_pic: null,
         phone1: null,
         phone2: null,
         orgnisation_email: null,
@@ -352,8 +355,8 @@ export default {
       const files = e.target.files;
 
       if(files[0] !== undefined) {
-        this.logoName = files[0].name;
-        if(this.logoName.lastIndexOf('.') <= 0) {
+        this.logo.name = files[0].name;
+        if(this.logo.name.lastIndexOf('.') <= 0) {
           return;
         }
 
@@ -361,13 +364,13 @@ export default {
 
         fr.readAsDataURL(files[0]);
         fr.addEventListener('load', () => {
-          this.logoUrl = fr.result;
-          this.organization.logo_pic = files[0];
+          this.logo.url = fr.result;
+          this.logo.logo_pic = files[0];
         })
       } else {
-        this.logoName = '';
-        this.organization.logo_pic = '';
-        this.logoUrl = '';
+        this.logo.name = '';
+        this.logo.logo_pic = '';
+        this.logo.url = '';
       }
     },
 
@@ -379,8 +382,8 @@ export default {
       const files = e.target.files;
 
       if(files[0] !== undefined) {
-        this.certBackName = files[0].name;
-        if(this.certBackName.lastIndexOf('.') <= 0) {
+        this.certBackground.name = files[0].name;
+        if(this.certBackground.name.lastIndexOf('.') <= 0) {
           return;
         }
 
@@ -388,13 +391,13 @@ export default {
 
         fr.readAsDataURL(files[0]);
         fr.addEventListener('load', () => {
-          this.certBackUrl = fr.result;
-          this.organization.certBg_pic = files[0];
+          this.certBackground.url = fr.result;
+          this.certBackground.certBg_pic = files[0];
         })
       } else {
-        this.certBackName = '';
-        this.organization.certBg_pic = '';
-        this.certBackUrl = '';
+        this.certBackground.name = '';
+        this.certBackground.certBg_pic = '';
+        this.certBackground.url = '';
       }
     },
 
@@ -403,6 +406,10 @@ export default {
 
       axios.get(route)
         .then(res => {
+          console.log('loadData');
+          console.log(res);
+          console.log('loadData');
+
           let organizationData = (this.isProfile) ? res.data.organisations : res.data;
 
           if (this.isProfile || this.certId !== 0)
@@ -441,6 +448,16 @@ export default {
               });
             });
           }
+
+          if (organizationData.logo_pic) {
+            this.logo.url = organizationData.logo_pic;
+            this.logo.name = this.logo.url.split('/').slice(-1)[0];
+          }
+
+          if (organizationData.certBg_pic) {
+            this.certBackground.url = organizationData.certBg_pic;
+            this.certBackground.name = this.certBackground.url.split('/').slice(-1)[0];
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -471,11 +488,26 @@ export default {
         this.organization['directions'].push(directionFull);
       });
 
-      axios({
-        method: (this.certId === 0) ? 'POST' : 'PUT',
-        url: `/mariner/api/organisations/${(this.certId === 0) ? '' : `${this.certId}/`}`,
-        data: this.organization
-      })
+      let formData = new FormData();
+
+      formData.append('logo_pic', this.logo.logo_pic);
+      formData.append('certBg_pic', this.certBackground.certBg_pic);
+      formData.append('orgID', this.certId);
+
+      axios.post(`/mariner/api/uploadOrganisationLogo/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(res => {
+          return axios({
+            method: (this.certId === 0) ? 'POST' : 'PUT',
+            url: `/mariner/api/organisations/${(this.certId === 0) ? '' : `${this.certId}/`}`,
+            data: this.organization,
+          })
+        })
         .then(res => {
           this.$router.push('/mariner/app/training-organisations');
         })

@@ -14,5 +14,5 @@ itcs/*
 front/webpack-stats.json
 static/app/
 templates/application_app.html
-media/qrcodes/
+media/*
 
