@@ -4,6 +4,7 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
+from regulations.models import RegulationDoc
 from accounts.models import Profile
 
 User = get_user_model()
@@ -246,3 +247,18 @@ class CertificateSerializer(serializers.ModelSerializer):
 	# 		'self': reverse('certificate-detail', kwargs={'pk': obj.pk},
 	# 			request=request),
 	# 	}
+class RegulationSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = RegulationDoc
+		fields = (
+			'date_activation',
+			'number',
+			'title',
+			'status',
+			'text',
+			'pdf_file',
+			'user',
+			'prev_version',
+			'organisation',
+			'regulation_organization_link',
+		)

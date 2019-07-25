@@ -14,10 +14,11 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer
+from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
 from accounts.models import Profile
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
+from regulations.models import RegulationDoc
 
 # from django.core.files.storage import FileSystemStorage
 from django.template.loader import get_template
@@ -269,14 +270,14 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		 	organisation.directions.add(d)
 		organisation.save()
 
-		print('Update pics:')
-		if self.request.data['logo_pic']:
-			print('SAVE LOGO:')
-			print(self.request.data['logo_pic'])
-			logo_file = self.request.data['logo_pic']
-			file_name = 'media/orgLogo/' + pk + '-logo.png'
-			organisation.logo_pic.save(file_name, django_file, save=True)
-			organisation.save()
+		# print('Update pics:')
+		# if self.request.data['logo_pic']:
+		# 	print('SAVE LOGO:')
+		# 	print(self.request.data['logo_pic'])
+		# 	logo_file = self.request.data['logo_pic']
+		# 	file_name = 'media/orgLogo/' + pk + '-logo.png'
+		# 	organisation.logo_pic.save(file_name, django_file, save=True)
+		# 	organisation.save()
 
 		#bg_file = request.FILES['certBg_pic']
 
@@ -296,6 +297,12 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	# 	else:
 	# 		return [permissions.IsAdminUser()] #TODO: use custom permission class for Admin|Inspectors
 			
+class RegulationViewSet(viewsets.ModelViewSet):
+	"""
+    Return a list of all regulation docs in DB.
+    """
+	queryset = RegulationDoc.objects.all()
+	serializer_class = RegulationSerializer
 
 class CertificateViewSet(viewsets.ModelViewSet):
 	"""
