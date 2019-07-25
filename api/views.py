@@ -947,6 +947,8 @@ def exportToPrint(request):
 
 def printCertificate(request, certID):
 	cert = Certificate.objects.get(id=certID)
+	organisationLogoURLStr = cert.trainigOrganisation.logo_pic
+	organisationBgImgURLStr = cert.trainigOrganisation.certBg_pic
 	organisationNameStr = cert.trainigOrganisation.organisation_name
 	organisationNameEngStr = cert.trainigOrganisation.organisation_name_eng
 	organisationAdressStr = cert.trainigOrganisation.mail_adress_ukr
@@ -982,7 +984,9 @@ def printCertificate(request, certID):
 	qrfilename = 'media/qrcodes/qrCertID' + certID + '.png'
 	url.png(qrfilename, scale=7)
 
-	context = {'organisationName': organisationNameStr,
+	context = {'organisationLogoURL': organisationLogoURLStr,
+		'organisationBgImgURL': organisationBgImgURLStr,
+		'organisationName': organisationNameStr,
 		'organisationNameEng': organisationNameEngStr,
 		'organisationAdress': organisationAdressStr,
 		'organisationAdressEng': organisationAdressEngStr,
