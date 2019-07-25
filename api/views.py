@@ -14,10 +14,11 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer
+from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
 from accounts.models import Profile
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
+from regulations.models import RegulationDoc
 
 # from django.core.files.storage import FileSystemStorage
 from django.template.loader import get_template
@@ -275,7 +276,7 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			print(self.request.data['logo_pic'])
 			logo_file = self.request.data['logo_pic']
 			file_name = 'media/orgLogo/' + pk + '-logo.png'
-			organisation.logo_pic.save(file_name, django_file, save=True)
+			organisation.logo_pic.save(file_name, logo_file, save=True)
 			organisation.save()
 
 		#bg_file = request.FILES['certBg_pic']
@@ -296,6 +297,12 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	# 	else:
 	# 		return [permissions.IsAdminUser()] #TODO: use custom permission class for Admin|Inspectors
 			
+class RegulationViewSet(viewsets.ModelViewSet):
+	"""
+    Return a list of all regulation docs in DB.
+    """
+	queryset = RegulationDoc.objects.all()
+	serializer_class = RegulationSerializer
 
 class CertificateViewSet(viewsets.ModelViewSet):
 	"""
@@ -1012,6 +1019,23 @@ def updateCertForTable(request):
 		cert.organisation_name_cert = cert.trainigOrganisation.organisation_name
 		cert.save()
 	return HttpResponse(status=204)
+
+def uploadOrganisationLogo(request):
+	organisationID = request.POST.get('orgID')
+	organisation = TrainigOrganisation.objects.get(id=organisationID)
+
+	print('Update pics:')
+	print(request.FILES['logo_pic'])
+	if request.FILES['logo_pic']:
+		print('SAVE LOGO:')
+		logo_file = request.FILES['logo_pic']
+		file_name = 'media/orgLogo/' + organisationID + '-logo.png'
+		organisation.logo_pic.save(file_name, logo_file, save=True)
+		organisation.save()
+		return Response({"message": "Organisation logo uploaded"}, status=200)
+	else:
+		return Response({"message": "Logo file is empty"}, status=200)
+
 
 
 """

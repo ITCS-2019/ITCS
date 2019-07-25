@@ -18,6 +18,7 @@ router.register(r'ranger', views.RangeViewSet, base_name='ranger')
 router.register(r'organisationCerts', views.CertificatesOfOrganisation, base_name='organisationCerts')
 router.register(r'certificates', views.CertificateViewSet)
 router.register(r'tableCertificates', views.CertificatesOfTable, base_name='tableCertificates')
+router.register(r'regulations', views.RegulationViewSet)
 
 urlpatterns = [
     path('dashInfo/', views.dashInfo, name="api-dashInfo"),
@@ -38,6 +39,7 @@ urlpatterns = [
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
     path('printCertificate/<certID>/', views.printCertificate, name='api-printCertificate'),
     path('updateCertForTable/', views.updateCertForTable, name='api-updateCertForTable'),
+    path('uploadOrganisationLogo/', views.uploadOrganisationLogo, name='api-uploadOrganisationLogo'),
     # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
     # path('logout/', views.LogoutView.as_view(), name="api-logout"),
 ]
