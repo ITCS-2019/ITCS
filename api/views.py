@@ -1024,17 +1024,20 @@ def uploadOrganisationLogo(request):
 	organisationID = request.POST.get('orgID')
 	organisation = TrainigOrganisation.objects.get(id=organisationID)
 
-	print('Update pics:')
-	print(request.FILES['logo_pic'])
 	if request.FILES['logo_pic']:
-		print('SAVE LOGO:')
+		#print('SAVE LOGO:')
 		logo_file = request.FILES['logo_pic']
 		file_name = organisationID + '-logo.png'
 		organisation.logo_pic.save(file_name, logo_file, save=True)
 		organisation.save()
-		return HttpResponse(status=200)
-	else:
-		return HttpResponse(status=204)
+
+	if request.FILES['certBg_pic']:
+		bg_file = request.FILES['certBg_pic']
+		bgfile_name = organisationID + '-bglogo.png'
+		organisation.certBg_pic.save(bgfile_name, bg_file, save=True)
+		organisation.save()
+	
+	return HttpResponse(status=200)
 
 
 
