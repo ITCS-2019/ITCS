@@ -1025,7 +1025,6 @@ def uploadOrganisationLogo(request):
 	organisation = TrainigOrganisation.objects.get(id=organisationID)
 
 	if request.FILES['logo_pic'] is not None:
-		#print('SAVE LOGO:')
 		logo_file = request.FILES['logo_pic']
 		file_name = organisationID + '-logo.png'
 		organisation.logo_pic.save(file_name, logo_file, save=True)
@@ -1038,7 +1037,6 @@ def uploadOrganisationLogo(request):
 		organisation.save()
 	
 	return HttpResponse(status=200)
-
 
 
 """
