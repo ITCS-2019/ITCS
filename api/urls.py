@@ -39,6 +39,7 @@ urlpatterns = [
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
     path('printCertificate/<certID>/', views.printCertificate, name='api-printCertificate'),
     path('updateCertForTable/', views.updateCertForTable, name='api-updateCertForTable'),
+    path('uploadOrganisationLogo/', views.uploadOrganisationLogo, name='api-uploadOrganisationLogo'),
     # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
     # path('logout/', views.LogoutView.as_view(), name="api-logout"),
 ]

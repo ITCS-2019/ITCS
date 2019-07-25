@@ -270,14 +270,14 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		 	organisation.directions.add(d)
 		organisation.save()
 
-		# print('Update pics:')
-		# if self.request.data['logo_pic']:
-		# 	print('SAVE LOGO:')
-		# 	print(self.request.data['logo_pic'])
-		# 	logo_file = self.request.data['logo_pic']
-		# 	file_name = 'media/orgLogo/' + pk + '-logo.png'
-		# 	organisation.logo_pic.save(file_name, django_file, save=True)
-		# 	organisation.save()
+		print('Update pics:')
+		if self.request.data['logo_pic']:
+			print('SAVE LOGO:')
+			print(self.request.data['logo_pic'])
+			logo_file = self.request.data['logo_pic']
+			file_name = 'media/orgLogo/' + pk + '-logo.png'
+			organisation.logo_pic.save(file_name, logo_file, save=True)
+			organisation.save()
 
 		#bg_file = request.FILES['certBg_pic']
 
@@ -1019,6 +1019,23 @@ def updateCertForTable(request):
 		cert.organisation_name_cert = cert.trainigOrganisation.organisation_name
 		cert.save()
 	return HttpResponse(status=204)
+
+def uploadOrganisationLogo(request):
+	organisationID = request.POST.get('orgID')
+	organisation = TrainigOrganisation.objects.get(id=organisationID)
+
+	print('Update pics:')
+	print(request.FILES['logo_pic'])
+	if request.FILES['logo_pic']:
+		print('SAVE LOGO:')
+		logo_file = request.FILES['logo_pic']
+		file_name = 'media/orgLogo/' + organisationID + '-logo.png'
+		organisation.logo_pic.save(file_name, logo_file, save=True)
+		organisation.save()
+		return Response({"message": "Organisation logo uploaded"}, status=200)
+	else:
+		return Response({"message": "Logo file is empty"}, status=200)
+
 
 
 """
