@@ -1032,9 +1032,9 @@ def uploadOrganisationLogo(request):
 		file_name = organisationID + '-logo.png'
 		organisation.logo_pic.save(file_name, logo_file, save=True)
 		organisation.save()
-		return Response({"message": "Organisation logo uploaded"}, status=200)
+		return HttpResponse(status=200)
 	else:
-		return Response({"message": "Logo file is empty"}, status=204)
+		return HttpResponse(status=204)
 
 
 
