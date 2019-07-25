@@ -471,13 +471,18 @@ export default {
         this.organization['directions'].push(directionFull);
       });
 
+      console.log(this.organization);
+
       axios({
         method: (this.certId === 0) ? 'POST' : 'PUT',
         url: `/mariner/api/organisations/${(this.certId === 0) ? '' : `${this.certId}/`}`,
-        data: this.organization
+        data: this.organization,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       })
         .then(res => {
-          this.$router.push('/mariner/app/training-organisations');
+          // this.$router.push('/mariner/app/training-organisations');
         })
         .catch((err) => {
           console.log(err);

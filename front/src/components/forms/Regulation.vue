@@ -2,84 +2,9 @@
     <v-form>
         <v-container py-0>
             <v-layout wrap>
-                <v-flex xs12 md6>
-                    <img :src="logoUrl" height="150" v-if="logoUrl"/>
-                    <v-text-field label="Завантажити лого"
-                    v-on:click="pickLogo"
-                    v-model="logoName"
-                    prepend-inner-icon="mdi-paperclip">
-                    </v-text-field>
-                    <input  type="file"
-                    style="display: none"
-                    ref="logo"
-                    accept="image/*"
-                    v-on:change="onLogoPicked">
-                </v-flex>
-                <v-flex xs12 md6>
-                    <img :src="certBackUrl" height="150" v-if="certBackUrl"/>
-                    <v-text-field label="Завантажити фон сертифiката"
-                    v-on:click="pickCertBack"
-                    v-model="certBackName"
-                    prepend-inner-icon="mdi-paperclip">
-                    </v-text-field>
-                    <input  type="file"
-                    style="display: none"
-                    ref="certBack"
-                    accept="image/*"
-                    v-on:change="onCertBackPicked">
-                </v-flex>
-            </v-layout>
-            <v-tabs fixed-tabs>
-                <v-tab v-for="lang in langs"
-                :key="lang.lang">
-                    {{lang.lang}}
-                </v-tab>
-                <v-tab-item
-                v-for="lang in langs"
-                :key="lang.lang">
-                    <v-layout wrap>
-                        <v-flex md12>
-                            <v-text-field :label="(lang.lang === 'Українська') ? 'Назва НТЗ' : 'Training organization name'"
-                            v-model="lang.organization_name"
-                            :readonly="(userRole === 'НТЗ') ? true : false"/>
-                        </v-flex>
-                        <v-flex xs12 md6>
-                            <v-text-field :label="(lang.lang === 'Українська') ? 'Адреса' : 'Address'"
-                            v-model="lang.mail_adress"/>
-                        </v-flex>
-                        <v-flex xs12 md6>
-                            <v-text-field label="Код НТЗ"
-                            v-model="organization.organisation_id"
-                            :readonly="(userRole === 'НТЗ') ? true : false"/>
-                        </v-flex>
-                    </v-layout>
-                </v-tab-item>
-            </v-tabs>
-            <v-layout wrap>
-                <v-flex md12
-                v-if="userRole !== 'НТЗ'">
-                    <v-select v-model="selectedDirections"
-                    :items="directions"
-                    label="Напрямки підготовки"
-                    item-text="caption"
-                    item-value="value"
-                    chips
-                    multiple>
-                        <template v-slot:prepend-item>
-                            <v-list-tile ripple
-                            v-on:click="toggle">
-                                <v-list-tile-action>
-                                    <v-icon :color="selectedDirections.length > 0 ? 'indigo darken-4' : ''">
-                                        {{ icon }}
-                                    </v-icon>
-                                </v-list-tile-action>
-                                <v-list-tile-content>
-                                    <v-list-tile-title>Вибрати всi</v-list-tile-title>
-                                </v-list-tile-content>
-                            </v-list-tile>
-                            <v-divider class="mt-2"></v-divider>
-                        </template>
-                    </v-select>
+                <v-flex md12>
+                    <v-text-field label="Назва документу"
+                    v-model="regulation.title"/>
                 </v-flex>
                 <v-flex xs12 md6
                 v-if="userRole !== 'НТЗ'">
@@ -269,30 +194,9 @@ export default {
       directions: [],
       selectedDirections: [],
 
-      // TODO: rename organization to organisation
-      organization: {
-        organisation_id: null,
-        organisation_name: null,
-        organisation_name_eng: null,
-        mail_adress_ukr: null,
-        mail_adress_eng: null,
-        logo_pic: null,
-        certBg_pic: null,
-        phone1: null,
-        phone2: null,
-        orgnisation_email: null,
-        site_link: null,
-        checking_number: null,
-        bank_name: null,
-        mfo: null,
-        okpo: null,
-        inn: null,
-        nds_number: null,
-        head_full_name: null,
-        head_position: null,
-        accountant_full_name: null,
-        activated: null,
-        active_till: null
+      regulation: {
+        title: null,
+
       },
       langs: [
         {
