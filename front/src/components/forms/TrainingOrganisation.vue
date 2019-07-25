@@ -247,12 +247,12 @@ export default {
       logo: {
         name: '',
         url: '',
-        logo_pic: null
+        logo_pic: ''
       },
       certBackground: {
         name: '',
         url: '',
-        certBg_pic: null
+        certBg_pic: ''
       },
 
       isProfile: (this.$route.name === 'User Profile') ? true : false,
@@ -452,6 +452,11 @@ export default {
           if (organizationData.logo_pic) {
             this.logo.url = organizationData.logo_pic;
             this.logo.name = this.logo.url.split('/').slice(-1)[0];
+          }
+
+          if (organizationData.certBg_pic) {
+            this.certBackground.url = organizationData.certBg_pic;
+            this.certBackground.name = this.certBackground.url.split('/').slice(-1)[0];
           }
         })
         .catch((err) => {
