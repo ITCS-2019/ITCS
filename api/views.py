@@ -1029,7 +1029,7 @@ def uploadOrganisationLogo(request):
 	if request.FILES['logo_pic']:
 		print('SAVE LOGO:')
 		logo_file = request.FILES['logo_pic']
-		file_name = 'media/orgLogo/' + organisationID + '-logo.png'
+		file_name = organisationID + '-logo.png'
 		organisation.logo_pic.save(file_name, logo_file, save=True)
 		organisation.save()
 		return Response({"message": "Organisation logo uploaded"}, status=200)
