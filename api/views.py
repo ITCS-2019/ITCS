@@ -270,14 +270,14 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		 	organisation.directions.add(d)
 		organisation.save()
 
-		print('Update pics:')
-		if self.request.data['logo_pic']:
-			print('SAVE LOGO:')
-			print(self.request.data['logo_pic'])
-			logo_file = self.request.data['logo_pic']
-			file_name = 'media/orgLogo/' + pk + '-logo.png'
-			organisation.logo_pic.save(file_name, logo_file, save=True)
-			organisation.save()
+		# print('Update pics:')
+		# if self.request.data['logo_pic']:
+		# 	print('SAVE LOGO:')
+		# 	print(self.request.data['logo_pic'])
+		# 	logo_file = self.request.data['logo_pic']
+		# 	file_name = 'media/orgLogo/' + pk + '-logo.png'
+		# 	organisation.logo_pic.save(file_name, logo_file, save=True)
+		# 	organisation.save()
 
 		#bg_file = request.FILES['certBg_pic']
 
@@ -1034,7 +1034,7 @@ def uploadOrganisationLogo(request):
 		organisation.save()
 		return Response({"message": "Organisation logo uploaded"}, status=200)
 	else:
-		return Response({"message": "Logo file is empty"}, status=200)
+		return Response({"message": "Logo file is empty"}, status=204)
 
 
 
