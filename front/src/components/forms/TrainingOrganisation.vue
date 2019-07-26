@@ -456,12 +456,7 @@ export default {
           });
 
           if (this.isProfile) {
-            this.selectedDirections.forEach(directionId => {
-              let directionFull = this.directionsFull.find(direction => {
-                return direction.id === directionId.value
-              });
-              this.organization.directions.push(directionFull);
-            });
+            this.organization.directions = organizationData.directions;
           }
 
           if (organizationData.logo_pic) {
