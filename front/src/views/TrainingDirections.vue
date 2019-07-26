@@ -379,8 +379,6 @@ export default {
         inspectionInfoEng: this.$refs.directionForm.inspectionInfoEng
       };
 
-      console.log(formData);
-
       axios({
         method: (this.directionId === 0) ? 'POST' : 'PUT',
         url: `/mariner/api/directions/${(this.directionId === 0) ? '' : `${this.directionId}/`}`,

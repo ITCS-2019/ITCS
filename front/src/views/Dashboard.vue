@@ -246,19 +246,21 @@ export default {
     gridInited() {
       axios.get(`/mariner/api/organisations/`)
         .then(res => {
-          let grid = this.$refs.certsOnAproveGrid.tableInstance;
+          let grid = this.$refs.certsOnAproveGrid.tableInstance,
+              organisations = res.data.organisations;
 
-          // TODO: replace with response data
-          this.dataSource.push({
-            certificatesAmount: "5",
-            ntz: `Приватне підприємство "Ізмаїльський морський тренажерний центр "Марін Про Сервіс"`
-          },
-          {
-            certificatesAmount: "0",
-            ntz: `Приватне підприємство "Клуб веселых мореплавотелей Сомали"`
+          this.dataSource = [];
+          organisations.forEach((organisation) => {
+            this.dataSource.push({
+              certificatesAmount: '',
+              ntz: organisation.organisation_name
+            })
           });
 
+          let selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
           grid.option('dataSource', this.dataSource);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
           grid.endCustomLoading();
         })
         .catch((err) => {
