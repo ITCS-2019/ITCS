@@ -6,117 +6,129 @@
                     <v-text-field label="Назва документу"
                     v-model="regulation.title"/>
                 </v-flex>
-                <v-flex xs12 md6
-                v-if="userRole !== 'НТЗ'">
-                    <v-menu v-model="activatedDatepicker"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    max-width="290px"
-                    min-width="290px">
-                        <template v-slot:activator="{ on }">
-                            <v-text-field v-model="activated"
-                            label="Дата видачі"
-                            prepend-inner-icon="mdi-calendar-range"
-                            readonly
-                            v-on="on">
-                            </v-text-field>
-                        </template>
-                        <v-date-picker v-model="activatedNotFormatted"
-                        no-title
-                        locale="uk"
-                        :max="new Date().toISOString().substr(0, 10)"
-                        v-on:input="selectActivated">
-                        </v-date-picker>
-                    </v-menu>
+                <v-flex xs6 md4>
+                    <v-text-field label="Номер документу"
+                    v-model="regulation.number"/>
                 </v-flex>
-                <v-flex xs12 md6
-                v-if="userRole !== 'НТЗ'">
-                    <v-menu v-model="activeTillDatepicker"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    lazy
-                    transition="scale-transition"
-                    offset-y
-                    full-width
-                    max-width="290px"
-                    min-width="290px">
-                        <template v-slot:activator="{ on }">
-                            <v-text-field v-model="activeTill"
-                            label="Дата видачі"
-                            prepend-inner-icon="mdi-calendar-range"
-                            readonly
-                            v-on="on">
-                            </v-text-field>
-                        </template>
-                        <v-date-picker v-model="activeTillNotFormatted"
-                        no-title
-                        locale="uk"
-                        :min="minActiveTillDate"
-                        v-on:input="selectActiveTill">
-                        </v-date-picker>
-                    </v-menu>
+                <v-flex xs6 md4>
+                    <v-text-field label="Активний з"
+                    v-model="regulation.date_activation"/>
                 </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Телефон"
-                    v-model="organization.phone1"
-                    mask="(###) ### - ## - ##"/>
+                <v-flex xs6 md4>
+                    <v-text-field label="Статус"
+                    v-model="regulation.status"/>
                 </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Додатковий телефон"
-                    v-model="organization.phone2"
-                    mask="(###) ### - ## - ##"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="E-mail"
-                    v-model="organization.orgnisation_email"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Сайт"
-                    v-model="organization.site_link"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="№ Р/рахунок"
-                    v-model="organization.checking_number"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Назва банку"
-                    v-model="organization.bank_name"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="МФО"
-                    v-model="organization.mfo"
-                    mask="### ###"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="ЄДРПОУ"
-                    v-model="organization.okpo"
-                    mask="## ## ## ##"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="ІПН"
-                    v-model="organization.inn"
-                    mask="#### #### ####"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="№ свiдоцтва ПДВ"
-                    v-model="organization.nds_number"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="ПIБ керiвника"
-                    v-model="organization.head_full_name"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Посада керiвника"
-                    v-model="organization.head_position"/>
-                </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="ПIБ Бухгалтера"
-                    v-model="organization.accountant_full_name"/>
-                </v-flex>
+                <!--<v-flex xs12 md6-->
+                <!--v-if="userRole !== 'НТЗ'">-->
+                    <!--<v-menu v-model="activatedDatepicker"-->
+                    <!--:close-on-content-click="false"-->
+                    <!--:nudge-right="40"-->
+                    <!--lazy-->
+                    <!--transition="scale-transition"-->
+                    <!--offset-y-->
+                    <!--full-width-->
+                    <!--max-width="290px"-->
+                    <!--min-width="290px">-->
+                        <!--<template v-slot:activator="{ on }">-->
+                            <!--<v-text-field v-model="activated"-->
+                            <!--label="Дата видачі"-->
+                            <!--prepend-inner-icon="mdi-calendar-range"-->
+                            <!--readonly-->
+                            <!--v-on="on">-->
+                            <!--</v-text-field>-->
+                        <!--</template>-->
+                        <!--<v-date-picker v-model="activatedNotFormatted"-->
+                        <!--no-title-->
+                        <!--locale="uk"-->
+                        <!--:max="new Date().toISOString().substr(0, 10)"-->
+                        <!--v-on:input="selectActivated">-->
+                        <!--</v-date-picker>-->
+                    <!--</v-menu>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6-->
+                <!--v-if="userRole !== 'НТЗ'">-->
+                    <!--<v-menu v-model="activeTillDatepicker"-->
+                    <!--:close-on-content-click="false"-->
+                    <!--:nudge-right="40"-->
+                    <!--lazy-->
+                    <!--transition="scale-transition"-->
+                    <!--offset-y-->
+                    <!--full-width-->
+                    <!--max-width="290px"-->
+                    <!--min-width="290px">-->
+                        <!--<template v-slot:activator="{ on }">-->
+                            <!--<v-text-field v-model="activeTill"-->
+                            <!--label="Дата видачі"-->
+                            <!--prepend-inner-icon="mdi-calendar-range"-->
+                            <!--readonly-->
+                            <!--v-on="on">-->
+                            <!--</v-text-field>-->
+                        <!--</template>-->
+                        <!--<v-date-picker v-model="activeTillNotFormatted"-->
+                        <!--no-title-->
+                        <!--locale="uk"-->
+                        <!--:min="minActiveTillDate"-->
+                        <!--v-on:input="selectActiveTill">-->
+                        <!--</v-date-picker>-->
+                    <!--</v-menu>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Телефон"-->
+                    <!--v-model="organization.phone1"-->
+                    <!--mask="(###) ### - ## - ##"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Додатковий телефон"-->
+                    <!--v-model="organization.phone2"-->
+                    <!--mask="(###) ### - ## - ##"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="E-mail"-->
+                    <!--v-model="organization.orgnisation_email"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Сайт"-->
+                    <!--v-model="organization.site_link"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="№ Р/рахунок"-->
+                    <!--v-model="organization.checking_number"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Назва банку"-->
+                    <!--v-model="organization.bank_name"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="МФО"-->
+                    <!--v-model="organization.mfo"-->
+                    <!--mask="### ###"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="ЄДРПОУ"-->
+                    <!--v-model="organization.okpo"-->
+                    <!--mask="## ## ## ##"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="ІПН"-->
+                    <!--v-model="organization.inn"-->
+                    <!--mask="#### #### ####"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="№ свiдоцтва ПДВ"-->
+                    <!--v-model="organization.nds_number"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="ПIБ керiвника"-->
+                    <!--v-model="organization.head_full_name"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Посада керiвника"-->
+                    <!--v-model="organization.head_position"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="ПIБ Бухгалтера"-->
+                    <!--v-model="organization.accountant_full_name"/>-->
+                <!--</v-flex>-->
             </v-layout>
             <v-layout wrap>
                 <v-flex xs12
@@ -196,7 +208,15 @@ export default {
 
       regulation: {
         title: null,
-
+        number: null,
+        date_activation: null,
+        status: null,
+        text: null,
+        pdf_file: null,
+        user: null,
+        prev_version: null,
+        organisation: null,
+        regulation_organization_link: null
       },
       langs: [
         {

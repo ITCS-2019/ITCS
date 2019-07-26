@@ -57,8 +57,9 @@
             </v-tabs>
             <v-layout wrap>
                 <v-flex md12
-                v-if="userRole !== 'НТЗ'">
+                >
                     <v-select v-model="selectedDirections"
+                    :disabled="(userRole === 'НТЗ') ? true : false"
                     :items="directions"
                     label="Напрямки підготовки"
                     item-text="caption"
@@ -279,6 +280,7 @@ export default {
         organisation_id: null,
         organisation_name: null,
         organisation_name_eng: null,
+        directions: [],
         mail_adress_ukr: null,
         mail_adress_eng: null,
         phone1: null,
@@ -406,11 +408,8 @@ export default {
 
       axios.get(route)
         .then(res => {
-          console.log('loadData');
-          console.log(res);
-          console.log('loadData');
-
-          let organizationData = (this.isProfile) ? res.data.organisations : res.data;
+          let organizationData = (this.isProfile) ? res.data.organisations : res.data,
+              organisations = organizationData.directions;
 
           if (this.isProfile || this.certId !== 0)
             this.organization['id'] = organizationData.id;
@@ -440,12 +439,28 @@ export default {
           this.langs[0].mail_adress = organizationData.mail_adress_ukr;
           this.langs[1].mail_adress = organizationData.mail_adress_eng;
 
-          if (!this.isProfile) {
+          if (this.isProfile) {
             organizationData.directions.forEach((direction) => {
-              this.selectedDirections.push({
+              this.directions.push({
                 caption: direction.direction_title,
                 value: direction.id
               });
+            });
+          }
+
+          organisations.forEach((direction) => {
+            this.selectedDirections.push({
+              caption: direction.direction_title,
+              value: direction.id
+            });
+          });
+
+          if (this.isProfile) {
+            this.selectedDirections.forEach(directionId => {
+              let directionFull = this.directionsFull.find(direction => {
+                return direction.id === directionId.value
+              });
+              this.organization.directions.push(directionFull);
             });
           }
 
@@ -485,7 +500,7 @@ export default {
             return direction.id === directionId
         });
 
-        this.organization['directions'].push(directionFull);
+        this.organization.directions.push(directionFull);
       });
 
       let formData = new FormData();
@@ -538,20 +553,22 @@ export default {
     },
 
     loadDirections() {
-      axios.get(`/mariner/api/directionsInfo/`)
-        .then(res => {
-          this.directionsFull = res.data.trainigDirections
+      if (!this.isProfile) {
+        axios.get(`/mariner/api/directions/`)
+          .then(res => {
+            this.directionsFull = res.data.directions;
 
-          this.directionsFull.forEach((direction) => {
-            this.directions.push({
-              caption: direction.direction_title,
-              value: direction.id
+            this.directionsFull.forEach((direction) => {
+              this.directions.push({
+                caption: direction.direction_title,
+                value: direction.id
+              });
             });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      }
     },
 
     toggle () {
