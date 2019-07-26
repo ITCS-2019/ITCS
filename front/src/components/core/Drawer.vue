@@ -139,11 +139,11 @@ export default {
         icon: 'mdi-account',
         text: 'Профiль'
       },
-      // {
-      //   to: '/mariner/app/regulations',
-      //   icon: 'mdi-file-document-box',
-      //   text: 'Нормативнi документи'
-      // }
+      {
+        to: '/mariner/app/regulations',
+        icon: 'mdi-file-document-box',
+        text: 'Нормативнi документи'
+      }
     ],
     responsive: false,
     userName: gUserName,
