@@ -22,6 +22,7 @@ router.register(r'regulations', views.RegulationViewSet)
 
 urlpatterns = [
     path('dashInfo/', views.dashInfo, name="api-dashInfo"),
+    path('dashInfoStat/', views.dashInfoStat, name="api-dashInfoStat"),
     path('directionsInfo/', views.trainingDirectionsInfo, name="api-directionsInfo"),
     #path('trainigDirections/', views.ListTrainigDirectionsView.as_view(), name="trainigDirections-all"),
     #path('certificates/', views.CertificateViewSet.as_view(), name="certificates-all"),
