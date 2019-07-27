@@ -552,6 +552,58 @@ def dashInfo(request):
 		# dashInfoDict = {'dashInfo': dashData,}#'trainigOrganisations': trainigOrganisations,}
 		return JsonResponse(dashInfoDict)
 
+@login_required(login_url="login/")
+def dashInfoStat(request):
+	profile, created = Profile.objects.get_or_create(user=request.user)
+	dashDataArr = []
+	if request.user.groups.all()[0].name == 'НТЗ':
+		sailorsCount = Sailor.objects.all().count()
+		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		trainigDirectionsCount = trainigOrganisation.directions.count()
+		certCount = trainigOrganisation.trained.filter(status__startswith=2).count()
+		certsInDraftCount = trainigOrganisation.trained.filter(status__startswith=0).count()
+		certsInReviewCount = trainigOrganisation.get_certInReview().count()
+		dashData = {
+		'sailorsCount': sailorsCount,
+		'certCount': certCount,
+		'trainigDirectionsCount': trainigDirectionsCount,
+		'certsInDraftCount': certsInDraftCount,
+		'certsInReviewCount': certsInReviewCount,
+		}
+		dashDataArr.append(dashData)
+		dashInfoDict = {'dashInfo': dashDataArr,}
+		return JsonResponse(dashInfoDict)
+	else:
+		sailorsCount = Sailor.objects.all().count()
+		certCount = Certificate.objects.filter(status__startswith=2).count()
+		certsInReviewCount = Certificate.objects.filter(status__startswith=1).count()
+		trainigDirectionsCount = TrainigDirections.objects.all().count()
+		#trainigOrganisations = list(TrainigOrganisation.objects.all().values())
+		trainigOrganisations = TrainigOrganisation.objects.all().prefetch_related('directions').prefetch_related('range_numbers')
+		organisationDataArr = []
+	
+		for organisation in trainigOrganisations:
+			organisationData = {
+				'id': organisation.id,
+				'organisation_id': organisation.organisation_id,
+				'organisation_name': organisation.organisation_name,
+				'organisation_activated': organisation.activated,
+				'organisation_active_till': organisation.active_till,
+				'organisation_allCertsInReviewCount': organisation.get_certInReview().count(),
+			}
+			organisationDataArr.append(organisationData)
+		
+		dashData = {
+			'sailorsCount': sailorsCount,
+			'certCount': certCount,
+			'trainigDirectionsCount': trainigDirectionsCount,
+			'certsInReviewCount': certsInReviewCount,
+			'trainigOrganisations': organisationDataArr,
+		}
+		dashDataArr.append(dashData)
+		dashInfoDict = {'dashInfo': dashDataArr,}
+		# dashInfoDict = {'dashInfo': dashData,}#'trainigOrganisations': trainigOrganisations,}
+		return JsonResponse(dashInfoDict)
 
 @login_required(login_url="login/")
 def trainingOrganisationsInfo(request):
