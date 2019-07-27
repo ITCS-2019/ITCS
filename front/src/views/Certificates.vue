@@ -246,6 +246,7 @@
 
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
+  import jsPDF from 'jspdf'
 
   export default {
     components: {
@@ -318,11 +319,13 @@
               });
 
               if (this.exportType === 'PrintCerts') {
-                certIDs.forEach((certId) => {
-                  let url = `/mariner/api/printCertificate/${certId}/`;
+                this.saveCertPDF(certIDs);
 
-                  window.open(url, '_blank');
-                });
+                // certIDs.forEach((certId) => {
+                //   let url = `/mariner/api/printCertificate/${certId}/`;
+                //
+                //   window.open(url, '_blank');
+                // });
               }
               else {
                 let element = document.createElement('a');
@@ -538,6 +541,39 @@
     },
 
     methods: {
+      saveCertPDF(certIDs) {
+
+        certIDs.forEach((certID) => {
+          let url = `/mariner/api/printCertificate/${certID}/`;
+
+          axios.get(url)
+            .then(res => {
+              let document = res.data;
+
+              var specialElementHandlers =
+                  function (element,renderer) {
+                    return true;
+                  }
+
+              var doc = new jsPDF();
+              doc.fromHTML('<h1>Huy</h1>', 15, 15, {
+                'width': 170,
+                'elementHandlers': specialElementHandlers
+              });
+              doc.save('aaa' + '.pdf');
+
+              // let pdfName = 'test';
+              // var doc = new jsPDF();
+              // // doc.text("Hello World", 10, 10);
+              // doc.fromHTML(document, 10, 10);
+              // doc.save(pdfName + '.pdf');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      },
+
       resetTableConfig() {
         localStorage.removeItem('certGridConfig');
         this.snackbarConfig.icon = 'mdi-check-circle';
@@ -895,3 +931,8 @@
     }
   }
 </script>
+<style>
+  h1 {
+    color: green;
+  }
+</style>
