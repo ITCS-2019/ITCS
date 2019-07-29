@@ -244,24 +244,27 @@ export default {
 
   methods: {
     gridInited() {
-      axios.get(`/mariner/api/organisations/`)
+      // axios.get(`/mariner/api/organisations/`)
+      axios.get(`/mariner/api/dashInfoStat/`)
         .then(res => {
-          let grid = this.$refs.certsOnAproveGrid.tableInstance,
-              organisations = res.data.organisations;
+          console.log(res);
 
-          this.dataSource = [];
-          organisations.forEach((organisation) => {
-            this.dataSource.push({
-              certificatesAmount: '',
-              ntz: organisation.organisation_name
-            })
-          });
-
-          let selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
-
-          grid.option('dataSource', this.dataSource);
-          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
-          grid.endCustomLoading();
+          // let grid = this.$refs.certsOnAproveGrid.tableInstance,
+          //     organisations = res.data.organisations;
+          //
+          // this.dataSource = [];
+          // organisations.forEach((organisation) => {
+          //   this.dataSource.push({
+          //     certificatesAmount: '',
+          //     ntz: organisation.organisation_name
+          //   })
+          // });
+          //
+          // let selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+          //
+          // grid.option('dataSource', this.dataSource);
+          // grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+          // grid.endCustomLoading();
         })
         .catch((err) => {
           console.log(err);
