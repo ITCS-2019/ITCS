@@ -225,6 +225,8 @@ export default {
   },
 
   mounted() {
+
+    // TODO: Make one request for all info
     axios.get(`/mariner/api/dashInfo/`)
       .then(res => {
         let dashInfo = res.data.dashInfo[0];
@@ -244,15 +246,18 @@ export default {
 
   methods: {
     gridInited() {
-      axios.get(`/mariner/api/organisations/`)
+
+      // TODO: Use this request for all info
+      axios.get(`/mariner/api/dashInfoStat/`)
         .then(res => {
           let grid = this.$refs.certsOnAproveGrid.tableInstance,
-              organisations = res.data.organisations;
+              organisations = res.data.dashInfo[0].trainigOrganisations;
 
           this.dataSource = [];
           organisations.forEach((organisation) => {
             this.dataSource.push({
-              certificatesAmount: '',
+              id: organisation.organisation_id,
+              certificatesAmount: organisation.organisation_allCertsInReviewCount,
               ntz: organisation.organisation_name
             })
           });
