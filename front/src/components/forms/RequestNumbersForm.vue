@@ -3,6 +3,7 @@
       <v-flex md12>
         <DxGrid :tableConfig="tableConfig"
         :pagination="false"
+        :id="`Jopa`"
         v-on:init="gridInited()"
         ref="requestNumGrid"/>
       </v-flex>
@@ -24,14 +25,13 @@
           showBorders: true,
           showRowLines: true,
           paging: {
-            enabled: true,
+            enabled: false,
             pageSize: 10
           },
           pager: {
-            showPageSizeSelector: true,
-            allowedPageSizes: [10, 20, 50, 100],
-            showInfo: true,
-            visible: true
+            showPageSizeSelector: false,
+            showInfo: false,
+            visible: false
           },
           searchPanel: {
             visible: true,

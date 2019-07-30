@@ -17,7 +17,7 @@
                 Остання
             </button>
         </div>
-        <div id="dev-extreme-grid" class="dx-selection-disabled"></div>
+        <div :id="`${gridID}`" class="dx-selection-disabled"></div>
     </div>
 </template>
 
@@ -39,23 +39,30 @@ export default {
           type: Boolean,
           required: false,
           default: true
+        },
+        id: {
+          type: String,
+          required: false,
+          default: 'dev-extreme-grid'
         }
     },
     data(){
         return {
             tableInstance: null,
-            showPagination: true
+            showPagination: true,
+            gridID: 'dev-extreme-grid'
         }
     },
     mounted() {
         this.showPagination = this.pagination;
+        this.gridID = this.id;
 
-        var _this = this
+        var _this = this;
         $(function(){
             DevExpress.localization.loadMessages(ukMessages);
             DevExpress.localization.locale('ru-RU');
             _this.$nextTick(() => {
-                _this.tableInstance = $('#dev-extreme-grid').dxDataGrid(_this.tableConfig).dxDataGrid('instance');
+                _this.tableInstance = $(`#${_this.gridID}`).dxDataGrid(_this.tableConfig).dxDataGrid('instance');
                 _this.tableInstance.beginCustomLoading();
                 _this.$emit('init')
             })

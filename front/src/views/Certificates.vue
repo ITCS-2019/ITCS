@@ -177,13 +177,12 @@
 
           <DxGrid :tableConfig="tableConfig"
           v-on:init="gridInited()"
-          ref="certsGrid"
-          v-if="1 === 1"/>
+          ref="certsGrid"/>
         </material-card>
 
 
         <material-card class="mt-3"
-        v-show="1 === 0">
+        v-show="1 === 1">
           <RequestNumbersForm>
           </RequestNumbersForm>
         </material-card>
