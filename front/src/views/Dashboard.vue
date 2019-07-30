@@ -225,6 +225,8 @@ export default {
   },
 
   mounted() {
+
+    // TODO: Make one request for all info
     axios.get(`/mariner/api/dashInfo/`)
       .then(res => {
         let dashInfo = res.data.dashInfo[0];
@@ -244,21 +246,26 @@ export default {
 
   methods: {
     gridInited() {
-      axios.get(`/mariner/api/organisations/`)
-        .then(res => {
-          let grid = this.$refs.certsOnAproveGrid.tableInstance;
 
-          // TODO: replace with response data
-          this.dataSource.push({
-            certificatesAmount: "5",
-            ntz: `Приватне підприємство "Ізмаїльський морський тренажерний центр "Марін Про Сервіс"`
-          },
-          {
-            certificatesAmount: "0",
-            ntz: `Приватне підприємство "Клуб веселых мореплавотелей Сомали"`
+      // TODO: Use this request for all info
+      axios.get(`/mariner/api/dashInfoStat/`)
+        .then(res => {
+          let grid = this.$refs.certsOnAproveGrid.tableInstance,
+              organisations = res.data.dashInfo[0].trainigOrganisations;
+
+          this.dataSource = [];
+          organisations.forEach((organisation) => {
+            this.dataSource.push({
+              id: organisation.organisation_id,
+              certificatesAmount: organisation.organisation_allCertsInReviewCount,
+              ntz: organisation.organisation_name
+            })
           });
 
+          let selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
           grid.option('dataSource', this.dataSource);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
           grid.endCustomLoading();
         })
         .catch((err) => {
