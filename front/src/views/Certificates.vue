@@ -177,7 +177,15 @@
 
           <DxGrid :tableConfig="tableConfig"
           v-on:init="gridInited()"
-          ref="certsGrid"/>
+          ref="certsGrid"
+          v-if="1 === 1"/>
+        </material-card>
+
+
+        <material-card class="mt-3"
+        v-show="1 === 0">
+          <RequestNumbersForm>
+          </RequestNumbersForm>
         </material-card>
       </v-flex>
     </v-layout>
@@ -246,10 +254,12 @@
 
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
+  import RequestNumbersForm from '@/components/forms/RequestNumbersForm.vue'
 
   export default {
     components: {
-      CertificateForm
+      CertificateForm,
+      RequestNumbersForm
     },
 
     data() {

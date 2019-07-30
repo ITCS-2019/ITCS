@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="custom-pagination custom-pagination--grid" style="display: none;">
+        <div class="custom-pagination custom-pagination--grid" style="display: none;"
+        v-if="showPagination">
             <button class="custom-pagination__btn custom-pagination__btn--first-page">
                 Перша
             </button>
@@ -33,17 +34,24 @@ export default {
             type: Object,
             required: false,
             default: () => {}
+        },
+        pagination: {
+          type: Boolean,
+          required: false,
+          default: true
         }
     },
     data(){
         return {
-            tableInstance: null
+            tableInstance: null,
+            showPagination: true
         }
     },
-    mounted(){
+    mounted() {
+        this.showPagination = this.pagination;
+
         var _this = this
         $(function(){
-            // DevExpress.localization.locale('ru');
             DevExpress.localization.loadMessages(ukMessages);
             DevExpress.localization.locale('ru-RU');
             _this.$nextTick(() => {
