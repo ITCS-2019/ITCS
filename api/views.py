@@ -1105,7 +1105,17 @@ def uploadOrganisationLogo(request):
 	
 	return HttpResponse(status=200)
 
+def uploadRegulationPDF(request):
+	regDocNumber = request.POST.get('docNumber')
+	regDoc = RegulationDoc.objects.get(number=regDocNumber)
 
+	if request.POST.get('docPDF') is not '':
+		regFile = request.FILES['docPDF']
+		regFileName = regDocID + '.pdf'
+		regDoc.pdf_file.save(regFileName, regFile, save=True)
+		regDoc.save()
+
+	return HttpResponse(status=200)
 """
 OLD Requests For Clear
 """
