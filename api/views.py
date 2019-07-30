@@ -384,7 +384,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certificate.direction_title_cert = derection.direction_title
 		certificate.direction_level = derection.level
 		certificate.direction_allow_functions = derection.allow_functions
-		#certificate.status = request.data.get('status'),
+		certificate.status = request.data.get('status')
 		certificate.save()
 
 		return Response({"Certificate": "Updated"}, status=200)
