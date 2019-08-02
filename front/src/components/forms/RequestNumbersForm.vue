@@ -213,16 +213,17 @@
 
     data() {
       return {
-        currYear: '2019',
+        currYear: null,
         reqCerts: [],
         downloadingPdf: false
       }
     },
 
-    methods: {
-      gridInited() {
+    mounted() {
+      this.currYear = new Date().getFullYear();
+    },
 
-      },
+    methods: {
       updateGrid() {
         this.$nextTick(() => {
           this.reqCerts = this.certs;
