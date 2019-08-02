@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div class="custom-pagination custom-pagination--grid" style="display: none;">
+        <div class="custom-pagination custom-pagination--grid" style="display: none;"
+        v-if="showPagination">
             <button class="custom-pagination__btn custom-pagination__btn--first-page">
                 Перша
             </button>
@@ -16,7 +17,7 @@
                 Остання
             </button>
         </div>
-        <div id="dev-extreme-grid" class="dx-selection-disabled"></div>
+        <div :id="`${gridID}`" class="dx-selection-disabled"></div>
     </div>
 </template>
 
@@ -33,21 +34,35 @@ export default {
             type: Object,
             required: false,
             default: () => {}
+        },
+        pagination: {
+          type: Boolean,
+          required: false,
+          default: true
+        },
+        id: {
+          type: String,
+          required: false,
+          default: 'dev-extreme-grid'
         }
     },
     data(){
         return {
-            tableInstance: null
+            tableInstance: null,
+            showPagination: true,
+            gridID: 'dev-extreme-grid'
         }
     },
-    mounted(){
-        var _this = this
+    mounted() {
+        this.showPagination = this.pagination;
+        this.gridID = this.id;
+
+        var _this = this;
         $(function(){
-            // DevExpress.localization.locale('ru');
             DevExpress.localization.loadMessages(ukMessages);
             DevExpress.localization.locale('ru-RU');
             _this.$nextTick(() => {
-                _this.tableInstance = $('#dev-extreme-grid').dxDataGrid(_this.tableConfig).dxDataGrid('instance');
+                _this.tableInstance = $(`#${_this.gridID}`).dxDataGrid(_this.tableConfig).dxDataGrid('instance');
                 _this.tableInstance.beginCustomLoading();
                 _this.$emit('init')
             })

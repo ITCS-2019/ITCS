@@ -126,6 +126,17 @@
               <v-btn color="success"
               small
               v-if="certsCelected > 0"
+              v-on:click="e => exportGrid(true, 'reqNumbers')">
+                <v-icon>
+                  mdi-download
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Заява на номери
+                </span>
+              </v-btn>
+              <v-btn color="success"
+              small
+              v-if="certsCelected > 0"
               v-on:click="handleCerts">
                 <v-icon>
                   mdi-file-move
@@ -152,7 +163,7 @@
               transition="slide-y-transition">
                 <v-btn slot="activator"
                 color="success"
-                class="v-btn--simple"
+                class="v-btn--simple ma-0"
                 simple small icon>
                   <v-icon>
                     mdi-settings
@@ -179,6 +190,12 @@
           v-on:init="gridInited()"
           ref="certsGrid"/>
         </material-card>
+
+        <!--Request for numbers blank-->
+        <RequestNumbersForm
+        ref="reqNumForm"
+        :certs="reqNumCerts">
+        </RequestNumbersForm>
       </v-flex>
     </v-layout>
 
@@ -246,15 +263,21 @@
 
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
+<<<<<<< HEAD
   import jsPDF from 'jspdf'
+=======
+  import RequestNumbersForm from '@/components/forms/RequestNumbersForm.vue'
+>>>>>>> master
 
   export default {
     components: {
-      CertificateForm
+      CertificateForm,
+      RequestNumbersForm
     },
 
     data() {
       return {
+        reqNumCerts: [],
         userRole: gUserRole,
         certsCelected: 0,
         isSelectedCert: false,
@@ -311,11 +334,15 @@
           },
           rowAlternationEnabled: true,
           customizeExportData: (cols, rows) => {
-            let certIDs = [];
+            let certIDs = [],
+                isAllIssued = true;
 
             if (rows.length > 0) {
               rows.forEach((row) => {
                 certIDs.push(row.data.certificateId);
+                if (row.data.status !== 'Видан') {
+                  isAllIssued = false;
+                }
               });
 
               if (this.exportType === 'PrintCerts') {
@@ -326,6 +353,9 @@
                 //
                 //   window.open(url, '_blank');
                 // });
+              }
+              else if (this.exportType === 'reqNumbers') {
+                this.serializeReqNumGridData(certIDs, isAllIssued);
               }
               else {
                 let element = document.createElement('a');
@@ -541,37 +571,26 @@
     },
 
     methods: {
-      saveCertPDF(certIDs) {
+      serializeReqNumGridData(certIDs, isAllIssued = true) {
+        this.reqNumCerts = [];
 
-        certIDs.forEach((certID) => {
-          let url = `/mariner/api/printCertificate/${certID}/`;
-
-          axios.get(url)
-            .then(res => {
-              let document = res.data;
-
-              var specialElementHandlers =
-                  function (element,renderer) {
-                    return true;
-                  }
-
-              var doc = new jsPDF();
-              doc.fromHTML('<h1>Huy</h1>', 15, 15, {
-                'width': 170,
-                'elementHandlers': specialElementHandlers
-              });
-              doc.save('aaa' + '.pdf');
-
-              // let pdfName = 'test';
-              // var doc = new jsPDF();
-              // // doc.text("Hello World", 10, 10);
-              // doc.fromHTML(document, 10, 10);
-              // doc.save(pdfName + '.pdf');
-            })
-            .catch((err) => {
-              console.log(err);
+        if (isAllIssued) {
+          certIDs.forEach((certID) => {
+            let cert = this.dataSource.find(row => {
+              return certID === row.certificateId
             });
-        });
+
+            this.reqNumCerts.push(cert);
+          });
+
+          this.$refs.reqNumForm.updateGrid();
+        }
+        else {
+          this.snackbarConfig.icon = 'mdi-alert-circle';
+          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.message = 'Заявку на номери можна сформувати тiльки для виданих сертифiкатiв!';
+          this.snackbar = true;
+        }
       },
 
       resetTableConfig() {
@@ -652,6 +671,9 @@
               }
 
               this.dataSource.push({
+                direction_level: cert.direction_level,
+                direction_allow_functions: cert.direction_allow_functions,
+                born: cert.born,
                 certificateId: cert.id,
                 certificateNumber: cert.certf_number,
                 blankNumber: cert.form_number,

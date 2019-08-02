@@ -225,6 +225,8 @@ export default {
   },
 
   mounted() {
+
+    // TODO: Make one request for all info
     axios.get(`/mariner/api/dashInfo/`)
       .then(res => {
         let dashInfo = res.data.dashInfo[0];
@@ -244,27 +246,27 @@ export default {
 
   methods: {
     gridInited() {
-      // axios.get(`/mariner/api/organisations/`)
+
+      // TODO: Use this request for all info
       axios.get(`/mariner/api/dashInfoStat/`)
         .then(res => {
-          console.log(res);
+          let grid = this.$refs.certsOnAproveGrid.tableInstance,
+              organisations = res.data.dashInfo[0].trainigOrganisations;
 
-          // let grid = this.$refs.certsOnAproveGrid.tableInstance,
-          //     organisations = res.data.organisations;
-          //
-          // this.dataSource = [];
-          // organisations.forEach((organisation) => {
-          //   this.dataSource.push({
-          //     certificatesAmount: '',
-          //     ntz: organisation.organisation_name
-          //   })
-          // });
-          //
-          // let selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
-          //
-          // grid.option('dataSource', this.dataSource);
-          // grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
-          // grid.endCustomLoading();
+          this.dataSource = [];
+          organisations.forEach((organisation) => {
+            this.dataSource.push({
+              id: organisation.organisation_id,
+              certificatesAmount: organisation.organisation_allCertsInReviewCount,
+              ntz: organisation.organisation_name
+            })
+          });
+
+          let selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
+
+          grid.option('dataSource', this.dataSource);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
+          grid.endCustomLoading();
         })
         .catch((err) => {
           console.log(err);

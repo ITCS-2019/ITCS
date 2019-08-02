@@ -1,0 +1,14 @@
+.c-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.c-table__cell {
+  border: 1px solid black;
+  text-align: center;
+  font-size: 11px;
+  padding: 0px 5px;
+  &.c-table__cell--font-size-9 {
+    font-size: 9px;
+  }
+}
