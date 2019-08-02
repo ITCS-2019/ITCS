@@ -263,11 +263,7 @@
 
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
-<<<<<<< HEAD
-  import jsPDF from 'jspdf'
-=======
   import RequestNumbersForm from '@/components/forms/RequestNumbersForm.vue'
->>>>>>> master
 
   export default {
     components: {
