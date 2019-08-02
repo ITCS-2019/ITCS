@@ -96,36 +96,36 @@
           </th>
         </tr>
         <tr v-for="(cert, i) in reqCerts">
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
             {{i + 1}}
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
             {{cert.sailor}}
             <br>
-
+            {{formatDate(cert.born)}}
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
             {{cert.trainingDirection}}
           </td>
-          <td class="c-table__cell">
-
+          <td class="c-table__cell c-table__cell--font-size-9">
+            {{cert.direction_level}}
           </td>
-          <td class="c-table__cell">
-
+          <td class="c-table__cell c-table__cell--font-size-9">
+            {{cert.direction_allow_functions}}
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
             {{(cert.blankNumber) ? cert.blankNumber : '---'}}
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
 
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
 
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
             {{formatDate(cert.issueDate)}}
           </td>
-          <td class="c-table__cell">
+          <td class="c-table__cell c-table__cell--font-size-9">
             {{formatDate(cert.validDate)}}
           </td>
         </tr>

@@ -665,6 +665,9 @@
               }
 
               this.dataSource.push({
+                direction_level: cert.direction_level,
+                direction_allow_functions: cert.direction_allow_functions,
+                born: cert.born,
                 certificateId: cert.id,
                 certificateNumber: cert.certf_number,
                 blankNumber: cert.form_number,
