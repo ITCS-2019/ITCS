@@ -352,17 +352,38 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certificate.born = request.data.get('born')
 		certificate.inn = request.data.get('inn')
 
-		sailor, created = Sailor.objects.get_or_create(
+		sailorCount = Sailor.objects.filter(
 			first_name_en = request.data.get('first_name_en'),
 			last_name_en = request.data.get('last_name_en'),
 			last_name_ukr = request.data.get('last_name_ukr'),
 			first_name_ukr = request.data.get('first_name_ukr'),
 			second_name_ukr = request.data.get('second_name_ukr'),
 			born = request.data.get('born'),
-		)
-		if created:
-			sailor.save()
-		certificate.sailor = sailor
+		).count()
+
+		print('SAILOR COUNT: ', sailorCount)
+		if sailorCount > 1 : #if multiple objects
+			sailor = Sailor.objects.filter(
+				first_name_en = request.data.get('first_name_en'),
+				last_name_en = request.data.get('last_name_en'),
+				last_name_ukr = request.data.get('last_name_ukr'),
+				first_name_ukr = request.data.get('first_name_ukr'),
+				second_name_ukr = request.data.get('second_name_ukr'),
+				born = request.data.get('born'),
+			).first()
+			certificate.sailor = sailor
+		else:
+			sailor, created = Sailor.objects.get_or_create(
+				first_name_en = request.data.get('first_name_en'),
+				last_name_en = request.data.get('last_name_en'),
+				last_name_ukr = request.data.get('last_name_ukr'),
+				first_name_ukr = request.data.get('first_name_ukr'),
+				second_name_ukr = request.data.get('second_name_ukr'),
+				born = request.data.get('born'),
+			)
+			if created:
+				sailor.save()
+			certificate.sailor = sailor
 
 		trainigOrganisation = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
@@ -384,7 +405,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certificate.direction_title_cert = derection.direction_title
 		certificate.direction_level = derection.level
 		certificate.direction_allow_functions = derection.allow_functions
-		#certificate.status = request.data.get('status'),
+		certificate.status = request.data.get('status')
 		certificate.save()
 
 		return Response({"Certificate": "Updated"}, status=200)
@@ -1105,7 +1126,17 @@ def uploadOrganisationLogo(request):
 	
 	return HttpResponse(status=200)
 
+def uploadRegulationPDF(request):
+	regDocNumber = request.POST.get('docNumber')
+	regDoc = RegulationDoc.objects.get(number=regDocNumber)
 
+	if request.POST.get('docPDF') is not '':
+		regFile = request.FILES['docPDF']
+		regFileName = regDocID + '.pdf'
+		regDoc.pdf_file.save(regFileName, regFile, save=True)
+		regDoc.save()
+
+	return HttpResponse(status=200)
 """
 OLD Requests For Clear
 """
