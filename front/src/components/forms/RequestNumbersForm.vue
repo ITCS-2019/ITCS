@@ -1,119 +1,262 @@
 <template>
-    <v-layout justify-center wrap>
-      <v-flex md12>
-        <DxGrid :tableConfig="tableConfig"
-        :pagination="false"
-        :id="`Jopa`"
-        v-on:init="gridInited()"
-        ref="requestNumGrid"/>
+  <div id="req-num-form"
+  class="c-pdf-a4"
+  v-if="downloadingPdf">
+    <div id="pdf"></div>
+    <v-flex md12 class="text-md-right">
+      <div class="body-2">
+        Додаток №01
+      </div>
+      <div class="body-2">
+        До договору №___/{{currYear}}-НТЗ
+      </div>
+      <div class="body-2">
+        про наданпя послуг з реєстрації докумснтів моряків Україи
+      </div>
+      <div class="body-2">
+        та їх внсссиня у Єдииий державиий реєстр докумеитів моряків
+      </div>
+      <div class="body-2">
+        від &laquo;___&raquo; _____________ {{currYear}} р.
+      </div>
+    </v-flex>
+    <v-flex md12 class="text-md-center mt-4">
+      <div class="body-1 font-italic font-weight-bold">
+        На блаику Замовиика
+      </div>
+    </v-flex>
+    <v-flex md12 class="text-md-left mt-2">
+      <div class="body-2">
+        Вих. № ________________________
+      </div>
+      <div class="body-2">
+        вiд ___________________________
+      </div>
+    </v-flex>
+    <v-flex md12 class="text-md-right">
+      <div class="body-1 font-italic font-weight-bold">
+        Iнспекції з питаиь підготовки та
+      </div>
+      <div class="body-1 font-italic font-weight-bold">
+        дипломуваиия моряків
+      </div>
+    </v-flex>
+    <v-flex md12 class="text-md-left">
+      <div class="body-2" id="loh">
+        Відповідно до договору № _______________ -НТЗ від_________ р. просимо нaдати реєстраційний номер для
+        подальшого внесения до єдиного Державного реєстру документів моряків інформацію про свідоцтва (сертифікати),
+        які видаються
+      </div>
+      <div class="body-2">
+        &nbsp;
+      </div>
+      <hr>
+      <div class="body-2 font-italic text-md-center">
+        <sup>
+          (назва НТЗ або його вiдокремленного пiдроздiлу)
+        </sup>
+      </div>
+      <div class="body-2">
+        Після закінчення відповідних курсів відповідно до даних таблиці 1:
+      </div>
+      <div class="body-2 font-weight-bold text-md-right">
+        Таблиця 1
+      </div>
+      <table class="c-table mt-4">
+        <tr>
+          <th class="c-table__cell">
+            №
+          </th>
+          <th class="c-table__cell">
+            ПIБ, дата народження
+          </th>
+          <th class="c-table__cell">
+            Напрямок навчання
+          </th>
+          <th class="c-table__cell">
+            Рiвень квалiфiкацiї
+          </th>
+          <th class="c-table__cell">
+            Дозволенi рiвнi функцiй
+          </th>
+          <th class="c-table__cell">
+            № бланку або внутрiшньої реєстрації
+          </th>
+          <th class="c-table__cell">
+            Дата початку курсу
+          </th>
+          <th class="c-table__cell">
+            Дата закiнення курсу
+          </th>
+          <th class="c-table__cell">
+            Дата видачi
+          </th>
+          <th class="c-table__cell">
+            Дiйсний до
+          </th>
+        </tr>
+        <tr v-for="(cert, i) in reqCerts">
+          <td class="c-table__cell">
+            {{i + 1}}
+          </td>
+          <td class="c-table__cell">
+            {{cert.sailor}}
+            <br>
+
+          </td>
+          <td class="c-table__cell">
+            {{cert.trainingDirection}}
+          </td>
+          <td class="c-table__cell">
+
+          </td>
+          <td class="c-table__cell">
+
+          </td>
+          <td class="c-table__cell">
+            {{(cert.blankNumber) ? cert.blankNumber : '---'}}
+          </td>
+          <td class="c-table__cell">
+
+          </td>
+          <td class="c-table__cell">
+
+          </td>
+          <td class="c-table__cell">
+            {{formatDate(cert.issueDate)}}
+          </td>
+          <td class="c-table__cell">
+            {{formatDate(cert.validDate)}}
+          </td>
+        </tr>
+      </table>
+      <div class="body-2 text-md-left mt-4">
+        Оплату гарантуемо у встановлений Договором строк.
+      </div>
+    </v-flex>
+    <v-layout justify-space-between
+    wrap
+    class="mt-4">
+      <v-flex md4 class="text-md-left">
+        <div class="body-2">
+          &nbsp;
+        </div>
+        <hr>
+        <div class="title text-md-center mt-1">
+          <sup>
+            Посада
+          </sup>
+        </div>
+      </v-flex>
+      <v-flex md4 class="text-md-left">
+        <div class="body-2">
+          &nbsp;
+        </div>
+        <hr>
+        <div class="title text-md-center mt-1">
+          <sup>
+            Пiдпис
+          </sup>
+        </div>
+      </v-flex>
+      <v-flex md4 class="text-md-left">
+        <div class="body-2">
+          &nbsp;
+        </div>
+        <hr>
+        <div class="title text-md-center mt-1">
+          <sup>
+            П.I.Б.
+          </sup>
+        </div>
       </v-flex>
     </v-layout>
+    <v-layout class="c-bottom-footer">
+      <v-flex md6 class="text-md-left">
+        <div class="body-2">
+          &nbsp;
+        </div>
+        <hr>
+        <div class="title text-md-center mt-1">
+          <sup>
+            Вiд замовника
+          </sup>
+        </div>
+      </v-flex>
+      <v-flex md6 class="text-md-left">
+        <div class="body-2">
+          &nbsp;
+        </div>
+        <hr>
+        <div class="title text-md-center mt-1">
+          <sup>
+            Вiд виконавця
+          </sup>
+        </div>
+      </v-flex>
+    </v-layout>
+  </div>
 </template>
 
 <script>
+  import jsPDF from 'jspdf'
 
   export default {
     name: 'RequestNumbers',
 
+    props: {
+      certs: {
+        type: Array,
+        required: true
+      }
+    },
+
     data() {
       return {
-        tableConfig: {
-          dataSource: [],
-          allowColumnReordering: false,
-          allowColumnResizing: true,
-          columnAutoWidth: false,
-          showBorders: true,
-          showRowLines: true,
-          paging: {
-            enabled: false,
-            pageSize: 10
-          },
-          pager: {
-            showPageSizeSelector: false,
-            showInfo: false,
-            visible: false
-          },
-          searchPanel: {
-            visible: true,
-            width: 240,
-            placeholder: "Шукати..."
-          },
-          hoverStateEnabled: true,
-          rowAlternationEnabled: true,
-          columns: [
-            {
-              dataField: 'certificateId',
-              visible: false,
-              allowExporting: false
-            },
-            {
-              dataField: 'certificateNumber',
-              caption: '№ Сертифіката',
-              allowEditing: false,
-              allowFiltering: true,
-            },
-            {
-              dataField: 'blankNumber',
-              caption: '№ Бланку',
-              allowEditing: false,
-              allowFiltering: true,
-            },
-            {
-              dataField: 'issueDate',
-              caption: 'Дата видачі',
-              dataType: 'date',
-              allowEditing: false,
-              format: 'dd.MM.yyyy',
-            },
-            {
-              dataField: 'validDate',
-              caption: 'Дійсний до',
-              dataType: 'date',
-              allowEditing: false,
-              format: 'dd.MM.yyyy',
-            },
-            {
-              dataField: 'certificateNumberGenerated',
-              caption: '№ сертифіката(сген.)',
-              allowEditing: false,
-              visible: false
-            },
-            {
-              dataField: 'trainingDirection',
-              caption: 'Напрямок підготовки',
-              allowEditing: false,
-              allowFiltering: true,
-            },
-            {
-              dataField: 'sailorId',
-              visible: false,
-            },
-            {
-              dataField: 'sailor',
-              caption: 'Моряк',
-              allowEditing: false,
-              allowFiltering: true,
-            },
-            {
-              dataField: 'trainigOrganisation',
-              caption: 'НТЗ',
-              allowEditing: false,
-              allowFiltering: true,
-              visible: gUserRole !== 'НТЗ',
-            },
-            {
-              dataField: 'status',
-              caption: 'Статус',
-              allowEditing: false,
-            }
-          ]
-        }
+        currYear: '2019',
+        reqCerts: [],
+        downloadingPdf: false
       }
     },
 
     methods: {
       gridInited() {
 
+      },
+      updateGrid() {
+        this.$nextTick(() => {
+          this.reqCerts = this.certs;
+          this.downloadPDF();
+        });
+
+      },
+
+      downloadPDF() {
+        this.downloadingPdf = true;
+
+        this.$nextTick(() => {
+          html2canvas(document.querySelector('#req-num-form'),
+          {
+            imageTimeout: 5000,
+            useCORS: true
+          })
+          .then(canvas => {
+            document.getElementById('pdf').appendChild(canvas)
+            let img = canvas.toDataURL('image/png')
+            let pdf = new jsPDF('portrait', 'mm', 'a4')
+            pdf.addImage(img, 'JPEG', 5, 5, 200, 287)
+            pdf.save('relatorio-remoto.pdf')
+            document.getElementById('pdf').innerHTML = ''
+            this.downloadingPdf = false;
+          });
+        });
+      },
+
+      formatDate(date) {
+        if (!date) return null
+
+        const [year, month, day] = date.split('-')
+        return `${day}.${month}.${year}`
       }
     }
   }

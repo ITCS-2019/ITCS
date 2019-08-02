@@ -11,6 +11,10 @@ window.axios = require('axios')
 Vue.prototype.axios = window.axios
 window.axios.defaults.headers.common['X-CSRFToken'] = `${gToken.token}`
 
+import html2canvas from 'html2canvas'
+window.html2canvas = html2canvas
+
+
 // Sync router with store
 import { sync } from 'vuex-router-sync'
 

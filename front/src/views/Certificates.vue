@@ -126,6 +126,17 @@
               <v-btn color="success"
               small
               v-if="certsCelected > 0"
+              v-on:click="e => exportGrid(true, 'reqNumbers')">
+                <v-icon>
+                  mdi-download
+                </v-icon>
+                <span class="font-weight-bold ml-1">
+                  Заява на номери
+                </span>
+              </v-btn>
+              <v-btn color="success"
+              small
+              v-if="certsCelected > 0"
               v-on:click="handleCerts">
                 <v-icon>
                   mdi-file-move
@@ -152,7 +163,7 @@
               transition="slide-y-transition">
                 <v-btn slot="activator"
                 color="success"
-                class="v-btn--simple"
+                class="v-btn--simple ma-0"
                 simple small icon>
                   <v-icon>
                     mdi-settings
@@ -180,12 +191,11 @@
           ref="certsGrid"/>
         </material-card>
 
-
-        <material-card class="mt-3"
-        v-show="1 === 1">
-          <RequestNumbersForm>
-          </RequestNumbersForm>
-        </material-card>
+        <!--Request for numbers blank-->
+        <RequestNumbersForm
+        ref="reqNumForm"
+        :certs="reqNumCerts">
+        </RequestNumbersForm>
       </v-flex>
     </v-layout>
 
@@ -263,6 +273,7 @@
 
     data() {
       return {
+        reqNumCerts: [],
         userRole: gUserRole,
         certsCelected: 0,
         isSelectedCert: false,
@@ -319,11 +330,15 @@
           },
           rowAlternationEnabled: true,
           customizeExportData: (cols, rows) => {
-            let certIDs = [];
+            let certIDs = [],
+                isAllIssued = true;
 
             if (rows.length > 0) {
               rows.forEach((row) => {
                 certIDs.push(row.data.certificateId);
+                if (row.data.status !== 'Видан') {
+                  isAllIssued = false;
+                }
               });
 
               if (this.exportType === 'PrintCerts') {
@@ -332,6 +347,9 @@
 
                   window.open(url, '_blank');
                 });
+              }
+              else if (this.exportType === 'reqNumbers') {
+                this.serializeReqNumGridData(certIDs, isAllIssued);
               }
               else {
                 let element = document.createElement('a');
@@ -547,6 +565,28 @@
     },
 
     methods: {
+      serializeReqNumGridData(certIDs, isAllIssued = true) {
+        this.reqNumCerts = [];
+
+        if (isAllIssued) {
+          certIDs.forEach((certID) => {
+            let cert = this.dataSource.find(row => {
+              return certID === row.certificateId
+            });
+
+            this.reqNumCerts.push(cert);
+          });
+
+          this.$refs.reqNumForm.updateGrid();
+        }
+        else {
+          this.snackbarConfig.icon = 'mdi-alert-circle';
+          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.message = 'Заявку на номери можна сформувати тiльки для виданих сертифiкатiв!';
+          this.snackbar = true;
+        }
+      },
+
       resetTableConfig() {
         localStorage.removeItem('certGridConfig');
         this.snackbarConfig.icon = 'mdi-check-circle';
