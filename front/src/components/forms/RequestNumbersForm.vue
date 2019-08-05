@@ -246,7 +246,7 @@
             let img = canvas.toDataURL('image/png')
             let pdf = new jsPDF('portrait', 'mm', 'a4')
             pdf.addImage(img, 'JPEG', 5, 5, 200, 287)
-            pdf.save('relatorio-remoto.pdf')
+            pdf.save('request_cert_numbers.pdf')
             document.getElementById('pdf').innerHTML = ''
             this.downloadingPdf = false;
           });
