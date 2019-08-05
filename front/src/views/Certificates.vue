@@ -192,12 +192,18 @@
         </material-card>
 
         <!--Request for numbers blank-->
+        <div id="pdf"></div>
         <RequestNumbersForm
         ref="reqNumForm"
         :certs="reqNumCerts">
         </RequestNumbersForm>
       </v-flex>
     </v-layout>
+
+    <Loader :value="loader.show"
+    :message="loader.message"
+    :progressColor="loader.color">
+    </Loader>
 
     <!--Notifications-->
     <v-snackbar :color="snackbarConfig.color"
@@ -263,16 +269,24 @@
 
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
+  import Loader from '@/components/uiElements/Loader.vue'
   import RequestNumbersForm from '@/components/forms/RequestNumbersForm.vue'
+  import jsPDF from 'jspdf'
 
   export default {
     components: {
       CertificateForm,
-      RequestNumbersForm
+      RequestNumbersForm,
+      Loader
     },
 
     data() {
       return {
+        loader: {
+          show: false,
+          message: '',
+          color: ''
+        },
         reqNumCerts: [],
         userRole: gUserRole,
         certsCelected: 0,
@@ -342,11 +356,7 @@
               });
 
               if (this.exportType === 'PrintCerts') {
-                certIDs.forEach((certId) => {
-                  let url = `/mariner/api/printCertificate/${certId}/`;
-
-                  window.open(url, '_blank');
-                });
+                this.saveCertPDF(certIDs);
               }
               else if (this.exportType === 'reqNumbers') {
                 this.serializeReqNumGridData(certIDs, isAllIssued);
@@ -565,6 +575,49 @@
     },
 
     methods: {
+      saveCertPDF(certIDs) {
+        this.loader.show = true;
+        this.loader.message = 'Формування файлiв..';
+        this.loader.color = 'info';
+
+        certIDs.forEach((id, i) => {
+          axios.get(`/mariner/api/printCertificate/${id}/`)
+            .then(res => {
+              let element = document.createElement('div');
+
+              element.innerHTML = res.data.split('<body>')[1].split('</body>')[0];
+
+              document.body.appendChild(element);
+
+              html2canvas(document.querySelector('#pdf-content'),
+              {
+                imageTimeout: 0,
+                useCORS: true
+              })
+                .then(canvas => {
+                  document.getElementById('pdf').appendChild(canvas);
+                  let img = canvas.toDataURL('image/png');
+                  let pdf = new jsPDF('portrait', 'mm', 'a6');
+                  pdf.addImage(img, 'JPEG', 5, 5, 95, 281);
+
+
+                  pdf.addPage();
+                  pdf.addImage(img, 'JPEG', 5, -138, 95, 281);
+
+                  if (i === (certIDs.length - 1))
+                    this.loader.show = false;
+
+                  pdf.save(`cert_${id}.pdf`);
+                  document.getElementById('pdf').innerHTML = '';
+                });
+              document.body.removeChild(element);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      },
+
       serializeReqNumGridData(certIDs, isAllIssued = true) {
         this.reqNumCerts = [];
 
