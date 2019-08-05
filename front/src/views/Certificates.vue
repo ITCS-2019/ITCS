@@ -191,6 +191,8 @@
           ref="certsGrid"/>
         </material-card>
 
+        <div id="pdf"></div>
+
         <!--Request for numbers blank-->
         <RequestNumbersForm
         ref="reqNumForm"
@@ -264,6 +266,7 @@
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
   import RequestNumbersForm from '@/components/forms/RequestNumbersForm.vue'
+  import jsPDF from 'jspdf'
 
   export default {
     components: {
@@ -567,6 +570,42 @@
     },
 
     methods: {
+      saveCertPDF(certIDs) {
+        console.log(certIDs);
+
+        certIDs.forEach((id) => {
+          axios.get(`/mariner/api/printCertificate/${id}/`)
+            .then(res => {
+              console.log(res);
+
+              let element = document.createElement('div');
+
+              element.innerHTML = res.data;
+
+              html2canvas(element,
+              {
+                imageTimeout: 5000,
+                useCORS: true
+              })
+                .then(canvas => {
+                  document.getElementById('pdf').appendChild(canvas)
+                  let img = canvas.toDataURL('image/png')
+                  let pdf = new jsPDF('portrait', 'mm', 'a4')
+                  pdf.addImage(img, 'JPEG', 5, 5, 200, 287)
+                  pdf.save('relatorio-remoto.pdf')
+                  document.getElementById('pdf').innerHTML = ''
+                });
+
+              // document.body.appendChild(element.getElementById('certs-wrap'));
+              // document.body.removeChild(element);
+
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
+      },
+
       serializeReqNumGridData(certIDs, isAllIssued = true) {
         this.reqNumCerts = [];
 
@@ -949,8 +988,3 @@
     }
   }
 </script>
-<style>
-  h1 {
-    color: green;
-  }
-</style>
