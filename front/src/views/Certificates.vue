@@ -191,15 +191,19 @@
           ref="certsGrid"/>
         </material-card>
 
-        <div id="pdf"></div>
-
         <!--Request for numbers blank-->
+        <div id="pdf"></div>
         <RequestNumbersForm
         ref="reqNumForm"
         :certs="reqNumCerts">
         </RequestNumbersForm>
       </v-flex>
     </v-layout>
+
+    <Loader :value="loader.show"
+    :message="loader.message"
+    :progressColor="loader.color">
+    </Loader>
 
     <!--Notifications-->
     <v-snackbar :color="snackbarConfig.color"
@@ -265,17 +269,24 @@
 
 <script>
   import CertificateForm from '@/components/forms/CertificateForm.vue'
+  import Loader from '@/components/uiElements/Loader.vue'
   import RequestNumbersForm from '@/components/forms/RequestNumbersForm.vue'
   import jsPDF from 'jspdf'
 
   export default {
     components: {
       CertificateForm,
-      RequestNumbersForm
+      RequestNumbersForm,
+      Loader
     },
 
     data() {
       return {
+        loader: {
+          show: false,
+          message: '',
+          color: ''
+        },
         reqNumCerts: [],
         userRole: gUserRole,
         certsCelected: 0,
@@ -346,12 +357,6 @@
 
               if (this.exportType === 'PrintCerts') {
                 this.saveCertPDF(certIDs);
-
-                // certIDs.forEach((certId) => {
-                //   let url = `/mariner/api/printCertificate/${certId}/`;
-                //
-                //   window.open(url, '_blank');
-                // });
               }
               else if (this.exportType === 'reqNumbers') {
                 this.serializeReqNumGridData(certIDs, isAllIssued);
@@ -571,34 +576,41 @@
 
     methods: {
       saveCertPDF(certIDs) {
-        console.log(certIDs);
+        this.loader.show = true;
+        this.loader.message = 'Формування файлiв..';
+        this.loader.color = 'info';
 
-        certIDs.forEach((id) => {
+        certIDs.forEach((id, i) => {
           axios.get(`/mariner/api/printCertificate/${id}/`)
             .then(res => {
-              console.log(res);
-
               let element = document.createElement('div');
 
-              element.innerHTML = res.data;
+              element.innerHTML = res.data.split('<body>')[1].split('</body>')[0];
 
-              html2canvas(element,
+              document.body.appendChild(element);
+
+              html2canvas(document.querySelector('#pdf-content'),
               {
-                imageTimeout: 5000,
+                imageTimeout: 0,
                 useCORS: true
               })
                 .then(canvas => {
-                  document.getElementById('pdf').appendChild(canvas)
-                  let img = canvas.toDataURL('image/png')
-                  let pdf = new jsPDF('portrait', 'mm', 'a4')
-                  pdf.addImage(img, 'JPEG', 5, 5, 200, 287)
-                  pdf.save('relatorio-remoto.pdf')
-                  document.getElementById('pdf').innerHTML = ''
+                  document.getElementById('pdf').appendChild(canvas);
+                  let img = canvas.toDataURL('image/png');
+                  let pdf = new jsPDF('portrait', 'mm', 'a6');
+                  pdf.addImage(img, 'JPEG', 5, 5, 95, 281);
+
+
+                  pdf.addPage();
+                  pdf.addImage(img, 'JPEG', 5, -138, 95, 281);
+
+                  if (i === (certIDs.length - 1))
+                    this.loader.show = false;
+
+                  pdf.save(`cert_${id}.pdf`);
+                  document.getElementById('pdf').innerHTML = '';
                 });
-
-              // document.body.appendChild(element.getElementById('certs-wrap'));
-              // document.body.removeChild(element);
-
+              document.body.removeChild(element);
             })
             .catch((err) => {
               console.log(err);

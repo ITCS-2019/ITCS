@@ -1,8 +1,149 @@
-        <div id="certs-wrap">
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>ITCS | Certificate</title>
+
+        <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet">
+    </head>
+    <body>
+        <div id="pdf-content" style="width: 200mm; min-height: 287mm;">
+            <style type="text/css" scoped>
+                .c-container-a6 {
+                    min-height: 287mm;
+                    padding: 25px 35px;
+                    background-size: cover;
+                    background-position: center;
+                    -webkit-print-color-adjust: exact;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    align-content: flex-start;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                }
+                    .c-container-a6.c-container-a6--margin-top-10mm {
+                        margin-top: 10mm;
+                    }
+
+                .c-container-a6__row {
+                    width: 100%;
+                }
+                .c-container-a6__row.c-container-a6__row--flex {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: flex-start;
+                    align-content: flex-start;
+                    justify-content: flex-start;
+                    flex-wrap: wrap;
+                }
+                .c-container-a6__row.c-container-a6__row--margin-top-30 {
+                    margin-top: 30px;
+                }
+                .c-container-a6__row.c-container-a6__row--margin-top-10 {
+                    margin-top: 10px;
+                }
+
+                .c-container-a6__row-block {
+                    flex: 1;
+                }
+                .c-container-a6__row-block.c-container-a6__row-block--30pc {
+                    flex: 0 1 auto;
+                    width: 25%;
+                }
+                .c-container-a6__row-block.c-container-a6__row-block--padding-left-15 {
+                    padding-left: 15px;
+                }
+
+                .img {
+                    display: inline-block;
+                    font-size: 0px;
+                }
+                .img.img--logo {
+                    width: 100%;
+                    height: auto;
+                }
+
+                .title {
+                    font-family: sans-serif;
+                    text-align: center;
+                    font-size: 35px;
+                    font-weight: 700;
+                }
+                .title.title--red {
+                    color: red;
+                }
+
+                .c-text {
+                    font-family: sans-serif;
+                    font-size: 18px;
+                }
+                .c-text.c-text--align-center {
+                    text-align: center;
+                }
+                .c-text.c-text--serif {
+                    font-family: serif;
+                }
+                .c-text.c-text--font-size-35 {
+                    font-size: 35px;
+                }
+                .c-text.c-text--font-size-20 {
+                    font-size: 20px;
+                }
+                .c-text.c-text--uppercase {
+                    text-transform: uppercase;
+                }
+                .c-text.c-text--uppercase {
+                    text-transform: uppercase;
+                }
+                .c-text.c-text--margin-top-35 {
+                    margin-top: 35px;
+                }
+                .c-text.c-text--margin-top-50 {
+                    margin-top: 50px;
+                }
+                .c-text.c-text--font-weight-700 {
+                    font-weight: 700;
+                }
+                .c-text.c-text--margin-top-10 {
+                    margin-top: 10px;
+                }
+                .c-text.c-text--margin-left-70 {
+                    margin-left: 70px;
+                }
+                .c-text.c-text--margin-left-54 {
+                    margin-left: 54px;
+                }
+                .c-text.c-text--margin-left-72 {
+                    margin-left: 72px;
+                }
+
+                .c-container-a6__head {
+                    width: 100%;
+                }
+
+                .c-container-a6__footer {
+                    width: 100%;
+                    margin-top: auto;
+                }
+
+                /*@page {*/
+                    /*size: A4;*/
+                    /*margin: 0;*/
+                /*}*/
+                /*@media print {*/
+                    /*html, body {*/
+                        /*width: 210mm;*/
+                        /*height: 297mm;*/
+                    /*}*/
+                /*}*/
+            </style>
 
             <!--Ukrainian-->
             <div class="c-container-a6"
-                 style="background-image: url('/media/{{ organisationBgImgURL }}');">
+            style="background-image: url('/media/{{ organisationBgImgURL }}');">
 
                 <!--Head-->
                 <div class="c-container-a6__head">
@@ -41,8 +182,8 @@
                     <div class="c-container-a6__row c-container-a6__row--margin-top-10">
                         <div class="c-text c-text--serif">
                             {{ directionRegulationInfo }}<!-- Видане на пiдставi положень Мiжнародної конвенцiї про пiдготовку, дипломування морякiв та
-                        несення вахти 1978 року з поправками (з урахуванням Манiльських поправок), Конвенцiї SOLAS 74
-                        з поправками. -->
+                            несення вахти 1978 року з поправками (з урахуванням Манiльських поправок), Конвенцiї SOLAS 74
+                            з поправками. -->
                         </div>
                         <div class="c-text c-text--align-center c-text--serif">
                             Цим засвiдчується, що
@@ -56,23 +197,23 @@
                         {{ sailorName }}<!-- иванов иван петрович -->
                     </div>
                     <div class="c-text c-text--margin-top-10">
-                    <span class="c-text c-text--font-weight-700">
-                        Дата народження:
-                    </span>
+                        <span class="c-text c-text--font-weight-700">
+                            Дата народження:
+                        </span>
                         <span>
-                        {{ sailorBirthday }}<!-- 22.01.1989 -->
-                    </span>
+                            {{ sailorBirthday }}<!-- 22.01.1989 -->
+                        </span>
                     </div>
                     <div class="c-text c-text--margin-top-10 c-text--serif">
                         успiшно опанував схвалений
                         <span class="c-text c-text--font-weight-700">
-                        Морською Адмiнiстрацiєю України
-                    </span>
+                            Морською Адмiнiстрацiєю України
+                        </span>
                         курс пiдготовки за програмою
                     </div>
                     <div class="title title--red">
                         {{ directionTitle }}<!-- Підготовка з судноводіння з використанням радіолокатора, радіолокаційної прокладки та використанням
-                    ЗАРП, з роботи в колективі на містку, з пошуку та порятунку -->
+                        ЗАРП, з роботи в колективі на містку, з пошуку та порятунку -->
                     </div>
                     <div class="c-text c-text--serif">
                         {{ directionCourseInfo }}
@@ -93,32 +234,32 @@
                                 Керiвник курсу
                             </div>
                             <div class="c-text c-text--margin-top-50">
-                            <span class="c-text c-text--font-weight-700">
-                                Дата видачi<sup>*</sup>:
-                            </span>
+                                <span class="c-text c-text--font-weight-700">
+                                    Дата видачi<sup>*</sup>:
+                                </span>
                                 <span class="c-text c-text--margin-left-54">
-                                {{ dateIssue }}<!-- 22.12.22 -->
-                            </span>
+                                    {{ dateIssue }}<!-- 22.12.22 -->
+                                </span>
                             </div>
                             <div class="c-text c-text--margin-top-10">
-                            <span class="c-text c-text--font-weight-700">
-                                Дiйсний до:
-                            </span>
+                                <span class="c-text c-text--font-weight-700">
+                                    Дiйсний до:
+                                </span>
                                 <span class="c-text c-text--margin-left-70">
-                                {{ validDate }}<!-- 22.12.22 -->
-                            </span>
+                                    {{ validDate }}<!-- 22.12.22 -->
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div class="c-container-a6__row">
                         <!--<div class="c-text c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
-                        <!--<sup>*</sup>) Дата видачi є датою реєстрацiї, а не датою закiнчення пiдготовки.-->
+                            <!--<sup>*</sup>) Дата видачi є датою реєстрацiї, а не датою закiнчення пiдготовки.-->
                         <!--</div>-->
                         <!--<div class="c-text c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
-                        <!--Запити щодо цього свiдоцтва слiд надсилати до державного реєстру документiв морякiв України:-->
+                            <!--Запити щодо цього свiдоцтва слiд надсилати до державного реєстру документiв морякiв України:-->
                         <!--</div>-->
                         <!--<div class="c-text c-text&#45;&#45;align-center c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
-                        <!--Тел./Факс: +38(044)4637795, email: srdskiev@registr.uct.ua-->
+                            <!--Тел./Факс: +38(044)4637795, email: srdskiev@registr.uct.ua-->
                         <!--</div>-->
                         <div class="c-text c-text--font-size-20 c-text--serif">
                             <!--Оригiнал цього свiдоцтва повинен згiдно з Правилом 1/2, пункт 11 Конвенцiї ПДНВ знаходитись
@@ -130,8 +271,8 @@
             </div>
 
             <!--English-->
-            <div class="c-container-a6"
-                 style="background: url('/static/img/cert_background.jpg');">
+            <div class="c-container-a6 c-container-a6--margin-top-10mm"
+            style="background: url('/static/img/cert_background.jpg');">
 
                 <!--Head-->
                 <div class="c-container-a6__head">
@@ -170,8 +311,8 @@
                     <div class="c-container-a6__row c-container-a6__row--margin-top-10">
                         <div class="c-text c-text--serif">
                             {{ directionRegulationInfoEng }}<!-- Issued under provisions of the International Convention on Standards of Training, Certification
-                        and Watchkeepeng for Seafarers, 1978, as amended (with the Manila Amendments),
-                        Convention SOLAS 74, as amended. -->
+                            and Watchkeepeng for Seafarers, 1978, as amended (with the Manila Amendments),
+                            Convention SOLAS 74, as amended. -->
                         </div>
                         <div class="c-text c-text--align-center c-text--serif">
                             This is certify, that
@@ -185,18 +326,18 @@
                         {{ sailorNameEng }}<!-- Dmytro Galak -->
                     </div>
                     <div class="c-text c-text--margin-top-10">
-                    <span class="c-text c-text--font-weight-700">
-                        Date of birth:
-                    </span>
+                        <span class="c-text c-text--font-weight-700">
+                            Date of birth:
+                        </span>
                         <span>
-                        {{ sailorBirthday }}<!-- 22.01.1989 -->
-                    </span>
+                            {{ sailorBirthday }}<!-- 22.01.1989 -->
+                        </span>
                     </div>
                     <div class="c-text c-text--margin-top-10 c-text--serif">
                         has successfully completed the course of training approved by the
                         <span class="c-text c-text--font-weight-700">
-                        Maritime Administration of Ukraine
-                    </span>
+                            Maritime Administration of Ukraine
+                        </span>
                         on the syllabus
                     </div>
                     <div class="title title--red">
@@ -212,7 +353,7 @@
                     <div class="c-container-a6__row c-container-a6__row--flex">
                         <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
                             <img src="/static/img/pirate.jpg" alt="logo"
-                                 class="img img--logo">
+                            class="img img--logo">
                         </div>
                         <div class="c-container-a6__row-block c-container-a6__row-block--padding-left-15">
                             <div class="c-text c-text--font-weight-700">
@@ -222,35 +363,35 @@
                                 Chief of the Course
                             </div>
                             <div class="c-text c-text--margin-top-50">
-                            <span class="c-text c-text--font-weight-700">
-                                Date of issue<sup>*</sup>
-                            </span>
+                                <span class="c-text c-text--font-weight-700">
+                                    Date of issue<sup>*</sup>
+                                </span>
                                 <span class="c-text c-text--margin-left-72">
-                                {{ dateIssueStr }}<!-- 22.12.22 -->
-                            </span>
+                                    {{ dateIssueStr }}<!-- 22.12.22 -->
+                                </span>
                             </div>
                             <div class="c-text c-text--margin-top-10">
-                            <span class="c-text c-text--font-weight-700">
-                                Date of expire
-                            </span>
+                                <span class="c-text c-text--font-weight-700">
+                                    Date of expire
+                                </span>
                                 <span class="c-text c-text--margin-left-70">
-                                {{ validDateStr }}<!-- 22.12.22 -->
-                            </span>
+                                    {{ validDateStr }}<!-- 22.12.22 -->
+                                </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="c-container-a6__row">
                         <!--<div class="c-text c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
-                        <!--<sup>*</sup>) Date of issue is the date of registration, but not the date of completion-->
-                        <!--of the course-->
+                            <!--<sup>*</sup>) Date of issue is the date of registration, but not the date of completion-->
+                            <!--of the course-->
                         <!--</div>-->
                         <!--<div class="c-text c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
-                        <!--Inquries concerning this certificate should be addressed to the State Register of Ukrainian-->
-                        <!--seafarers documents-->
+                            <!--Inquries concerning this certificate should be addressed to the State Register of Ukrainian-->
+                            <!--seafarers documents-->
                         <!--</div>-->
                         <!--<div class="c-text c-text&#45;&#45;align-center c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
-                        <!--Tel./Fax: +38(044)4637795, email: srdskiev@registr.uct.ua-->
+                            <!--Tel./Fax: +38(044)4637795, email: srdskiev@registr.uct.ua-->
                         <!--</div>-->
                         <div class="c-text c-text--font-size-20 c-text--serif">
                             <!--The original of this certificate must be kept available in accordance with regulation 1/2,
@@ -261,3 +402,5 @@
                 </div>
             </div>
         </div>
+    </body>
+</html>

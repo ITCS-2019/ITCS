@@ -2,7 +2,6 @@
   <div id="req-num-form"
   class="c-pdf-a4"
   v-if="downloadingPdf">
-    <div id="pdf"></div>
     <v-flex md12 class="text-md-right">
       <div class="body-2">
         Додаток №01
