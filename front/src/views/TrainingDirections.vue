@@ -368,6 +368,7 @@ export default {
     saveDirection() {
       let formData = {
         direction_title: this.$refs.directionForm.direction_title,
+        direction_title_eng: this.$refs.directionForm.direction_title_eng,
         price_id: this.$refs.directionForm.price_id,
         level: this.$refs.directionForm.level,
         allow_functions: this.$refs.directionForm.allow_functions,
@@ -376,7 +377,9 @@ export default {
         courseInfo: this.$refs.directionForm.courseInfo,
         courseInfoEng: this.$refs.directionForm.courseInfoEng,
         inspectionInfo: this.$refs.directionForm.inspectionInfo,
-        inspectionInfoEng: this.$refs.directionForm.inspectionInfoEng
+        inspectionInfoEng: this.$refs.directionForm.inspectionInfoEng,
+        infoText: this.$refs.directionForm.infoText,
+        infoTextEng: this.$refs.directionForm.infoTextEng
       };
 
       axios({

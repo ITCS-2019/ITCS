@@ -8,9 +8,13 @@
         <v-form>
           <v-container py-0>
             <v-layout wrap>
-              <v-flex xs12 md12>
+              <v-flex xs12 md6>
                 <v-text-field label="Напрямок навчання"
                 v-model="direction_title"/>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-text-field label="Training direction"
+                v-model="direction_title_eng"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>
@@ -51,6 +55,22 @@
               <v-flex xs12 md6>
                 <v-textarea box
                 rows="1"
+                label="Iнформацiя про закiнчення курсу"
+                auto-grow
+                v-model="infoText">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                rows="1"
+                label="Complete cource info"
+                auto-grow
+                v-model="infoTextEng">
+                </v-textarea>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-textarea box
+                rows="1"
                 label="Iнформацiя про курс"
                 auto-grow
                 v-model="courseInfo">
@@ -67,7 +87,7 @@
               <v-flex xs12 md6>
                 <v-textarea box
                 rows="1"
-                label="Iнспекторська iнформацiя"
+                label="Iнспекторська iнформацiя('<br>' - переход на наступний рядок)"
                 auto-grow
                 v-model="inspectionInfo">
                 </v-textarea>
@@ -75,7 +95,7 @@
               <v-flex xs12 md6>
                 <v-textarea box
                 rows="1"
-                label="Inspector info(Eng.)"
+                label="Inspector info('<br>' breaks row)"
                 auto-grow
                 v-model="inspectionInfoEng">
                 </v-textarea>
@@ -100,6 +120,8 @@ export default {
 
   data() {
     return {
+      infoText: '',
+      infoTextEng: '',
       regulationInfo: '',
       regulationInfoEng: '',
       courseInfo: '',
@@ -107,85 +129,12 @@ export default {
       inspectionInfo: '',
       inspectionInfoEng: '',
       direction_title: null,
+      direction_title_eng: null,
       price_id: null,
       level: null,
       levelItems: ['Підтвердження', 'Отримання'],
       allow_functions: 'Не обрано',
       allowFunctionsItems: ['Не обрано', 'Управлiння', 'Експлуатація'],
-    }
-  },
-
-  watch: {
-    regulationInfoEng(val) {
-      let regExp = /[^[a-zA-Z\-\'\"()\s]/g;
-
-      this.$nextTick(() => {
-        if (val) {
-          let newVal = val.replace(regExp, '');
-
-          this.$set(this, 'regulationInfoEng', newVal);
-        }
-      });
-    },
-
-    courseInfoEng(val) {
-      let regExp = /[^[a-zA-Z\-\'\"()\s]/g;
-
-      this.$nextTick(() => {
-        if (val) {
-          let newVal = val.replace(regExp, '');
-
-          this.$set(this, 'courseInfoEng', newVal);
-        }
-      });
-    },
-
-    inspectionInfoEng(val) {
-      let regExp = /[^[a-zA-Z\-\'\"()\s]/g;
-
-      this.$nextTick(() => {
-        if (val) {
-          let newVal = val.replace(regExp, '');
-
-          this.$set(this, 'inspectionInfoEng', newVal);
-        }
-      });
-    },
-
-    regulationInfo(val) {
-      let regExp = /[^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ\-\'\"()\s]/g;
-
-      this.$nextTick(() => {
-        if (val) {
-          let newVal = val.replace(regExp, '');
-
-          this.$set(this, 'regulationInfo', newVal);
-        }
-      });
-    },
-
-    courseInfo(val) {
-      let regExp = /[^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ\-\'\"()\s]/g;
-
-      this.$nextTick(() => {
-        if (val) {
-          let newVal = val.replace(regExp, '');
-
-          this.$set(this, 'courseInfo', newVal);
-        }
-      });
-    },
-
-    inspectionInfo(val) {
-      let regExp = /[^[а-щА-ЩЬьЮюЯяЇїІіЄєҐґ\-\'\"()\s]/g;
-
-      this.$nextTick(() => {
-        if (val) {
-          let newVal = val.replace(regExp, '');
-
-          this.$set(this, 'inspectionInfo', newVal);
-        }
-      });
     }
   },
 
@@ -207,6 +156,7 @@ export default {
             let direction = res.data;
             this.allow_functions = direction.allow_functions;
             this.direction_title = direction.direction_title;
+            this.direction_title_eng = direction.direction_title_eng;
             this.level = direction.level;
             this.price_id = direction.price_id;
             this.regulationInfo = direction.regulationInfo;
@@ -215,6 +165,8 @@ export default {
             this.courseInfoEng = direction.courseInfoEng;
             this.inspectionInfo = direction.inspectionInfo;
             this.inspectionInfoEng = direction.inspectionInfoEng;
+            this.infoText = direction.infoText;
+            this.infoTextEng = direction.infoTextEng;
           })
           .catch((err) => {
             console.log(err);

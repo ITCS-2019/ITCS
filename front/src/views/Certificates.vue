@@ -591,7 +591,7 @@
 
               html2canvas(document.querySelector('#pdf-content'),
               {
-                imageTimeout: 0,
+                imageTimeout: 5000,
                 useCORS: true
               })
                 .then(canvas => {
@@ -599,8 +599,6 @@
                   let img = canvas.toDataURL('image/png');
                   let pdf = new jsPDF('portrait', 'mm', 'a6');
                   pdf.addImage(img, 'JPEG', 5, 5, 95, 281);
-
-
                   pdf.addPage();
                   pdf.addImage(img, 'JPEG', 5, -138, 95, 281);
 

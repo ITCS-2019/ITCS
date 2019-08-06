@@ -49,6 +49,10 @@
                 .c-container-a6__row-block {
                     flex: 1;
                 }
+                .c-container-a6__row-block.c-container-a6__row-block--border-grey {
+                    margin-left: 3px;
+                    border: 1px solid darkgrey;
+                }
                 .c-container-a6__row-block.c-container-a6__row-block--30pc {
                     flex: 0 1 auto;
                     width: 25%;
@@ -69,7 +73,7 @@
                 .title {
                     font-family: sans-serif;
                     text-align: center;
-                    font-size: 35px;
+                    font-size: 25px;
                     font-weight: 700;
                 }
                 .title.title--red {
@@ -78,7 +82,7 @@
 
                 .c-text {
                     font-family: sans-serif;
-                    font-size: 18px;
+                    font-size: 16px;
                 }
                 .c-text.c-text--align-center {
                     text-align: center;
@@ -88,6 +92,12 @@
                 }
                 .c-text.c-text--font-size-35 {
                     font-size: 35px;
+                }
+                .c-text.c-text--font-size-32 {
+                    font-size: 32px;
+                }
+                .c-text.c-text--font-size-14 {
+                    font-size: 14px;
                 }
                 .c-text.c-text--font-size-20 {
                     font-size: 20px;
@@ -104,6 +114,9 @@
                 .c-text.c-text--margin-top-50 {
                     margin-top: 50px;
                 }
+                .c-text.c-text--margin-top-40 {
+                    margin-top: 35px;
+                }
                 .c-text.c-text--font-weight-700 {
                     font-weight: 700;
                 }
@@ -112,6 +125,9 @@
                 }
                 .c-text.c-text--margin-left-70 {
                     margin-left: 70px;
+                }
+                .c-text.c-text--margin-left-63 {
+                    margin-left: 62px;
                 }
                 .c-text.c-text--margin-left-54 {
                     margin-left: 54px;
@@ -128,17 +144,6 @@
                     width: 100%;
                     margin-top: auto;
                 }
-
-                /*@page {*/
-                    /*size: A4;*/
-                    /*margin: 0;*/
-                /*}*/
-                /*@media print {*/
-                    /*html, body {*/
-                        /*width: 210mm;*/
-                        /*height: 297mm;*/
-                    /*}*/
-                /*}*/
             </style>
 
             <!--Ukrainian-->
@@ -152,7 +157,7 @@
                             <img src="/media/{{ organisationLogoURL }}" alt="logo"
                                  class="img img--logo">
                         </div>
-                        <div class="c-container-a6__row-block">
+                        <div class="c-container-a6__row-block c-container-a6__row-block--border-grey">
                             <div class="title">
                                 Україна
                             </div>
@@ -162,38 +167,48 @@
                             <div class="c-text c-text--align-center">
                                 {{ organisationAdress }}<!-- 65000, м.Одеса, вул. Канатна 42 -->
                             </div>
+
+                            {% for phone in organisationPhone1 %}
+                                <div class="c-text c-text--align-center">
+                                    {{ phone }}<!-- Тел.: +38(000)000 - 00 - 00 -->
+                                </div>
+                            {% endfor %}
+
+                            <!--<div class="c-text c-text&#45;&#45;align-center">-->
+                                <!--{{ organisationPhone1 }}&lt;!&ndash; Тел.: +38(000)000 - 00 - 00 &ndash;&gt;-->
+                            <!--</div>-->
+                            <!--<div class="c-text c-text&#45;&#45;align-center">-->
+                                <!--{{ organisationPhone2 }}&lt;!&ndash; Тел./Факс: +38(000)000 - 00 - 00 &ndash;&gt;-->
+                            <!--</div>-->
                             <div class="c-text c-text--align-center">
-                                {{ organisationPhone1 }}<!-- Тел.: +38(000)000 - 00 - 00 -->
+                                Email: {{ organisationEmail }}<!-- Email: info@papay.com.ua -->
                             </div>
-                            <div class="c-text c-text--align-center">
-                                {{ organisationPhone2 }}<!-- Тел./Факс: +38(000)000 - 00 - 00 -->
-                            </div>
-                            <div class="c-text c-text--align-center">
-                                {{ organisationEmail }}<!-- Email: info@papay.com.ua -->
-                            </div>
-                            <div class="c-text c-text--align-center">
-                                {{ organisationSite }}<!-- WWW: http://sea.od.ua -->
-                            </div>
-                            <div class="title">
-                                Свiдоцтво №<span>{{ organisationNumber }}<!-- 02404 --></span>
-                            </div>
+                            <!--<div class="c-text c-text&#45;&#45;align-center">-->
+                                <!--{{ organisationSite }}&lt;!&ndash; WWW: http://sea.od.ua &ndash;&gt;-->
+                            <!--</div>-->
+                            <!--<div class="title">-->
+                                <!--Свiдоцтво №<span>{{ organisationNumber }}&lt;!&ndash; 02404 &ndash;&gt;</span>-->
+                            <!--</div>-->
                         </div>
                     </div>
                     <div class="c-container-a6__row c-container-a6__row--margin-top-10">
-                        <div class="c-text c-text--serif">
-                            {{ directionRegulationInfo }}<!-- Видане на пiдставi положень Мiжнародної конвенцiї про пiдготовку, дипломування морякiв та
+                        <div class="c-text c-text--uppercase c-text--font-size-32 c-text--align-center c-text--serif">
+                            Свiдоцтво №<span>{{ organisationNumber }}<!-- 02404 --></span>
+                        </div>
+                        <div class="c-text c-text--serif c-text--font-size-14">
+                            {{ directionRegulationInfo }} Цим засвiдчується, що<!-- Видане на пiдставi положень Мiжнародної конвенцiї про пiдготовку, дипломування морякiв та
                             несення вахти 1978 року з поправками (з урахуванням Манiльських поправок), Конвенцiї SOLAS 74
                             з поправками. -->
                         </div>
-                        <div class="c-text c-text--align-center c-text--serif">
-                            Цим засвiдчується, що
-                        </div>
+                        <!--<div class="c-text c-text&#45;&#45;align-center c-text&#45;&#45;serif">-->
+                            <!--Цим засвiдчується, що-->
+                        <!--</div>-->
                     </div>
                 </div>
 
                 <!--Body-->
-                <div class="c-container-a6__row c-container-a6__row--margin-top-30">
-                    <div class="c-text c-text--uppercase c-text--font-size-35 c-text--align-center c-text--serif">
+                <div class="c-container-a6__row">
+                    <div class="c-text c-text--uppercase c-text--font-size-32 c-text--align-center c-text--serif">
                         {{ sailorName }}<!-- иванов иван петрович -->
                     </div>
                     <div class="c-text c-text--margin-top-10">
@@ -205,11 +220,12 @@
                         </span>
                     </div>
                     <div class="c-text c-text--margin-top-10 c-text--serif">
-                        успiшно опанував схвалений
-                        <span class="c-text c-text--font-weight-700">
-                            Морською Адмiнiстрацiєю України
-                        </span>
-                        курс пiдготовки за програмою
+                        {{ directionInfoText }}
+                        <!--успiшно опанував схвалений-->
+                        <!--<span class="c-text c-text&#45;&#45;font-weight-700">-->
+                            <!--Морською Адмiнiстрацiєю України-->
+                        <!--</span>-->
+                        <!--курс пiдготовки за програмою-->
                     </div>
                     <div class="title title--red">
                         {{ directionTitle }}<!-- Підготовка з судноводіння з використанням радіолокатора, радіолокаційної прокладки та використанням
@@ -226,14 +242,14 @@
                         <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
                             <img src="/{{ qrImg }}" alt="qrcode" class="img img--logo">
                         </div>
-                        <div class="c-container-a6__row-block c-container-a6__row-block--padding-left-15">
+                        <div class="c-container-a6__row-block c-container-a6__row-block--border-grey c-container-a6__row-block--padding-left-15">
                             <div class="c-text c-text--font-weight-700">
                                 Директор центру
                             </div>
                             <div class="c-text c-text--margin-top-50 c-text--font-weight-700">
                                 Керiвник курсу
                             </div>
-                            <div class="c-text c-text--margin-top-50">
+                            <div class="c-text c-text--margin-top-40">
                                 <span class="c-text c-text--font-weight-700">
                                     Дата видачi<sup>*</sup>:
                                 </span>
@@ -245,7 +261,7 @@
                                 <span class="c-text c-text--font-weight-700">
                                     Дiйсний до:
                                 </span>
-                                <span class="c-text c-text--margin-left-70">
+                                <span class="c-text c-text--margin-left-63">
                                     {{ validDate }}<!-- 22.12.22 -->
                                 </span>
                             </div>
@@ -261,11 +277,16 @@
                         <!--<div class="c-text c-text&#45;&#45;align-center c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
                             <!--Тел./Факс: +38(044)4637795, email: srdskiev@registr.uct.ua-->
                         <!--</div>-->
-                        <div class="c-text c-text--font-size-20 c-text--serif">
-                            <!--Оригiнал цього свiдоцтва повинен згiдно з Правилом 1/2, пункт 11 Конвенцiї ПДНВ знаходитись
-                            на суднi, доки його власник працює на цьому суднi-->
-                            {{ directionInspectionInfo }}
-                        </div>
+                        {% for rowText in directionInspectionInfo %}
+                            <div class="c-text c-text--serif">
+                                {{ rowText }}
+                            </div>
+                        {% endfor %}
+                        <!--<div class="c-text c-text&#45;&#45;serif">-->
+                            <!--&lt;!&ndash;Оригiнал цього свiдоцтва повинен згiдно з Правилом 1/2, пункт 11 Конвенцiї ПДНВ знаходитись-->
+                            <!--на суднi, доки його власник працює на цьому суднi&ndash;&gt;-->
+                            <!--{{ directionInspectionInfo }}-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>
@@ -281,7 +302,7 @@
                             <img src="/static/img/twitter-png-transparent-4.png" alt="logo"
                                  class="img img--logo">
                         </div>
-                        <div class="c-container-a6__row-block">
+                        <div class="c-container-a6__row-block c-container-a6__row-block--border-grey">
                             <div class="title">
                                 Ukraine
                             </div>
@@ -291,38 +312,48 @@
                             <div class="c-text c-text--align-center">
                                 {{ organisationAdressEng }}<!-- 42, Kanatna str., Odessa -->
                             </div>
+
+                            {% for phone in organisationPhone1 %}
+                                <div class="c-text c-text--align-center">
+                                    {{ phone }}<!-- Тел.: +38(000)000 - 00 - 00 -->
+                                </div>
+                            {% endfor %}
+
+                            <!--<div class="c-text c-text&#45;&#45;align-center">-->
+                                <!--{{ organisationPhone1 }}&lt;!&ndash; Tel.: +38(000)000 - 00 - 00 &ndash;&gt;-->
+                            <!--</div>-->
+                            <!--<div class="c-text c-text&#45;&#45;align-center">-->
+                                <!--{{ organisationPhone2 }}&lt;!&ndash; Tel./Fax: +38(000)000 - 00 - 00 &ndash;&gt;-->
+                            <!--</div>-->
                             <div class="c-text c-text--align-center">
-                                {{ organisationPhone1 }}<!-- Tel.: +38(000)000 - 00 - 00 -->
+                                Email: {{ organisationEmail }}<!-- Email: info@papay.com.ua -->
                             </div>
-                            <div class="c-text c-text--align-center">
-                                {{ organisationPhone2 }}<!-- Tel./Fax: +38(000)000 - 00 - 00 -->
-                            </div>
-                            <div class="c-text c-text--align-center">
-                                {{ organisationEmail }}<!-- Email: info@papay.com.ua -->
-                            </div>
-                            <div class="c-text c-text--align-center">
-                                WWW: {{ organisationSite }}<!-- http://sea.od.ua -->
-                            </div>
-                            <div class="title">
-                                Certificate of proficiency #<span>{{ organisationNumber }}<!-- 02404 --></span>
-                            </div>
+                            <!--<div class="c-text c-text&#45;&#45;align-center">-->
+                                <!--WWW: {{ organisationSite }}&lt;!&ndash; http://sea.od.ua &ndash;&gt;-->
+                            <!--</div>-->
+                            <!--<div class="title">-->
+                                <!--Certificate of proficiency #<span>{{ organisationNumber }}&lt;!&ndash; 02404 &ndash;&gt;</span>-->
+                            <!--</div>-->
                         </div>
                     </div>
                     <div class="c-container-a6__row c-container-a6__row--margin-top-10">
-                        <div class="c-text c-text--serif">
-                            {{ directionRegulationInfoEng }}<!-- Issued under provisions of the International Convention on Standards of Training, Certification
+                        <div class="c-text c-text--uppercase c-text--font-size-32 c-text--align-center c-text--serif">
+                            Certificate of proficiency #<span>{{ organisationNumber }}<!-- 02404 --></span>
+                        </div>
+                        <div class="c-text c-text--serif c-text--font-size-14">
+                            {{ directionRegulationInfoEng }} This is certify, that<!-- Issued under provisions of the International Convention on Standards of Training, Certification
                             and Watchkeepeng for Seafarers, 1978, as amended (with the Manila Amendments),
                             Convention SOLAS 74, as amended. -->
                         </div>
-                        <div class="c-text c-text--align-center c-text--serif">
-                            This is certify, that
-                        </div>
+                        <!--<div class="c-text c-text&#45;&#45;align-center c-text&#45;&#45;serif">-->
+                            <!--This is certify, that-->
+                        <!--</div>-->
                     </div>
                 </div>
 
                 <!--Body-->
-                <div class="c-container-a6__row c-container-a6__row--margin-top-30">
-                    <div class="c-text c-text--uppercase c-text--font-size-35 c-text--align-center c-text--serif">
+                <div class="c-container-a6__row">
+                    <div class="c-text c-text--uppercase c-text--font-size-32 c-text--align-center c-text--serif">
                         {{ sailorNameEng }}<!-- Dmytro Galak -->
                     </div>
                     <div class="c-text c-text--margin-top-10">
@@ -334,11 +365,12 @@
                         </span>
                     </div>
                     <div class="c-text c-text--margin-top-10 c-text--serif">
-                        has successfully completed the course of training approved by the
-                        <span class="c-text c-text--font-weight-700">
-                            Maritime Administration of Ukraine
-                        </span>
-                        on the syllabus
+                        {{ directionInfoTextEng }}
+                        <!--has successfully completed the course of training approved by the-->
+                        <!--<span class="c-text c-text&#45;&#45;font-weight-700">-->
+                            <!--Maritime Administration of Ukraine-->
+                        <!--</span>-->
+                        <!--on the syllabus-->
                     </div>
                     <div class="title title--red">
                         {{ directionTitleEng }}<!-- Security training for seafarers with designated security duties -->
@@ -352,17 +384,18 @@
                 <div class="c-container-a6__footer">
                     <div class="c-container-a6__row c-container-a6__row--flex">
                         <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
-                            <img src="/static/img/pirate.jpg" alt="logo"
-                            class="img img--logo">
+                            <!--<img src="/static/img/pirate.jpg" alt="logo"-->
+                            <!--class="img img&#45;&#45;logo">-->
+
                         </div>
-                        <div class="c-container-a6__row-block c-container-a6__row-block--padding-left-15">
+                        <div class="c-container-a6__row-block c-container-a6__row-block--border-grey c-container-a6__row-block--padding-left-15">
                             <div class="c-text c-text--font-weight-700">
                                 Director of the Centre
                             </div>
                             <div class="c-text c-text--margin-top-50 c-text--font-weight-700">
                                 Chief of the Course
                             </div>
-                            <div class="c-text c-text--margin-top-50">
+                            <div class="c-text c-text--margin-top-40">
                                 <span class="c-text c-text--font-weight-700">
                                     Date of issue<sup>*</sup>
                                 </span>
@@ -393,11 +426,18 @@
                         <!--<div class="c-text c-text&#45;&#45;align-center c-text&#45;&#45;font-size-20 c-text&#45;&#45;serif">-->
                             <!--Tel./Fax: +38(044)4637795, email: srdskiev@registr.uct.ua-->
                         <!--</div>-->
-                        <div class="c-text c-text--font-size-20 c-text--serif">
-                            <!--The original of this certificate must be kept available in accordance with regulation 1/2,
-                            paragraph 11 of the STCW convention while serving on a ship.-->
-                            {{ directionInspectionInfoEng }}
-                        </div>
+
+                        {% for rowText in directionInspectionInfoEng %}
+                            <div class="c-text c-text--serif">
+                                {{ rowText }}
+                            </div>
+                        {% endfor %}
+
+                        <!--<div class="c-text c-text&#45;&#45;serif">-->
+                            <!--&lt;!&ndash;The original of this certificate must be kept available in accordance with regulation 1/2,-->
+                            <!--paragraph 11 of the STCW convention while serving on a ship.&ndash;&gt;-->
+                            <!--{{ directionInspectionInfoEng }}-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>

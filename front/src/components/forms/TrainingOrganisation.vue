@@ -95,7 +95,7 @@
                     min-width="290px">
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="activated"
-                            label="Дата видачі"
+                            label="Дата активацi"
                             prepend-inner-icon="mdi-calendar-range"
                             readonly
                             v-on="on">
@@ -122,7 +122,7 @@
                     min-width="290px">
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="activeTill"
-                            label="Дата видачі"
+                            label="Активна до"
                             prepend-inner-icon="mdi-calendar-range"
                             readonly
                             v-on="on">
@@ -136,16 +136,20 @@
                         </v-date-picker>
                     </v-menu>
                 </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Телефон"
-                    v-model="organization.phone1"
-                    mask="(###) ### - ## - ##"/>
+                <v-flex md12>
+                    <v-text-field label="Телефони(строки роздiляються ';')"
+                    v-model="organization.phone1"/>
                 </v-flex>
-                <v-flex xs12 md6>
-                    <v-text-field label="Додатковий телефон"
-                    v-model="organization.phone2"
-                    mask="(###) ### - ## - ##"/>
-                </v-flex>
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Телефон"-->
+                    <!--v-model="organization.phone1"-->
+                    <!--mask="(###) ### - ## - ##"/>-->
+                <!--</v-flex>-->
+                <!--<v-flex xs12 md6>-->
+                    <!--<v-text-field label="Додатковий телефон"-->
+                    <!--v-model="organization.phone2"-->
+                    <!--mask="(###) ### - ## - ##"/>-->
+                <!--</v-flex>-->
                 <v-flex xs12 md6>
                     <v-text-field label="E-mail"
                     v-model="organization.orgnisation_email"/>
