@@ -1036,7 +1036,9 @@ def printCertificate(request, certID):
 	organisationNameEngStr = cert.trainigOrganisation.organisation_name_eng
 	organisationAdressStr = cert.trainigOrganisation.mail_adress_ukr
 	organisationAdressEngStr = cert.trainigOrganisation.mail_adress_eng
-	organisationPhone1Str = cert.trainigOrganisation.phone1
+	organisationPhone1Field = ''
+	if cert.trainigOrganisation.phone1:
+		organisationPhone1Field = cert.trainigOrganisation.phone1.split(';')
 	organisationPhone2Str = cert.trainigOrganisation.phone2
 	organisationEmailStr = cert.trainigOrganisation.orgnisation_email
 	organisationSiteStr = cert.trainigOrganisation.site_link
@@ -1052,8 +1054,12 @@ def printCertificate(request, certID):
 	directionCourseInfoEngStr = cert.training_direction.courseInfoEng
 	directionRegulationInfoStr = cert.training_direction.regulationInfo
 	directionRegulationInfoEngStr = cert.training_direction.regulationInfoEng
-	directionInspectionInfoStr = cert.training_direction.inspectionInfo
-	directionInspectionInfoEngStr = cert.training_direction.inspectionInfoEng
+	directionInspectionInfoField = ''
+	if cert.training_direction.inspectionInfo:
+		directionInspectionInfoField = cert.training_direction.inspectionInfo.split('<br>')
+	directionInspectionInfoEngField = ''
+	if cert.training_direction.inspectionInfoEng:
+		directionInspectionInfoEngField = cert.training_direction.inspectionInfoEng.split('<br>')
 	dateIssueStr = cert.date_of_issue
 	validDateStr = cert.valid_date
 
@@ -1073,7 +1079,7 @@ def printCertificate(request, certID):
 		'organisationNameEng': organisationNameEngStr,
 		'organisationAdress': organisationAdressStr,
 		'organisationAdressEng': organisationAdressEngStr,
-		'organisationPhone1': organisationPhone1Str.split(';'),
+		'organisationPhone1': organisationPhone1Field,
 		'organisationPhone2': organisationPhone2Str,
 		'organisationEmail': organisationEmailStr,
 		'organisationSite': organisationSiteStr,
@@ -1089,8 +1095,8 @@ def printCertificate(request, certID):
 		'directionCourseInfoEng': directionCourseInfoEngStr,
 		'directionRegulationInfo': directionRegulationInfoStr,
 		'directionRegulationInfoEng': directionRegulationInfoEngStr,
-		'directionInspectionInfo': directionInspectionInfoStr.split('<br>'),
-		'directionInspectionInfoEng': directionInspectionInfoEngStr.split('<br>'),
+		'directionInspectionInfo': directionInspectionInfoField,
+		'directionInspectionInfoEng': directionInspectionInfoEngField,
 		'dateIssue': dateIssueStr,
 		'validDate': validDateStr,
 		'qrImg': qrfilename}
