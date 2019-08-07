@@ -32,7 +32,7 @@
             .c-container-a6__row.c-container-a6__row--flex {
                 display: flex;
                 flex-direction: row;
-                align-items: flex-start;
+                align-items: normal;
                 align-content: flex-start;
                 justify-content: flex-start;
                 flex-wrap: wrap;
@@ -52,6 +52,12 @@
             .c-container-a6__row-block.c-container-a6__row-block--border-grey {
                 margin-left: 3px;
                 border: 1px solid darkgrey;
+            }
+            .c-container-a6__row-block.c-container-a6__row-block--foot {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 320px;
             }
             .c-container-a6__row-block.c-container-a6__row-block--30pc {
                 flex: 0 1 auto;
@@ -119,10 +125,10 @@
                 margin-top: 35px;
             }
             .c-text.c-text--margin-top-50 {
-                margin-top: 100px;
+                /*margin-top: 100px;*/
             }
             .c-text.c-text--margin-top-40 {
-                margin-top: 110px;
+                /*margin-top: 110px;*/
             }
             .c-text.c-text--font-weight-700 {
                 font-weight: 700;
@@ -258,28 +264,30 @@
                         <div class="c-container-a6__row-block c-container-a6__row-block--30pc">
                             <img src="/{{ qrImg }}" alt="qrcode" class="img img--logo">
                         </div>
-                        <div class="c-container-a6__row-block c-container-a6__row-block--border-grey c-container-a6__row-block--padding-left-15">
+                        <div class="c-container-a6__row-block c-container-a6__row-block--foot c-container-a6__row-block--border-grey c-container-a6__row-block--padding-left-15">
                             <div class="c-text c-text--font-weight-700">
                                 Директор центру
                             </div>
                             <div class="c-text c-text--margin-top-50 c-text--font-weight-700">
                                 Керiвник курсу
                             </div>
-                            <div class="c-text c-text--margin-top-40">
-                                <span class="c-text c-text--font-weight-700">
-                                    Дата видачi<sup>*</sup>:
-                                </span>
-                                <span class="c-text c-text--margin-left-54">
-                                    {{ dateIssue }}<!-- 22.12.22 -->
-                                </span>
-                            </div>
-                            <div class="c-text c-text--margin-top-10">
-                                <span class="c-text c-text--font-weight-700">
-                                    Дiйсний до:
-                                </span>
-                                <span class="c-text c-text--margin-left-63">
-                                    {{ validDate }}<!-- 22.12.22 -->
-                                </span>
+                            <div>
+                                <div class="c-text c-text--margin-top-40">
+                                    <span class="c-text c-text--font-weight-700">
+                                        Дата видачi<sup>*</sup>:
+                                    </span>
+                                    <span class="c-text c-text--margin-left-54">
+                                        {{ dateIssue }}<!-- 22.12.22 -->
+                                    </span>
+                                </div>
+                                <div class="c-text c-text--margin-top-10">
+                                    <span class="c-text c-text--font-weight-700">
+                                        Дiйсний до:
+                                    </span>
+                                    <span class="c-text c-text--margin-left-63">
+                                        {{ validDate }}<!-- 22.12.22 -->
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -404,28 +412,30 @@
                             <!--class="img img&#45;&#45;logo">-->
 
                         </div>
-                        <div class="c-container-a6__row-block c-container-a6__row-block--border-grey c-container-a6__row-block--padding-left-15">
+                        <div class="c-container-a6__row-block c-container-a6__row-block--foot c-container-a6__row-block--border-grey c-container-a6__row-block--padding-left-15">
                             <div class="c-text c-text--font-weight-700">
                                 Director of the Centre
                             </div>
                             <div class="c-text c-text--margin-top-50 c-text--font-weight-700">
                                 Chief of the Course
                             </div>
-                            <div class="c-text c-text--margin-top-40">
-                                <span class="c-text c-text--font-weight-700">
-                                    Date of issue<sup>*</sup>
-                                </span>
-                                <span class="c-text c-text--margin-left-72">
+                            <div>
+                                <div class="c-text c-text--margin-top-40">
+                                    <span class="c-text c-text--font-weight-700">
+                                        Date of issue<sup>*</sup>
+                                    </span>
+                                    <span class="c-text c-text--margin-left-72">
                                     {{ dateIssueStr }}<!-- 22.12.22 -->
                                 </span>
-                            </div>
-                            <div class="c-text c-text--margin-top-10">
-                                <span class="c-text c-text--font-weight-700">
-                                    Date of expire
-                                </span>
-                                <span class="c-text c-text--margin-left-70">
+                                </div>
+                                <div class="c-text c-text--margin-top-10">
+                                    <span class="c-text c-text--font-weight-700">
+                                        Date of expire
+                                    </span>
+                                    <span class="c-text c-text--margin-left-70">
                                     {{ validDateStr }}<!-- 22.12.22 -->
                                 </span>
+                                </div>
                             </div>
                         </div>
                     </div>
