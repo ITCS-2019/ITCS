@@ -193,6 +193,7 @@
 
         <!--Request for numbers blank-->
         <div id="pdf"></div>
+        <div id="cert-pdf-wrap"></div>
         <RequestNumbersForm
         ref="reqNumForm"
         :certs="reqNumCerts">
@@ -583,24 +584,25 @@
         certIDs.forEach((id, i) => {
           axios.get(`/mariner/api/printCertificate/${id}/`)
             .then(res => {
-              let element = document.createElement('div');
+              let element = document.createElement('div'),
+                  PDFWrap = document.querySelector('#cert-pdf-wrap');
 
               element.innerHTML = res.data.split('<body>')[1].split('</body>')[0];
 
-              document.body.appendChild(element);
+              PDFWrap.appendChild(element);
 
-              html2canvas(document.querySelector('#pdf-content'),
+              html2canvas(PDFWrap.querySelector('#pdf-content'),
               {
                 imageTimeout: 5000,
                 useCORS: true
               })
                 .then(canvas => {
                   document.getElementById('pdf').appendChild(canvas);
-                  let img = canvas.toDataURL('image/png');
+                  let img = canvas.toDataURL('image/png', 1.0);
                   let pdf = new jsPDF('portrait', 'mm', 'a6');
-                  pdf.addImage(img, 'JPEG', 5, 5, 95, 281);
+                  pdf.addImage(img, 'JPEG', 0, 0, 105, 296);
                   pdf.addPage();
-                  pdf.addImage(img, 'JPEG', 5, -138, 95, 281);
+                  pdf.addImage(img, 'JPEG', 0, -148, 105, 296);
 
                   if (i === (certIDs.length - 1))
                     this.loader.show = false;
@@ -608,7 +610,7 @@
                   pdf.save(`cert_${id}.pdf`);
                   document.getElementById('pdf').innerHTML = '';
                 });
-              document.body.removeChild(element);
+              PDFWrap.removeChild(element);
             })
             .catch((err) => {
               console.log(err);
