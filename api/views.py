@@ -1043,6 +1043,7 @@ def printCertificate(request, certID):
 	organisationEmailStr = cert.trainigOrganisation.orgnisation_email
 	organisationSiteStr = cert.trainigOrganisation.site_link
 	organisationNumberStr = cert.trainigOrganisation.nds_number
+	sailorPhotoURLStr = cert.sailor.photo
 	sailorNameStr = cert.last_name_ukr + ' ' + cert.first_name_ukr + ' ' + cert.second_name_ukr
 	sailorNameEngStr = cert.first_name_en + ' ' + cert.last_name_en
 	sailorBirthdayStr = cert.born
@@ -1084,6 +1085,7 @@ def printCertificate(request, certID):
 		'organisationEmail': organisationEmailStr,
 		'organisationSite': organisationSiteStr,
 		'organisationNumber': organisationNumberStr,
+		'sailorPhotoURL':sailorPhotoURLStr,
 		'sailorName': sailorNameStr,
 		'sailorNameEng': sailorNameEngStr,
 		'sailorBirthday': sailorBirthdayStr,
