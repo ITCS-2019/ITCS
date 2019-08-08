@@ -40,6 +40,7 @@ urlpatterns = [
     path('exportToPrint/', views.exportToPrint, name='api-exportToPrint'),
     path('printCertificate/<certID>/', views.printCertificate, name='api-printCertificate'),
     path('updateCertForTable/', views.updateCertForTable, name='api-updateCertForTable'),
+    path('uploadSailorPhoto/', views.uploadSailorPhoto, name='api-uploadSailorPhoto'),
     path('uploadOrganisationLogo/', views.uploadOrganisationLogo, name='api-uploadOrganisationLogo'),
     path('uploadRegulationPDF/', views.uploadRegulationPDF, name='api-uploadRegulationPDF'),
     # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
