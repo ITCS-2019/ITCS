@@ -9,6 +9,19 @@
           <v-container py-0>
             <v-layout wrap>
               <v-flex xs12 md6>
+                <img :src="logo.url" height="150" v-if="logo.url"/>
+                <v-text-field label="Завантажити лого"
+                v-on:click="pickLogo"
+                v-model="logo.name"
+                prepend-inner-icon="mdi-paperclip">
+                </v-text-field>
+                <input  type="file"
+                style="display: none"
+                ref="logo"
+                accept="image/*"
+                v-on:change="onLogoPicked">
+              </v-flex>
+              <v-flex xs12 md6>
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
@@ -197,6 +210,12 @@ export default {
 
   data() {
     return {
+      logo: {
+        name: '',
+        url: '',
+        logo_pic: ''
+      },
+
       currentStatus: null,
       userRole: gUserRole,
 
@@ -337,11 +356,36 @@ export default {
     }
   },
 
-  mounted() {
-
-  },
-
   methods: {
+    pickLogo () {
+      this.$refs.logo.click();
+    },
+
+    onLogoPicked (e) {
+      const files = e.target.files;
+
+      if(files[0] !== undefined) {
+        this.logo.name = files[0].name;
+        if(this.logo.name.lastIndexOf('.') <= 0) {
+          return;
+        }
+
+        const fr = new FileReader ();
+
+        fr.readAsDataURL(files[0]);
+        fr.addEventListener('load', () => {
+          this.logo.url = fr.result;
+          this.logo.logo_pic = files[0];
+        })
+      } else {
+        this.logo.name = '';
+        this.logo.logo_pic = '';
+        this.logo.url = '';
+      }
+    },
+
+
+
     loadFormData() {
       let requests = [axios.get(`/mariner/api/directions/`)];
 

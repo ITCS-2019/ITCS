@@ -768,29 +768,65 @@
           status: this.$refs.certForm.status
         };
 
-        if (gUserRole !== 'НТЗ') {
-          formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
-        }
+
+
+
+
+        let formData2 = {
+          first_name_en: this.$refs.certForm.first_name_en,
+          last_name_en: this.$refs.certForm.last_name_en,
+          last_name_ukr: this.$refs.certForm.last_name_ukr,
+          first_name_ukr: this.$refs.certForm.first_name_ukr,
+          second_name_ukr: this.$refs.certForm.second_name_ukr,
+          born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
+          sailorPhoto: this.$refs.certForm.logo.logo_pic
+        };
+
+        console.log(formData2);
 
         axios({
-          method: (this.certId === 0) ? 'POST' : 'PUT',
-          url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
-          data: formData
+          method: 'POST',
+          url: `/mariner/api/uploadSailorPhoto/`,
+          data: formData2,
+          // headers: {
+          //   'Content-Type': 'multipart/form-data'
+          // }
         })
           .then(res => {
-            this.loadGridData(true);
-            this.certFormModal = false;
-
-            this.snackbarConfig.icon = 'mdi-check-circle';
-            this.snackbarConfig.color = 'success';
-            this.snackbarConfig.message = (this.certId === 0)
-                                            ? 'Сертифiкат успiшно створено!'
-                                            : 'Сертифiкат успiшно вiдредаговано!';
-            this.snackbar = true;
+            console.log(res);
           })
           .catch((err) => {
             console.log(err);
           });
+
+
+
+
+
+
+        if (gUserRole !== 'НТЗ') {
+          formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
+        }
+
+        // axios({
+        //   method: (this.certId === 0) ? 'POST' : 'PUT',
+        //   url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
+        //   data: formData
+        // })
+        //   .then(res => {
+        //     this.loadGridData(true);
+        //     this.certFormModal = false;
+        //
+        //     this.snackbarConfig.icon = 'mdi-check-circle';
+        //     this.snackbarConfig.color = 'success';
+        //     this.snackbarConfig.message = (this.certId === 0)
+        //                                     ? 'Сертифiкат успiшно створено!'
+        //                                     : 'Сертифiкат успiшно вiдредаговано!';
+        //     this.snackbar = true;
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
       },
 
       showCertFormModal(certId) {
