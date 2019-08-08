@@ -599,10 +599,10 @@
                 .then(canvas => {
                   document.getElementById('pdf').appendChild(canvas);
                   let img = canvas.toDataURL('image/png', 1.0);
-                  let pdf = new jsPDF('portrait', 'mm', 'a6');
-                  pdf.addImage(img, 'JPEG', 0, 0, 105, 296);
+                  let pdf = new jsPDF('portrait', 'mm', 'a6', true);
+                  pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
                   pdf.addPage();
-                  pdf.addImage(img, 'JPEG', 0, -148, 105, 296);
+                  pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
 
                   if (i === (certIDs.length - 1))
                     this.loader.show = false;
