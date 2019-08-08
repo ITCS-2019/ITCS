@@ -1146,7 +1146,7 @@ def uploadSailorPhoto(request):
 
 	if request.POST.get('sailorPhoto') is not '':
 		photoFile = request.FILES['sailorPhoto']
-		photoFileName = nameEng + surnameEng + '.png'
+		photoFileName = request.POST.get('first_name_en') + request.POST.get('last_name_en') + request.POST.get('born') + '.png'
 		sailor.photo.save(photoFileName, photoFile, save=True)
 		sailor.save()
 
