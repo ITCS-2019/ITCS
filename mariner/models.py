@@ -22,6 +22,7 @@ class Sailor(models.Model):
         (M, 'Чоловік'),
         (W, 'Жінка')
     )
+    photo = models.ImageField(upload_to = 'sailorPhotos/', default = 'sailorPhotos/no-photo-img.jpg', blank=True, null=True)
     first_name_en = models.CharField(max_length=140, blank=True)
     last_name_en = models.CharField(max_length=140, blank=True)
     last_name_ukr = models.CharField(max_length=140)
@@ -185,6 +186,7 @@ class Certificate(models.Model):
     second_name_ukr = models.CharField(max_length=140, blank=True)
     born = models.DateField()
     inn = models.CharField(max_length=100, null=True, blank=True)
+
     sailor = models.ForeignKey(to='Sailor', null=True, on_delete=models.SET_NULL, related_name='certificated', blank=True)
     
     trainigOrganisation = models.ForeignKey(to='TrainigOrganisation', null=True, on_delete=models.SET_NULL, related_name='trained', blank=True)

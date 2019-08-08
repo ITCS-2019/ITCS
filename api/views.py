@@ -1113,6 +1113,45 @@ def updateCertForTable(request):
 		cert.save()
 	return HttpResponse(status=204)
 
+@login_required(login_url="login/")
+def uploadSailorPhoto(request):
+	sailor = Sailor()
+	sailorCount = Sailor.objects.filter(
+			first_name_en = request.POST.get('first_name_en'),
+			last_name_en = request.POST.get('last_name_en'),
+			last_name_ukr = request.POST.get('last_name_ukr'),
+			first_name_ukr = request.POST.get('first_name_ukr'),
+			second_name_ukr = request.POST.get('second_name_ukr'),
+			born = request.POST.get('born'),
+		).count()
+
+	if sailorCount > 1 : #if multiple objects
+		sailor = Sailor.objects.filter(
+			first_name_en = request.POST.get('first_name_en'),
+			last_name_en = request.POST.get('last_name_en'),
+			last_name_ukr = request.POST.get('last_name_ukr'),
+			first_name_ukr = request.POST.get('first_name_ukr'),
+			second_name_ukr = request.POST.get('second_name_ukr'),
+			born = request.POST.get('born'),
+		).first()
+	else:
+		sailor = Sailor.objects.get(
+			first_name_en = request.POST.get('first_name_en'),
+			last_name_en = request.POST.get('last_name_en'),
+			last_name_ukr = request.POST.get('last_name_ukr'),
+			first_name_ukr = request.POST.get('first_name_ukr'),
+			second_name_ukr = request.POST.get('second_name_ukr'),
+			born = request.POST.get('born'),
+		)
+
+	if request.POST.get('sailorPhoto') is not '':
+		photoFile = request.FILES['sailorPhoto']
+		photoFileName = nameEng + surnameEng + '.png'
+		sailor.photo.save(photoFileName, photoFile, save=True)
+		sailor.save()
+
+	return HttpResponse(status=200)
+
 def uploadOrganisationLogo(request):
 	organisationID = request.POST.get('orgID')
 	organisation = TrainigOrganisation.objects.get(id=organisationID)
