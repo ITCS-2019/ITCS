@@ -769,28 +769,36 @@
         };
 
 
+        let formData2 = new FormData();
+
+        formData2.append('first_name_en', this.$refs.certForm.first_name_en);
+        formData2.append('last_name_en', this.$refs.certForm.last_name_en);
+        formData2.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
+        formData2.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
+        formData2.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
+        formData2.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
+        formData2.append('sailorPhoto', this.$refs.certForm.logo.logo_pic);
 
 
+        // let formData2 = {
+        //   first_name_en: this.$refs.certForm.first_name_en,
+        //   last_name_en: this.$refs.certForm.last_name_en,
+        //   last_name_ukr: this.$refs.certForm.last_name_ukr,
+        //   first_name_ukr: this.$refs.certForm.first_name_ukr,
+        //   second_name_ukr: this.$refs.certForm.second_name_ukr,
+        //   born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
+        //   sailorPhoto: this.$refs.certForm.logo.logo_pic
+        // };
 
-        let formData2 = {
-          first_name_en: this.$refs.certForm.first_name_en,
-          last_name_en: this.$refs.certForm.last_name_en,
-          last_name_ukr: this.$refs.certForm.last_name_ukr,
-          first_name_ukr: this.$refs.certForm.first_name_ukr,
-          second_name_ukr: this.$refs.certForm.second_name_ukr,
-          born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
-          sailorPhoto: this.$refs.certForm.logo.logo_pic
-        };
-
-        console.log(formData2);
+        // console.log(formData2);
 
         axios({
           method: 'POST',
           url: `/mariner/api/uploadSailorPhoto/`,
           data: formData2,
-          // headers: {
-          //   'Content-Type': 'multipart/form-data'
-          // }
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         })
           .then(res => {
             console.log(res);
