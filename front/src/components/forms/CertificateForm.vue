@@ -8,26 +8,42 @@
         <v-form>
           <v-container py-0>
             <v-layout wrap>
-              <v-flex xs12 md6>
-                <img :src="logo.url" height="150" v-if="logo.url"/>
-                <v-text-field label="Завантажити лого"
-                v-on:click="pickLogo"
-                v-model="logo.name"
-                prepend-inner-icon="mdi-paperclip">
-                </v-text-field>
-                <input  type="file"
-                style="display: none"
-                ref="logo"
-                accept="image/*"
-                v-on:change="onLogoPicked">
+
+
+
+              <v-flex xs12 md4>
+                <img alt="photo"
+                :src="imgDataUrl"
+                v-if="imgDataUrl">
+                <v-text-field label="Name"
+                prepend-inner-icon="mdi-web"
+                :readonly="true"
+                @click="toggleShow"/>
+                <!--<a class="btn" @click="toggleShow">set avatar</a>-->
+                <my-upload field="img"
+                 @crop-success="cropSuccess"
+                 @crop-upload-success="cropUploadSuccess"
+                 @crop-upload-fail="cropUploadFail"
+                 v-model="show"
+                 :width="100"
+                 :height="100"
+                 url="/upload"
+                 :params="params"
+                 :headers="headers"
+                 img-format="png"></my-upload>
               </v-flex>
-              <v-flex xs12 md6>
+
+
+
+              <v-flex xs12 md4
+              :align-self-end="true">
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_en"/>
               </v-flex>
-              <v-flex xs12 md6>
+              <v-flex xs12 md4
+              :align-self-end="true">
                 <v-text-field label="Surname"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
@@ -199,6 +215,8 @@
 </template>
 
 <script>
+import myUpload from 'vue-image-crop-upload';
+
 export default {
   name: 'EditCertificate',
   props: {
@@ -208,13 +226,26 @@ export default {
     }
   },
 
+  components: {
+    'my-upload': myUpload
+  },
+
   data() {
     return {
-      logo: {
-        name: '',
-        url: '',
-        logo_pic: ''
+      show: false,
+      params: {
+        token: '123456798',
+        name: 'avatar'
       },
+      headers: {
+        smail: '*_~'
+      },
+      imgDataUrl: '',
+
+
+
+
+
 
       currentStatus: null,
       userRole: gUserRole,
@@ -357,6 +388,48 @@ export default {
   },
 
   methods: {
+    toggleShow() {
+      this.show = !this.show;
+    },
+    /**
+     * crop success
+     *
+     * [param] imgDataUrl
+     * [param] field
+     */
+    cropSuccess(imgDataUrl, field){
+      console.log('-------- crop success --------');
+      this.imgDataUrl = imgDataUrl;
+    },
+    /**
+     * upload success
+     *
+     * [param] jsonData  server api return data, already json encode
+     * [param] field
+     */
+    cropUploadSuccess(jsonData, field){
+      console.log('-------- upload success --------');
+      console.log(jsonData);
+      console.log('field: ' + field);
+    },
+    /**
+     * upload fail
+     *
+     * [param] status    server api return error status, like 500
+     * [param] field
+     */
+    cropUploadFail(status, field){
+      console.log('-------- upload fail --------');
+      console.log(status);
+      console.log('field: ' + field);
+    },
+
+
+
+
+
+
+
     pickLogo () {
       this.$refs.logo.click();
     },
