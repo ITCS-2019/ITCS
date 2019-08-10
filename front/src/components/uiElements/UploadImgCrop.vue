@@ -7,12 +7,14 @@
         <v-text-field label="Фото моряка"
         prepend-inner-icon="mdi-camera"
         :readonly="true"
+        v-model="imgName"
         v-on:click="toggleShow"/>
         <my-upload field="img"
         v-on:crop-success="cropSuccess"
         v-model="show"
         :width="50"
         :height="50"
+        :langType="`ua`"
         img-format="png">
         </my-upload>
     </div>
@@ -27,7 +29,8 @@
       return {
         show: false,
         imgDataUrl: '',
-        isNewPhoto: true
+        isNewPhoto: true,
+        imgName: ''
       }
     },
 
@@ -44,6 +47,7 @@
 
       cropSuccess(imgDataUrl, field){
         this.imgDataUrl = imgDataUrl;
+        this.imgName = `Iм'я файла буде сгенеровано автоматично`;
       },
 
       showPic(imgUrl = '') {
@@ -52,8 +56,11 @@
         this.isNewPhoto = true;
         this.imgDataUrl = imgUrl;
 
-        if (photoArr && photoArr[photoArr.length - 1] !== 'no-photo-img.jpg') {
-          this.isNewPhoto = false;
+        if (photoArr) {
+          this.imgName = photoArr[photoArr.length - 1];
+          if (photoArr[photoArr.length - 1] !== 'no-photo-img.jpg') {
+            this.isNewPhoto = false;
+          }
         }
       }
     }

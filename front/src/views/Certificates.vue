@@ -751,6 +751,15 @@
           });
       },
 
+      dataURLtoFile(dataurl, filename) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+          u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
+      },
+
       saveCert() {
         let formData = {
           first_name_en: this.$refs.certForm.first_name_en,
@@ -772,29 +781,20 @@
           formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
         }
 
-        // let formDataPhoto = new FormData();
-        //
-        // formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
-        // formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
-        // formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
-        // formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
-        // formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
-        // formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
-        //
-        // console.log(this.$refs.certForm.getSailorPhoto().length);
-        // if (this.$refs.certForm.getSailorPhoto().length > 0) {
-        //   console.log('aaa');
-        //   formDataPhoto.append('sailorPhoto', this.$refs.certForm.getSailorPhoto());
-        // }
-
-
         axios({
           method: (this.certId === 0) ? 'POST' : 'PUT',
           url: `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`,
           data: formData
         })
           .then(res => {
-            let formDataPhoto = new FormData();
+            let formDataPhoto = new FormData(),
+                sailorPhoto = null;
+
+            if (this.$refs.certForm.getSailorPhoto()) {
+              sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto(),
+                            `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
+
+            }
 
             formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
             formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
@@ -802,10 +802,7 @@
             formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
             formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
             formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
-            if (this.$refs.certForm.getSailorPhoto().length > 0) {
-              console.log('aaa');
-              formDataPhoto.append('sailorPhoto', this.$refs.certForm.getSailorPhoto());
-            }
+            formDataPhoto.append('sailorPhoto', sailorPhoto);
 
             return axios({
               method: 'POST',
