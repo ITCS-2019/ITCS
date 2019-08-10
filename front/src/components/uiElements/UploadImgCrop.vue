@@ -55,6 +55,7 @@
 
         this.isNewPhoto = true;
         this.imgDataUrl = imgUrl;
+        this.imgName = '';
 
         if (photoArr) {
           this.imgName = photoArr[photoArr.length - 1];
