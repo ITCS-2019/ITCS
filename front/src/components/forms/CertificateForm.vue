@@ -9,31 +9,11 @@
           <v-container py-0>
             <v-layout wrap>
 
-
-
-              <v-flex xs12 md4>
-                <img alt="photo"
-                :src="imgDataUrl"
-                v-if="imgDataUrl">
-                <v-text-field label="Name"
-                prepend-inner-icon="mdi-web"
-                :readonly="true"
-                @click="toggleShow"/>
-                <!--<a class="btn" @click="toggleShow">set avatar</a>-->
-                <my-upload field="img"
-                 @crop-success="cropSuccess"
-                 @crop-upload-success="cropUploadSuccess"
-                 @crop-upload-fail="cropUploadFail"
-                 v-model="show"
-                 :width="100"
-                 :height="100"
-                 url="/upload"
-                 :params="params"
-                 :headers="headers"
-                 img-format="png"></my-upload>
+              <v-flex xs12 md4
+              :align-self-end="true">
+                <CropImgUpload ref="photoUpload">
+                </CropImgUpload>
               </v-flex>
-
-
 
               <v-flex xs12 md4
               :align-self-end="true">
@@ -215,7 +195,7 @@
 </template>
 
 <script>
-import myUpload from 'vue-image-crop-upload';
+import CropImgUpload from '@/components/uiElements/UploadImgCrop.vue'
 
 export default {
   name: 'EditCertificate',
@@ -227,25 +207,12 @@ export default {
   },
 
   components: {
-    'my-upload': myUpload
+    CropImgUpload
   },
 
   data() {
     return {
-      show: false,
-      params: {
-        token: '123456798',
-        name: 'avatar'
-      },
-      headers: {
-        smail: '*_~'
-      },
-      imgDataUrl: '',
-
-
-
-
-
+      test: '',
 
       currentStatus: null,
       userRole: gUserRole,
@@ -388,76 +355,9 @@ export default {
   },
 
   methods: {
-    toggleShow() {
-      this.show = !this.show;
+    getSailorPhoto() {
+      return this.$refs.photoUpload.imgDataUrl;
     },
-    /**
-     * crop success
-     *
-     * [param] imgDataUrl
-     * [param] field
-     */
-    cropSuccess(imgDataUrl, field){
-      console.log('-------- crop success --------');
-      this.imgDataUrl = imgDataUrl;
-    },
-    /**
-     * upload success
-     *
-     * [param] jsonData  server api return data, already json encode
-     * [param] field
-     */
-    cropUploadSuccess(jsonData, field){
-      console.log('-------- upload success --------');
-      console.log(jsonData);
-      console.log('field: ' + field);
-    },
-    /**
-     * upload fail
-     *
-     * [param] status    server api return error status, like 500
-     * [param] field
-     */
-    cropUploadFail(status, field){
-      console.log('-------- upload fail --------');
-      console.log(status);
-      console.log('field: ' + field);
-    },
-
-
-
-
-
-
-
-    pickLogo () {
-      this.$refs.logo.click();
-    },
-
-    onLogoPicked (e) {
-      const files = e.target.files;
-
-      if(files[0] !== undefined) {
-        this.logo.name = files[0].name;
-        if(this.logo.name.lastIndexOf('.') <= 0) {
-          return;
-        }
-
-        const fr = new FileReader ();
-
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener('load', () => {
-          this.logo.url = fr.result;
-          this.logo.logo_pic = files[0];
-        })
-      } else {
-        this.logo.name = '';
-        this.logo.logo_pic = '';
-        this.logo.url = '';
-      }
-    },
-
-
 
     loadFormData() {
       let requests = [axios.get(`/mariner/api/directions/`)];
@@ -527,6 +427,7 @@ export default {
             this.ntz_number = cert.ntz_number;
             this.second_name_ukr = cert.second_name_ukr;
             this.status = (this.currentStatus === 2) ? 3 : cert.status;
+            this.sailorPhoto = cert.sailor.photo;
             this.training_direction = {
               caption: cert.training_direction.direction_title,
               value: cert.training_direction.id
@@ -538,6 +439,10 @@ export default {
               };
             }
             this.valid_date = this.formatDate(cert.valid_date);
+
+            if (this.sailorPhoto) {
+              this.$refs.photoUpload.showPic(this.sailorPhoto);
+            }
           }
 
           // Organisations for select
@@ -553,6 +458,7 @@ export default {
               });
             }
 
+            this.$refs.photoUpload.showPic('');
             this.born = null;
             this.certf_number = null;
             this.date_of_issue = null;

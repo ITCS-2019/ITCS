@@ -1,43 +1,61 @@
 <template>
-    <v-layout row justify-center>
-        <v-dialog v-model="value" persistent content content-class="centered-dialog">
-            <v-container fill-height>
-                <v-layout column justify-center align-center>
-                    <v-progress-circular indeterminate :size="70"
-                    v-if="showCircular"
-                    :width="7"
-                    :color="progressColor">
-                    </v-progress-circular>
-                    <h1 v-if="message != null">{{message}}</h1>
-                </v-layout>
-            </v-container>
-        </v-dialog>
-    </v-layout>
+    <div>
+        <img alt="photo"
+        style="width: 100px; height: 100px;"
+        :src="imgDataUrl"
+        v-if="imgDataUrl">
+        <v-text-field label="Фото моряка"
+        prepend-inner-icon="mdi-camera"
+        :readonly="true"
+        v-on:click="toggleShow"/>
+        <my-upload field="img"
+        v-on:crop-success="cropSuccess"
+        v-model="show"
+        :width="50"
+        :height="50"
+        img-format="png">
+        </my-upload>
+    </div>
 </template>
 
 <script>
+  import myUpload from 'vue-image-crop-upload'
+
   export default {
-    name: "Loading",
+    name: "CropImgUpload",
     data: function () {
-      return {}
+      return {
+        show: false,
+        imgDataUrl: '',
+        isNewPhoto: true
+      }
     },
-    props: {
-      value: {type: Boolean, default: false},
-      showCircular: {type: Boolean, default: false},
-      message: {type: String, default: null},
-      progressColor: {type: String, default: 'purple'},
+
+    components: {
+      'my-upload': myUpload
     },
+
+    methods: {
+      toggleShow() {
+        if (!this.show && this.isNewPhoto) {
+          this.show = !this.show;
+        }
+      },
+
+      cropSuccess(imgDataUrl, field){
+        this.imgDataUrl = imgDataUrl;
+      },
+
+      showPic(imgUrl = '') {
+        let photoArr = (imgUrl.length > 0) ? imgUrl.split('/') : undefined;
+
+        this.isNewPhoto = true;
+        this.imgDataUrl = imgUrl;
+
+        if (photoArr && photoArr[photoArr.length - 1] !== 'no-photo-img.jpg') {
+          this.isNewPhoto = false;
+        }
+      }
+    }
   }
 </script>
-
-<style>
-    .dialog.centered-dialog,
-    .v-dialog.centered-dialog
-    {
-        background: #282c2dad;
-        box-shadow: none;
-        border-radius: 6px;
-        width: auto;
-        color: whitesmoke;
-    }
-</style>
