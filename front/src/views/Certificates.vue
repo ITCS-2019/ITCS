@@ -609,8 +609,8 @@
 
                   pdf.save(`cert_${id}.pdf`);
                   document.getElementById('pdf').innerHTML = '';
+                  PDFWrap.removeChild(element);
                 });
-              PDFWrap.removeChild(element);
             })
             .catch((err) => {
               console.log(err);
