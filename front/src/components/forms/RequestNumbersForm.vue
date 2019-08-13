@@ -244,7 +244,7 @@
             document.getElementById('pdf').appendChild(canvas)
             let img = canvas.toDataURL('image/png'),
                 pdf = new jsPDF('portrait', 'mm', 'a4', true);
-            pdf.addImage(img, 'JPEG', 5, 5, 200, 287, undefined, 'FAST');
+            pdf.addImage(img, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
             pdf.save('request_cert_numbers.pdf');
             document.getElementById('pdf').innerHTML = '';
             this.downloadingPdf = false;
