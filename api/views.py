@@ -459,12 +459,12 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		else:
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
 		certification.trainigOrganisation = trainigOrganisation
-		certification.organisation_name_cert = trainigOrganisation.organisation_name
+		#certification.organisation_name_cert = trainigOrganisation.organisation_name
 		
 		trainigDirection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 		certification.training_direction = trainigDirection
-		certification.direction_title_cert = trainigDirection.direction_title
-		
+		#certification.direction_title_cert = trainigDirection.direction_title
+
 		certification, created = Certificate.objects.get_or_create(
 			first_name_en = request.data.get('first_name_en'),
 			last_name_en = request.data.get('last_name_en'),
@@ -484,6 +484,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			)
 		if created:
 			certification.inn = request.data.get('inn')
+			certification.organisation_name_cert = trainigOrganisation.organisation_name
+			certification.direction_title_cert = trainigDirection.direction_title
 			certification.save()
 		
 		return Response({"message": "Add Certificate"}, status=200)
