@@ -125,7 +125,7 @@
               </v-btn>
               <v-btn color="success"
               small
-              v-if="certsCelected > 0"
+              v-if="certsCelected > 0 && userRole === 'НТЗ'"
               v-on:click="e => exportGrid(true, 'reqNumbers')">
                 <v-icon>
                   mdi-download
@@ -629,6 +629,7 @@
 
             this.reqNumCerts.push(cert);
           });
+
 
           this.$refs.reqNumForm.updateGrid();
         }
