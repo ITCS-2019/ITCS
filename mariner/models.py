@@ -150,7 +150,29 @@ class TrainigOrganisationAdmin(admin.ModelAdmin):
     search_fields = ('organisation_name',)
     filter_horizontal = ('directions',)
 
-admin.site.register(TrainigOrganisation, TrainigOrganisationAdmin)        
+admin.site.register(TrainigOrganisation, TrainigOrganisationAdmin)
+
+class CertificatePrintSettings(models.Model):
+    logo_pic = models.ImageField(upload_to = 'orgLogo/', default = 'orgLogo/no-img.jpg', blank=True, null=True)
+    bg_pic = models.ImageField(upload_to = 'orgLogo/', default = 'orgLogo/certBg-no-img.jpg', blank=True, null=True)
+    sailor_photo = models.ImageField(upload_to = 'sailorPhotos/', default = 'sailorPhotos/no-photo-img.jpg', blank=True, null=True)
+    organisationNameEng = models.CharField(max_length=140, blank=True)
+    organisationAdress = models.CharField(max_length=140, blank=True)
+    organisationAdressEng = models.CharField(max_length=140, blank=True)
+    organisationPhone1 = models.CharField(max_length=140, blank=True)
+    organisationPhone2 = models.CharField(max_length=140, blank=True)
+    organisationEmail = models.CharField(max_length=140, blank=True)
+    organisationSite = models.CharField(max_length=140, blank=True)
+    organisationNDSNumber = models.CharField(max_length=140, blank=True)
+    directionTitleEng = models.CharField(max_length=200, blank=True, null=True)
+    directionInfoText = models.TextField(null=True, blank=True)
+    directionInfoTextEng = models.TextField(null=True, blank=True)
+    directionCourseInfo = models.TextField(null=True, blank=True)
+    directionCourseInfoEng = models.TextField(null=True, blank=True)
+    directionRegulationInfo = models.TextField(null=True, blank=True)
+    directionRegulationInfoEng = models.TextField(null=True, blank=True)
+    directionInspectionInfo = models.TextField(null=True, blank=True)
+    directionInspectionInfoEng = models.TextField(null=True, blank=True)
 
 #//////////////////////////////////////////////////////////
 class Certificate(models.Model):
@@ -202,6 +224,8 @@ class Certificate(models.Model):
     direction_title_cert = models.CharField(max_length=200, null=True, blank=True)
     
     status = models.IntegerField(choices=STATUSES, null=True, default=DRF)
+
+    printInfo = models.ForeignKey(to='CertificatePrintSettings', null=True, on_delete=models.SET_NULL, related_name='printed', blank=True)
 
 
 class CertificateAdmin(admin.ModelAdmin):
