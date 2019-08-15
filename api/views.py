@@ -17,7 +17,7 @@ from rest_framework import decorators
 from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
 from accounts.models import Profile
-from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor
+from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor, CertificatePrintSettings
 from regulations.models import RegulationDoc
 
 # from django.core.files.storage import FileSystemStorage
@@ -398,18 +398,41 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			print("Update: set organisation ID")
 		certificate.trainigOrganisation = trainigOrganisation
 		certificate.organisation_name_cert = trainigOrganisation.organisation_name
-		
 		# certificate.date_of_issue = request.data.get('date_of_issue'),
 		# certificate.valid_date =  request.data.get('valid_date'),
 		# certificate.valid_type = request.data.get('valid_type'),
-
-		
 		derection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 		certificate.training_direction = derection
 		certificate.direction_title_cert = derection.direction_title
 		certificate.direction_level = derection.level
 		certificate.direction_allow_functions = derection.allow_functions
 		certificate.status = request.data.get('status')
+
+		printSettings, CertificatePrintSettings.objects.get_or_create(
+			logo_pic = trainigOrganisation.logo_pic,
+    		bg_pic = trainigOrganisation.certBg_pic,
+    		#sailor_photo 
+    		organisationNameEng = trainigOrganisation.organisation_name_eng,
+    		organisationAdress = trainigOrganisation.mail_adress_ukr,
+    		organisationAdressEng = trainigOrganisation.mail_adress_eng,
+    		organisationPhone1 = trainigOrganisation.phone1,
+    		organisationPhone2 = trainigOrganisation.phone2,
+    		organisationEmail = trainigOrganisation.orgnisation_email,
+    		organisationSite = trainigOrganisation.site_link,
+    		organisationNDSNumber = trainigOrganisation.nds_number,
+    		directionTitleEng = derection.direction_title_eng,
+    		directionInfoText = derection.infoText,
+    		directionInfoTextEng = derection.infoTextEng,
+    		directionCourseInfo = derection.courseInfo,
+    		directionCourseInfoEng = derection.courseInfoEng,
+    		directionRegulationInfo = derection.regulationInfo,
+    		directionRegulationInfoEng = derection.regulationInfoEng,
+    		directionInspectionInfo = derection.inspectionInfo,
+    		directionInspectionInfoEng = derection.inspectionInfoEng,
+		)
+		if created:
+			certificate.printInfo = printSettings
+
 		certificate.save()
 
 		return Response({"Certificate": "Updated"}, status=200)
@@ -419,7 +442,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		if request.data.get('inn') is not None:
 			dbSailor = Sailor.objects.filter(inn=request.data.get('inn')).first()
 			if dbSailor is not None:
-				if certification.inn != dbSailor.inn:
+				if certification.inn != dbSailor.inn:#???
 					sailor = Sailor()
 					sailor.first_name_en = request.data.get('first_name_en')
 					sailor.last_name_en = request.data.get('last_name_en')
@@ -455,18 +478,20 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			)
 			if created:
 				sailor.save()
-		certification.sailor = sailor
+		#certification.sailor = sailor#???
 
 		trainigOrganisation = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 		else:
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
-		certification.trainigOrganisation = trainigOrganisation
+		#certification.trainigOrganisation = trainigOrganisation#???
 		
 		trainigDirection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
-		certification.training_direction = trainigDirection
+		#certification.training_direction = trainigDirection???
 
+		#get or create print settings
+		
 		certification, created = Certificate.objects.get_or_create(
 			first_name_en = request.data.get('first_name_en'),
 			last_name_en = request.data.get('last_name_en'),
@@ -488,6 +513,32 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			certification.inn = request.data.get('inn')
 			certification.organisation_name_cert = trainigOrganisation.organisation_name
 			certification.direction_title_cert = trainigDirection.direction_title
+
+			printSettings, CertificatePrintSettings.objects.get_or_create(
+				logo_pic = trainigOrganisation.logo_pic,
+    			bg_pic = trainigOrganisation.certBg_pic,
+    			#sailor_photo 
+    			organisationNameEng = trainigOrganisation.organisation_name_eng,
+    			organisationAdress = trainigOrganisation.mail_adress_ukr,
+    			organisationAdressEng = trainigOrganisation.mail_adress_eng,
+    			organisationPhone1 = trainigOrganisation.phone1,
+    			organisationPhone2 = trainigOrganisation.phone2,
+    			organisationEmail = trainigOrganisation.orgnisation_email,
+    			organisationSite = trainigOrganisation.site_link,
+    			organisationNDSNumber = trainigOrganisation.nds_number,
+    			directionTitleEng = trainigDirection.direction_title_eng,
+    			directionInfoText = trainigDirection.infoText,
+    			directionInfoTextEng = trainigDirection.infoTextEng,
+    			directionCourseInfo = trainigDirection.courseInfo,
+    			directionCourseInfoEng = trainigDirection.courseInfoEng,
+    			directionRegulationInfo = trainigDirection.regulationInfo,
+    			directionRegulationInfoEng = trainigDirection.regulationInfoEng,
+    			directionInspectionInfo = trainigDirection.inspectionInfo,
+    			directionInspectionInfoEng = trainigDirection.inspectionInfoEng,
+			)
+			if created:#check created dublication (created inside created)
+				certification.printInfo = printSettings
+
 			certification.save()
 		
 		return Response({"message": "Add Certificate"}, status=200)
