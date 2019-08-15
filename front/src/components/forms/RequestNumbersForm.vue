@@ -2,7 +2,7 @@
   <div id="req-num-form"
   class="c-pdf-a4"
   v-if="downloadingFile">
-    <div class="c-pdf-a4__row c-pdf-a4__row--flex c-pdf-a4__row--justify-end">
+    <div class="c-pdf-a4__row">
       <div class="c-pdf-a4__row-block c-pdf-a4__row-block--align-right">
         <div class="c-pdf-a4__text">
           Додаток №01
