@@ -236,6 +236,8 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisation.phone2 = request.data.get('phone2')
 		organisation.orgnisation_email = request.data.get('orgnisation_email')
 		organisation.site_link = request.data.get('site_link')
+		organisation.contract_number = request.data.get('contract_number')
+		organisation.contract_number_date = request.data.get('contract_number_date')
 		organisation.checking_number = request.data.get('checking_number')
 		organisation.bank_name = request.data.get('bank_name')
 		organisation.mfo = request.data.get('mfo')
@@ -270,6 +272,8 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisation.phone2 = request.data.get('phone2')
 		organisation.orgnisation_email = request.data.get('orgnisation_email')
 		organisation.site_link = request.data.get('site_link')
+		organisation.contract_number = request.data.get('contract_number')
+		organisation.contract_number_date = request.data.get('contract_number_date')
 		organisation.checking_number = request.data.get('checking_number')
 		organisation.bank_name = request.data.get('bank_name')
 		organisation.mfo = request.data.get('mfo')
@@ -1045,6 +1049,8 @@ def printCertificate(request, certID):
 	organisationEmailStr = cert.trainigOrganisation.orgnisation_email
 	organisationSiteStr = cert.trainigOrganisation.site_link
 	organisationNumberStr = cert.trainigOrganisation.nds_number
+	organisationContractNumberStr = cert.trainigOrganisation.contract_number
+	organisationContractNumberDateStr = cert.trainigOrganisation.contract_number_date
 	sailorPhotoURLStr = cert.sailor.photo
 	sailorNameStr = cert.last_name_ukr + ' ' + cert.first_name_ukr + ' ' + cert.second_name_ukr
 	sailorNameEngStr = cert.first_name_en + ' ' + cert.last_name_en
@@ -1087,6 +1093,8 @@ def printCertificate(request, certID):
 		'organisationEmail': organisationEmailStr,
 		'organisationSite': organisationSiteStr,
 		'organisationNumber': organisationNumberStr,
+		'organisationContractNumber': organisationContractNumberStr,
+		'organisationContractNumberDate': organisationContractNumberDateStr,
 		'sailorPhotoURL':sailorPhotoURLStr,
 		'sailorName': sailorNameStr,
 		'sailorNameEng': sailorNameEngStr,

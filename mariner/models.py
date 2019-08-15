@@ -123,6 +123,8 @@ class TrainigOrganisation(models.Model):
     phone2 = models.CharField(max_length=140, null=True, blank=True)
     orgnisation_email = models.CharField(max_length=140, blank=True) #*
     site_link = models.CharField(max_length=140, null=True, blank=True)
+    contract_number = models.CharField(max_length=140, null=True, blank=True)
+    contract_number_date = models.DateField(null=True, blank=True)
     checking_number = models.CharField(max_length=140, null=True, blank=True)
     bank_name = models.CharField(max_length=140, null=True, blank=True)
     mfo = models.CharField(max_length=140, null=True, blank=True)

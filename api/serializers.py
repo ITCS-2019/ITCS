@@ -143,6 +143,8 @@ class TrainigOrganisationCustomSerializer(serializers.Serializer):
 	phone2 = serializers.CharField()
 	orgnisation_email = serializers.CharField()
 	site_link = serializers.CharField()
+	contract_number = serializers.CharField()
+	contract_number_date = serializers.DateField()
 	checking_number = serializers.CharField()
 	bank_name = serializers.CharField()
 	mfo = serializers.CharField()
@@ -175,6 +177,8 @@ class TrainigOrganisationSerializer(serializers.ModelSerializer):
 			'phone2',
 			'orgnisation_email',
 			'site_link',
+			'contract_number',
+			'contract_number_date',
 			'checking_number',
 			'bank_name',
 			'mfo',
