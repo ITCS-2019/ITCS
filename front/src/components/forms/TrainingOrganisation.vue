@@ -82,7 +82,12 @@
                         </template>
                     </v-select>
                 </v-flex>
-                <v-flex xs12 md6
+                <v-flex xs12 md4>
+                    <v-text-field label="№ Договору"
+                    :readonly="(userRole === 'НТЗ') ? true : false"
+                    v-model="organization.contract_number"/>
+                </v-flex>
+                <v-flex xs12 md4
                 v-if="userRole !== 'НТЗ'">
                     <v-menu v-model="activatedDatepicker"
                     :close-on-content-click="false"
@@ -109,7 +114,7 @@
                         </v-date-picker>
                     </v-menu>
                 </v-flex>
-                <v-flex xs12 md6
+                <v-flex xs12 md4
                 v-if="userRole !== 'НТЗ'">
                     <v-menu v-model="activeTillDatepicker"
                     :close-on-content-click="false"
@@ -301,7 +306,8 @@ export default {
         head_position: null,
         accountant_full_name: null,
         activated: null,
-        active_till: null
+        active_till: null,
+        contract_number: null
       },
       langs: [
         {
@@ -438,6 +444,7 @@ export default {
           this.organization.phone1 = organizationData.phone1;
           this.organization.phone2 = organizationData.phone2;
           this.organization.site_link = organizationData.site_link;
+          this.organization.contract_number = organizationData.contract_number;
           this.langs[0].organization_name = organizationData.organisation_name;
           this.langs[1].organization_name = organizationData.organisation_name_eng;
           this.langs[0].mail_adress = organizationData.mail_adress_ukr;

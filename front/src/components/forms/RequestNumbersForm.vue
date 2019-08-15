@@ -8,7 +8,7 @@
           Додаток №01
         </div>
         <div class="c-pdf-a4__text">
-          До договору №___/{{currYear}}-НТЗ
+          До договору № {{contract_number}}/-НТЗ
         </div>
         <div class="c-pdf-a4__text">
           про надання послуг з реєстрації документів моряків України
@@ -17,7 +17,7 @@
           та їх внесення у Єдиний державний реєстр документів моряків
         </div>
         <div class="c-pdf-a4__text">
-          від &laquo;___&raquo; _____________ {{currYear}} р.
+          від {{formatDate(activated)}}р.
         </div>
       </div>
     </div>
@@ -54,14 +54,14 @@
     </div>
     <div class="c-pdf-a4__row c-pdf-a4__row--margin-top-12">
       <div class="c-pdf-a4__text">
-        Відповідно до договору № _______________ -НТЗ від_________ р. просимо нaдати реєстраційний номер для
+        Відповідно до договору № {{contract_number}}/-НТЗ від {{formatDate(activated)}}р. просимо нaдати реєстраційний номер для
         подальшого внесення до єдиного Державного реєстру документів моряків інформацію про свідоцтва (сертифікати),
         які видаються
       </div>
       <br>
       <div class="c-pdf-a4__text c-pdf-a4__text--font-weight-700 c-pdf-a4__text--align-center">
         <b>
-          {{trainingOrganisation}}
+          {{organisation_name}}
         </b>
       </div>
       <hr>
@@ -208,15 +208,16 @@
 
     data() {
       return {
-        currYear: null,
         reqCerts: [],
         downloadingFile: false,
-        trainingOrganisation: null
+        organisation_name: null,
+        contract_number: null,
+        activated: null
       }
     },
 
     mounted() {
-      this.currYear = new Date().getFullYear();
+
     },
 
     methods: {
@@ -226,7 +227,9 @@
 
           axios.get(`/mariner/api/organisations/`)
             .then(res => {
-              this.trainingOrganisation = res.data.organisations.organisation_name;
+              this.organisation_name = res.data.organisations.organisation_name;
+              this.contract_number = res.data.organisations.contract_number;
+              this.activated = res.data.organisations.activated;
               this.downloadFile();
             })
             .catch((err) => {
