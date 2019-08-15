@@ -236,6 +236,8 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisation.phone2 = request.data.get('phone2')
 		organisation.orgnisation_email = request.data.get('orgnisation_email')
 		organisation.site_link = request.data.get('site_link')
+		organisation.contract_number = request.data.get('contract_number')
+		organisation.contract_number_date = request.data.get('contract_number_date')
 		organisation.checking_number = request.data.get('checking_number')
 		organisation.bank_name = request.data.get('bank_name')
 		organisation.mfo = request.data.get('mfo')
@@ -270,6 +272,8 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 		organisation.phone2 = request.data.get('phone2')
 		organisation.orgnisation_email = request.data.get('orgnisation_email')
 		organisation.site_link = request.data.get('site_link')
+		organisation.contract_number = request.data.get('contract_number')
+		organisation.contract_number_date = request.data.get('contract_number_date')
 		organisation.checking_number = request.data.get('checking_number')
 		organisation.bank_name = request.data.get('bank_name')
 		organisation.mfo = request.data.get('mfo')
@@ -411,13 +415,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		return Response({"Certificate": "Updated"}, status=200)
 
 	def create(self, request, format=None):
-		trainigOrganisation = TrainigOrganisation()
-		if request.user.groups.all()[0].name == 'НТЗ':
-			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		else:
-			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
-		#print('Direction ID = ', request.data.get('training_direction'))
-		trainigDirection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 		certification = Certificate()
 		if request.data.get('inn') is not None:
 			dbSailor = Sailor.objects.filter(inn=request.data.get('inn')).first()
@@ -459,10 +456,17 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			if created:
 				sailor.save()
 		certification.sailor = sailor
+
+		trainigOrganisation = TrainigOrganisation()
+		if request.user.groups.all()[0].name == 'НТЗ':
+			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+		else:
+			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
 		certification.trainigOrganisation = trainigOrganisation
-		certification.organisation_name_cert = trainigOrganisation.organisation_name
+		
+		trainigDirection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 		certification.training_direction = trainigDirection
-		certification.direction_title_cert = trainigDirection.direction_title
+
 		certification, created = Certificate.objects.get_or_create(
 			first_name_en = request.data.get('first_name_en'),
 			last_name_en = request.data.get('last_name_en'),
@@ -482,6 +486,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			)
 		if created:
 			certification.inn = request.data.get('inn')
+			certification.organisation_name_cert = trainigOrganisation.organisation_name
+			certification.direction_title_cert = trainigDirection.direction_title
 			certification.save()
 		
 		return Response({"message": "Add Certificate"}, status=200)
@@ -1043,6 +1049,8 @@ def printCertificate(request, certID):
 	organisationEmailStr = cert.trainigOrganisation.orgnisation_email
 	organisationSiteStr = cert.trainigOrganisation.site_link
 	organisationNumberStr = cert.trainigOrganisation.nds_number
+	organisationContractNumberStr = cert.trainigOrganisation.contract_number
+	organisationContractNumberDateStr = cert.trainigOrganisation.contract_number_date
 	sailorPhotoURLStr = cert.sailor.photo
 	sailorNameStr = cert.last_name_ukr + ' ' + cert.first_name_ukr + ' ' + cert.second_name_ukr
 	sailorNameEngStr = cert.first_name_en + ' ' + cert.last_name_en
@@ -1085,6 +1093,8 @@ def printCertificate(request, certID):
 		'organisationEmail': organisationEmailStr,
 		'organisationSite': organisationSiteStr,
 		'organisationNumber': organisationNumberStr,
+		'organisationContractNumber': organisationContractNumberStr,
+		'organisationContractNumberDate': organisationContractNumberDateStr,
 		'sailorPhotoURL':sailorPhotoURLStr,
 		'sailorName': sailorNameStr,
 		'sailorNameEng': sailorNameEngStr,
