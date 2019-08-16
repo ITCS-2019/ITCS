@@ -629,47 +629,6 @@
                 });
               }
             })();
-
-
-            // for (let i = 0, p = Promise.resolve(); i < certs.length; i++) {
-            //   p = p.then(() => new Promise(resolve => {
-            //
-            //       let element = document.createElement('div'),
-            //           PDFWrap = document.querySelector('#cert-pdf-wrap');
-            //
-            //       element.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
-            //
-            //       PDFWrap.appendChild(element);
-            //
-            //       html2canvas(PDFWrap.querySelector('#pdf-content'),
-            //       {
-            //         imageTimeout: 0,
-            //         useCORS: true
-            //       })
-            //         .then(canvas => {
-            //           document.getElementById('pdf').appendChild(canvas);
-            //           let img = canvas.toDataURL('image/jpeg', 1.0);
-            //
-            //           let pdf = new jsPDF('portrait', 'mm', 'a6', true);
-            //           pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
-            //           pdf.addPage('a6', 'portrait');
-            //           pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
-            //
-            //           pdf.save(`cert_${i}.pdf`);
-            //
-            //           document.getElementById('pdf').innerHTML = '';
-            //           PDFWrap.removeChild(element);
-            //           return resolve();
-            //
-            //           // if (i === (certIDs.length - 1))
-            //           //   this.loader.show = false;
-            //         });
-            //
-            //       }
-            //   ));
-            // }
-
-
           }))
           .catch((err) => {
             console.log(err);
