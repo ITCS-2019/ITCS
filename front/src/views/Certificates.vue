@@ -577,45 +577,103 @@
 
     methods: {
       saveCertPDF(certIDs) {
+        let routes = [];
+
         this.loader.show = true;
         this.loader.message = 'Формування файлiв..';
         this.loader.color = 'info';
 
-        certIDs.forEach((id, i) => {
-          axios.get(`/mariner/api/printCertificate/${id}/`)
-            .then(res => {
-              let element = document.createElement('div'),
-                  PDFWrap = document.querySelector('#cert-pdf-wrap');
-
-              element.innerHTML = res.data.split('<body>')[1].split('</body>')[0];
-
-              PDFWrap.appendChild(element);
-
-              html2canvas(PDFWrap.querySelector('#pdf-content'),
-              {
-                imageTimeout: 5000,
-                useCORS: true
-              })
-                .then(canvas => {
-                  document.getElementById('pdf').appendChild(canvas);
-                  let img = canvas.toDataURL('image/png', 1.0);
-                  let pdf = new jsPDF('portrait', 'mm', 'a6', true);
-                  pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
-                  pdf.addPage();
-                  pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
-
-                  if (i === (certIDs.length - 1))
-                    this.loader.show = false;
-
-                  pdf.save(`cert_${id}.pdf`);
-                  document.getElementById('pdf').innerHTML = '';
-                  PDFWrap.removeChild(element);
-                });
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+        certIDs.forEach((id) => {
+          routes.push(axios.get(`/mariner/api/printCertificate/${id}/`));
         });
+
+        axios.all(routes)
+          .then(axios.spread((...certs) => {
+            let _this = this;
+
+            (async function loop() {
+              for (let i = 0; i < certs.length; i++) {
+                await new Promise(resolve => {
+                  let element = document.createElement('div'),
+                      PDFWrap = document.querySelector('#cert-pdf-wrap');
+
+                  element.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
+
+                  PDFWrap.appendChild(element);
+
+                  html2canvas(PDFWrap.querySelector('#pdf-content'),
+                  {
+                    imageTimeout: 0,
+                    useCORS: true
+                  })
+                    .then(canvas => {
+                      document.getElementById('pdf').appendChild(canvas);
+                      let img = canvas.toDataURL('image/jpeg', 1.0);
+
+                      let pdf = new jsPDF('portrait', 'mm', 'a6', true);
+                      pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
+                      pdf.addPage('a6', 'portrait');
+                      pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
+
+                      pdf.save(`cert_${i}.pdf`);
+
+                      document.getElementById('pdf').innerHTML = '';
+                      PDFWrap.removeChild(element);
+
+
+                      if (i === (certs.length - 1))
+                        _this.loader.show = false;
+
+                      return resolve();
+                    });
+                });
+              }
+            })();
+
+
+            // for (let i = 0, p = Promise.resolve(); i < certs.length; i++) {
+            //   p = p.then(() => new Promise(resolve => {
+            //
+            //       let element = document.createElement('div'),
+            //           PDFWrap = document.querySelector('#cert-pdf-wrap');
+            //
+            //       element.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
+            //
+            //       PDFWrap.appendChild(element);
+            //
+            //       html2canvas(PDFWrap.querySelector('#pdf-content'),
+            //       {
+            //         imageTimeout: 0,
+            //         useCORS: true
+            //       })
+            //         .then(canvas => {
+            //           document.getElementById('pdf').appendChild(canvas);
+            //           let img = canvas.toDataURL('image/jpeg', 1.0);
+            //
+            //           let pdf = new jsPDF('portrait', 'mm', 'a6', true);
+            //           pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
+            //           pdf.addPage('a6', 'portrait');
+            //           pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
+            //
+            //           pdf.save(`cert_${i}.pdf`);
+            //
+            //           document.getElementById('pdf').innerHTML = '';
+            //           PDFWrap.removeChild(element);
+            //           return resolve();
+            //
+            //           // if (i === (certIDs.length - 1))
+            //           //   this.loader.show = false;
+            //         });
+            //
+            //       }
+            //   ));
+            // }
+
+
+          }))
+          .catch((err) => {
+            console.log(err);
+          });
       },
 
       serializeReqNumGridData(certIDs, isAllIssued = true) {
