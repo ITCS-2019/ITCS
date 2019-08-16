@@ -191,9 +191,8 @@
           ref="certsGrid"/>
         </material-card>
 
-        <!--Request for numbers blank-->
-        <div id="pdf"></div>
         <div id="cert-pdf-wrap"></div>
+        
         <RequestNumbersForm
         ref="reqNumForm"
         :certs="reqNumCerts">
@@ -594,12 +593,10 @@
             (async function loop() {
               for (let i = 0; i < certs.length; i++) {
                 await new Promise(resolve => {
-                  let element = document.createElement('div'),
-                      PDFWrap = document.querySelector('#cert-pdf-wrap');
+                  let PDFWrap = document.querySelector('#cert-pdf-wrap');
 
-                  element.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
-                  element.style.cssText = 'position: absolute; left: -999999px;';
-                  PDFWrap.appendChild(element);
+                  PDFWrap.style.cssText = 'position: absolute; left: -99999px';
+                  PDFWrap.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
 
                   html2canvas(PDFWrap.querySelector('#pdf-content'),
                   {
@@ -614,7 +611,7 @@
                       pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
                       pdf.save(`cert_${i}.pdf`);
 
-                      PDFWrap.removeChild(element);
+                      PDFWrap.innerHTML = '';
 
                       if (i === (certs.length - 1))
                         _this.loader.show = false;
