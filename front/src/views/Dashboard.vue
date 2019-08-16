@@ -147,8 +147,10 @@ export default {
         },
         hoverStateEnabled: true,
         rowAlternationEnabled: true,
-        onRowClick: function (e) {
-          // window.location.replace(`/mariner/trainigOrganisation/${e.data.ntz}`);
+        onCellClick: (e) => {
+          if (e.column.dataField === 'ntz') {
+            window.vue.$router.push(`/mariner/app/training-organisations/${e.data.id}`);
+          }
         },
         onContentReady: function(e) {
           function changePage(page) {
@@ -208,6 +210,10 @@ export default {
         },
         columns: [
           {
+            dataField: 'id',
+            visible: false
+          },
+          {
             dataField: 'ntz',
             caption: 'НТЗ',
             allowEditing: true
@@ -256,7 +262,7 @@ export default {
           this.dataSource = [];
           organisations.forEach((organisation) => {
             this.dataSource.push({
-              id: organisation.organisation_id,
+              id: organisation.id,
               certificatesAmount: organisation.organisation_allCertsInReviewCount,
               ntz: organisation.organisation_name
             })
