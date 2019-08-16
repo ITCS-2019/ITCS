@@ -598,28 +598,23 @@
                       PDFWrap = document.querySelector('#cert-pdf-wrap');
 
                   element.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
-
+                  element.style.cssText = 'position: absolute; left: -999999px;';
                   PDFWrap.appendChild(element);
 
                   html2canvas(PDFWrap.querySelector('#pdf-content'),
                   {
                     imageTimeout: 0,
-                    useCORS: true
                   })
                     .then(canvas => {
-                      document.getElementById('pdf').appendChild(canvas);
-                      let img = canvas.toDataURL('image/jpeg', 1.0);
+                      let img = canvas.toDataURL('image/jpeg', 1.0),
+                          pdf = new jsPDF('portrait', 'mm', 'a6', true);
 
-                      let pdf = new jsPDF('portrait', 'mm', 'a6', true);
                       pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
                       pdf.addPage('a6', 'portrait');
                       pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
-
                       pdf.save(`cert_${i}.pdf`);
 
-                      document.getElementById('pdf').innerHTML = '';
                       PDFWrap.removeChild(element);
-
 
                       if (i === (certs.length - 1))
                         _this.loader.show = false;
