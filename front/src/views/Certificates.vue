@@ -798,7 +798,7 @@
         })
           .then(res => {
             let formDataPhoto = new FormData(),
-                sailorPhoto = null;
+                sailorPhoto = '';
 
             if (this.$refs.certForm.getSailorPhoto()) {
               sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto(),

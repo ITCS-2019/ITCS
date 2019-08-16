@@ -42,29 +42,49 @@
 <body class="gray-bg">
     <h3>{{ fileTitle }}</h3>
     <p>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>№ Сертифіката</th>
-                    <th>№ Бланку</th>
-                    <th>Дата видачі</th>
-                    <th>Напрямок підготовки</th>
-                    <th>Моряк</th>
-                    <th>Статаус</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cert in certifications %}
-                <tr>
-                    <td>{{ cert.certf_number }}</td>
-                    <td>{{ cert.form_number }}</td>
-                    <td>{{ cert.date_of_issue }}</td>
-                    <td>{{ cert.training_direction }}</td>
-                    <td>{{ cert.last_name_ukr }} {{ cert.first_name_ukr }}</td>
-                    <td>{{ cert.status }}</td>
-                </tr>
-                {% endfor %}    
-            </tbody>
+        <table border="1" style="width: 100%; border-collapse: collapse; text-align: center;">
+            <tr>
+                <th style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    № Сертифіката
+                </th>
+                <th style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    № Бланку
+                </th>
+                <th style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    Дата видачі
+                </th>
+                <th style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    Напрямок підготовки
+                </th>
+                <th style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    Моряк
+                </th>
+                <th style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    Статаус
+                </th>
+            </tr>
+            {% for cert in certifications %}
+            <tr>
+                <td style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    {{ cert.certf_number }}
+                </td>
+                <td style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    {{ cert.form_number }}
+                </td>
+                <td style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    {{ cert.date_of_issue }}
+                </td>
+                <td style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    {{ cert.training_direction }}
+                </td>
+                <td style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    {{ cert.last_name_ukr }} {{ cert.first_name_ukr }}
+                </td>
+                <td style="border: 1px solid black; font-size: 12px; padding: 5px;">
+                    {{ cert.status }}
+                </td>
+            </tr>
+            {% endfor %}
         </table>
     </p>
 
