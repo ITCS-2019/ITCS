@@ -801,39 +801,54 @@
             let formDataPhoto = new FormData(),
                 sailorPhoto = '';
 
-            if (this.$refs.certForm.getSailorPhoto()) {
-              sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto(),
-                            `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
+            if (this.$refs.certForm.getSailorPhoto().isNew) {
 
-            }
-
-            formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
-            formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
-            formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
-            formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
-            formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
-            formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
-            formDataPhoto.append('sailorPhoto', sailorPhoto);
-
-            return axios({
-              method: 'POST',
-              url: `/mariner/api/uploadSailorPhoto/`,
-              data: formDataPhoto,
-              headers: {
-                'Content-Type': 'multipart/form-data'
+              if (this.$refs.certForm.getSailorPhoto().dataURL) {
+                sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto().dataURL,
+                        `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
               }
-            });
-          })
-            .then(res => {
+
+              formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
+              formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
+              formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
+              formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
+              formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
+              formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
+              formDataPhoto.append('sailorPhoto', sailorPhoto);
+
+              return axios({
+                method: 'POST',
+                url: `/mariner/api/uploadSailorPhoto/`,
+                data: formDataPhoto,
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+            }
+            else {
               this.loadGridData(true);
               this.certFormModal = false;
 
               this.snackbarConfig.icon = 'mdi-check-circle';
               this.snackbarConfig.color = 'success';
               this.snackbarConfig.message = (this.certId === 0)
-                                              ? 'Сертифiкат успiшно створено!'
-                                              : 'Сертифiкат успiшно вiдредаговано!';
+                      ? 'Сертифiкат успiшно створено!'
+                      : 'Сертифiкат успiшно вiдредаговано!';
               this.snackbar = true;
+            }
+          })
+            .then(res => {
+              if (this.$refs.certForm.getSailorPhoto().isNew) {
+                this.loadGridData(true);
+                this.certFormModal = false;
+
+                this.snackbarConfig.icon = 'mdi-check-circle';
+                this.snackbarConfig.color = 'success';
+                this.snackbarConfig.message = (this.certId === 0)
+                        ? 'Сертифiкат успiшно створено!'
+                        : 'Сертифiкат успiшно вiдредаговано!';
+                this.snackbar = true;
+              }
             })
             .catch((err) => {
               console.log(err);

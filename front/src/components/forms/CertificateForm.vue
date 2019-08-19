@@ -356,7 +356,12 @@ export default {
 
   methods: {
     getSailorPhoto() {
-      return this.$refs.photoUpload.imgDataUrl;
+      let photo = {
+        dataURL: this.$refs.photoUpload.imgDataUrl,
+        isNew: this.$refs.photoUpload.isNewPhoto
+      };
+
+      return photo;
     },
 
     loadFormData() {
