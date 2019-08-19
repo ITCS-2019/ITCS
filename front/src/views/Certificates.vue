@@ -191,7 +191,7 @@
           ref="certsGrid"/>
         </material-card>
 
-        <div id="cert-pdf-wrap"></div>
+        <div id="cert-pdf-wrap" style="width: 1240px;"></div>
 
         <RequestNumbersForm
         ref="reqNumForm"
@@ -596,10 +596,10 @@
                 await new Promise(resolve => {
                   let PDFWrap = document.querySelector('#cert-pdf-wrap');
 
-                  PDFWrap.style.cssText = 'position: absolute; left: -99999px';
+                  // PDFWrap.style.cssText = 'position: absolute; left: -99999px';
                   PDFWrap.innerHTML = certs[i].data.split('<body>')[1].split('</body>')[0];
 
-                  html2canvas(PDFWrap.querySelector('#pdf-content'),
+                  html2canvas(document.querySelector('#cert-pdf-wrap'),
                   {
                     imageTimeout: 0,
                   })
@@ -607,12 +607,15 @@
                       let img = canvas.toDataURL('image/jpeg', 1.0),
                           pdf = new jsPDF('portrait', 'mm', 'a6', true);
 
+
                       pdf.addImage(img, 'JPEG', 0, 0, 105, 296, undefined, 'FAST');
-                      pdf.addPage('a6', 'portrait');
-                      pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
+                      // pdf.addPage('a6', 'portrait');
+                      // pdf.addImage(img, 'JPEG', 0, -148, 105, 296, undefined, 'FAST');
                       pdf.save(`cert_${i}.pdf`);
 
                       PDFWrap.innerHTML = '';
+
+                      PDFWrap.appendChild(canvas);
 
                       if (i === (certs.length - 1))
                         _this.loader.show = false;
