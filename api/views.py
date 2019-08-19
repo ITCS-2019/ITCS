@@ -549,14 +549,18 @@ class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixi
     Use organisation id for retrieve certificates.
     If user from training organisations return list of certificates of this organisation.
     """
-	serializer = CertificateSerializer
+	#serializer = CertificateSerializer
+	serializer = CertificateCustomSerializer
 
 	def list(self, request):
 		certs = Certificate()
 		if request.user.groups.all()[0].name == 'НТЗ':
-			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
-			serializer = CertificateSerializer(certs, many=True)
+			#trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+			trainigOrganisation = TrainigOrganisation.objects.prefetch_related('directions').prefetch_related('range_numbers').get(organisation_name=request.user.profile.organization_name)
+			#certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').order_by('-id')
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').filter(trainigOrganisation=trainigOrganisation).order_by('-id')
+			#serializer = CertificateSerializer(certs, many=True)
+			serializer = CertificateCustomSerializer(certs, many=True)
 			return Response({"certificates": serializer.data})
 		else:
 			return Response({"Message": "Use organisation id for retrieve certificates"}, status=200)
@@ -564,8 +568,10 @@ class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixi
 	def retrieve(self, request, pk):
 		if request.user.groups.all()[0].name != 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(id=pk)
-			certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).order_by('-id')
-			serializer = CertificateSerializer(certs, many=True)
+			#certs = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).order_by('-id')
+			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').exclude(status=0).filter(trainigOrganisation=trainigOrganisation).order_by('-id')
+			#serializer = CertificateSerializer(certs, many=True)
+			serializer = CertificateCustomSerializer(certs, many=True)
 			return Response({"certificates": serializer.data})
 		else:
 			return Response({"Message": "You can't get certificates of organisation"}, status=200) 
