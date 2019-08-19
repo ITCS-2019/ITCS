@@ -422,12 +422,13 @@
 
               if (e.column.dataField
               && (e.data.status === 'Чернетка' || e.data.status === 'Видан' || e.data.status === 'Обробка')
-              && gUserRole !== 'НТЗ') {
+              && gUserRole !== 'НТЗ'
+              && gUserRole !== 'Інспектор') {
                 _this.showCertFormModal(e.data.certificateId);
-              } else if (e.column.dataField && e.data.status === 'Чернетка') {
+              } else if (e.column.dataField && e.data.status === 'Чернетка' && gUserRole !== 'Інспектор') {
                 _this.showCertFormModal(e.data.certificateId);
               }
-              else if (e.column.dataField) {
+              else if (e.column.dataField && gUserRole !== 'Інспектор') {
                 _this.snackbarConfig.icon = 'mdi-alert-circle';
                 _this.snackbarConfig.color = 'warning';
                 _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
