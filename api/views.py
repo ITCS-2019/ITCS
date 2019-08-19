@@ -408,7 +408,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certificate.direction_allow_functions = derection.allow_functions
 		certificate.status = request.data.get('status')
 
-		printSettings, CertificatePrintSettings.objects.get_or_create(
+		printSettings, created = CertificatePrintSettings.objects.get_or_create(
 			logo_pic = trainigOrganisation.logo_pic,
     		bg_pic = trainigOrganisation.certBg_pic,
     		#sailor_photo 
@@ -514,7 +514,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			certification.organisation_name_cert = trainigOrganisation.organisation_name
 			certification.direction_title_cert = trainigDirection.direction_title
 
-			printSettings, CertificatePrintSettings.objects.get_or_create(
+			printSettings, created = CertificatePrintSettings.objects.get_or_create(
 				logo_pic = trainigOrganisation.logo_pic,
     			bg_pic = trainigOrganisation.certBg_pic,
     			#sailor_photo 
@@ -535,7 +535,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
     			directionRegulationInfoEng = trainigDirection.regulationInfoEng,
     			directionInspectionInfo = trainigDirection.inspectionInfo,
     			directionInspectionInfoEng = trainigDirection.inspectionInfoEng,
-			)
+    			)
 			if created:#check created dublication (created inside created)
 				certification.printInfo = printSettings
 
