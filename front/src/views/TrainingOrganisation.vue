@@ -711,8 +711,6 @@
           .then(res => {
             let certs = res.data.certificates;
 
-            console.log(certs);
-
             this.dataSource = [];
             certs.forEach((cert) => {
               let status;
