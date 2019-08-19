@@ -411,7 +411,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		printSettings, created = CertificatePrintSettings.objects.get_or_create(
 			logo_pic = trainigOrganisation.logo_pic,
     		bg_pic = trainigOrganisation.certBg_pic,
-    		#sailor_photo 
+    		#sailor_photo
     		organisationNameEng = trainigOrganisation.organisation_name_eng,
     		organisationAdress = trainigOrganisation.mail_adress_ukr,
     		organisationAdressEng = trainigOrganisation.mail_adress_eng,

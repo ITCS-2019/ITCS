@@ -192,7 +192,7 @@
         </material-card>
 
         <div id="cert-pdf-wrap"></div>
-        
+
         <RequestNumbersForm
         ref="reqNumForm"
         :certs="reqNumCerts">
@@ -422,12 +422,13 @@
 
               if (e.column.dataField
               && (e.data.status === 'Чернетка' || e.data.status === 'Видан' || e.data.status === 'Обробка')
-              && gUserRole !== 'НТЗ') {
+              && gUserRole !== 'НТЗ'
+              && gUserRole !== 'Інспектор') {
                 _this.showCertFormModal(e.data.certificateId);
-              } else if (e.column.dataField && e.data.status === 'Чернетка') {
+              } else if (e.column.dataField && e.data.status === 'Чернетка' && gUserRole !== 'Інспектор') {
                 _this.showCertFormModal(e.data.certificateId);
               }
-              else if (e.column.dataField) {
+              else if (e.column.dataField && gUserRole !== 'Інспектор') {
                 _this.snackbarConfig.icon = 'mdi-alert-circle';
                 _this.snackbarConfig.color = 'warning';
                 _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
@@ -798,41 +799,56 @@
         })
           .then(res => {
             let formDataPhoto = new FormData(),
-                sailorPhoto = null;
+                sailorPhoto = '';
 
-            if (this.$refs.certForm.getSailorPhoto()) {
-              sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto(),
-                            `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
+            if (this.$refs.certForm.getSailorPhoto().isNew) {
 
-            }
-
-            formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
-            formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
-            formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
-            formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
-            formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
-            formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
-            formDataPhoto.append('sailorPhoto', sailorPhoto);
-
-            return axios({
-              method: 'POST',
-              url: `/mariner/api/uploadSailorPhoto/`,
-              data: formDataPhoto,
-              headers: {
-                'Content-Type': 'multipart/form-data'
+              if (this.$refs.certForm.getSailorPhoto().dataURL) {
+                sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto().dataURL,
+                        `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
               }
-            });
-          })
-            .then(res => {
+
+              formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
+              formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
+              formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
+              formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
+              formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
+              formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
+              formDataPhoto.append('sailorPhoto', sailorPhoto);
+
+              return axios({
+                method: 'POST',
+                url: `/mariner/api/uploadSailorPhoto/`,
+                data: formDataPhoto,
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+            }
+            else {
               this.loadGridData(true);
               this.certFormModal = false;
 
               this.snackbarConfig.icon = 'mdi-check-circle';
               this.snackbarConfig.color = 'success';
               this.snackbarConfig.message = (this.certId === 0)
-                                              ? 'Сертифiкат успiшно створено!'
-                                              : 'Сертифiкат успiшно вiдредаговано!';
+                      ? 'Сертифiкат успiшно створено!'
+                      : 'Сертифiкат успiшно вiдредаговано!';
               this.snackbar = true;
+            }
+          })
+            .then(res => {
+              if (this.$refs.certForm.getSailorPhoto().isNew) {
+                this.loadGridData(true);
+                this.certFormModal = false;
+
+                this.snackbarConfig.icon = 'mdi-check-circle';
+                this.snackbarConfig.color = 'success';
+                this.snackbarConfig.message = (this.certId === 0)
+                        ? 'Сертифiкат успiшно створено!'
+                        : 'Сертифiкат успiшно вiдредаговано!';
+                this.snackbar = true;
+              }
             })
             .catch((err) => {
               console.log(err);
