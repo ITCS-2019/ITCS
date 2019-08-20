@@ -93,6 +93,7 @@
                       <v-list-tile-title v-text="`Таблицю`"/>
                     </v-list-tile>
                     <v-list-tile key="Certificates"
+                    v-if="userRole !== 'Інспектор'"
                     v-on:click="e => exportGrid(true, 'PrintCerts')">
                       <v-list-tile-title v-text="`Обранi сертифiкати`"/>
                     </v-list-tile>

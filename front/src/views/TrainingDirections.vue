@@ -17,6 +17,7 @@
             <!--Grid btns row right side-->
             <div>
               <v-btn color="success" small :depressed="true"
+              v-if="userRole !== 'НТЗ'"
               v-on:click="showCertFormModal(0)">
                 <v-icon>
                   mdi-plus-box
@@ -81,6 +82,7 @@ export default {
 
   data() {
     return {
+      userRole: gUserRole,
       snackbar: false,
       snackbarConfig: {
         color: null,

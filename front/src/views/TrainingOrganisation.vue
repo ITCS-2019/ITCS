@@ -39,11 +39,13 @@
                   </template>
                   <template v-slot:input>
                     <v-text-field v-model="props.item.rangeNumStart"
+                    mask="##########"
                     label="Початок діапазону"
                     single-line
                     autofocus
                     ></v-text-field>
                     <v-text-field v-model="props.item.rangeNumEnd"
+                    mask="##########"
                     label="Кінець діапазону"
                     single-line
                     ></v-text-field>
