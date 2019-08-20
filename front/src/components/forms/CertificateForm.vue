@@ -12,7 +12,8 @@
               <v-flex xs12 md4
               :align-self-end="true">
                 <CropImgUpload ref="photoUpload"
-                :editable="(currentStatus === 1 || currentStatus === 2) ? false : true">
+                :editable="(currentStatus === 1 || currentStatus === 2) ? false : true"
+                :status="currentStatus">
                 </CropImgUpload>
               </v-flex>
 

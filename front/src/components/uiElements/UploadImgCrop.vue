@@ -30,6 +30,10 @@
         type: Boolean,
         required: false,
         default: true
+      },
+      status: {
+        type: Number,
+        required: false,
       }
     },
     data: function () {
@@ -47,7 +51,8 @@
 
     methods: {
       toggleShow() {
-        if (!this.show && this.isNewPhoto && this.editable) {
+        if ((!this.show && this.isNewPhoto && this.editable)
+        || (!this.show && this.status === 0)) {
           this.show = !this.show;
         }
       },
