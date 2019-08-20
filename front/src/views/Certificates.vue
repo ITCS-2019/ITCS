@@ -601,7 +601,7 @@
 
                   html2canvas(PDFWrap,
                   {
-                    imageTimeout: 0,
+
                   })
                     .then(canvas => {
 
@@ -614,6 +614,7 @@
                       pdf.save(`cert_${i}.pdf`);
 
                       PDFWrap.innerHTML = '';
+                      PDFWrap.style.cssText = 'width: 0px; height: 0px;';
 
                       if (i === (certs.length - 1))
                         _this.loader.show = false;
