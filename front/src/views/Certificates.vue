@@ -351,7 +351,7 @@
             if (rows.length > 0) {
               rows.forEach((row) => {
                 certIDs.push(row.data.certificateId);
-                if (row.data.status !== 'Видан') {
+                if (row.data.status !== 'Чернетка') {
                   isAllIssued = false;
                 }
               });
@@ -434,6 +434,15 @@
                 _this.snackbarConfig.color = 'warning';
                 _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
                 _this.snackbar = true;
+              }
+              else if (gUserRole === 'Інспектор' && e.column.dataField && e.data.status === 'Обробка') {
+                _this.showCertFormModal(e.data.certificateId);
+              }
+              else if (gUserRole === 'Інспектор' && e.column.dataField) {
+                  _this.snackbarConfig.icon = 'mdi-alert-circle';
+                  _this.snackbarConfig.color = 'warning';
+                  _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
+                  _this.snackbar = true;
               }
             }
 
@@ -649,7 +658,7 @@
         else {
           this.snackbarConfig.icon = 'mdi-alert-circle';
           this.snackbarConfig.color = 'red';
-          this.snackbarConfig.message = 'Заявку на номери можна сформувати тiльки для виданих сертифiкатiв!';
+          this.snackbarConfig.message = 'Заявку на номери можна сформувати тiльки для чернеток!';
           this.snackbar = true;
         }
       },

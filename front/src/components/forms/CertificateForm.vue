@@ -64,8 +64,9 @@
                   <template v-slot:activator="{ on }">
                     <v-text-field v-model="born"
                     label="Дата народження"
-                    readonly
                     prepend-inner-icon="mdi-calendar-range"
+                    mask="##.##.####"
+                    v-on:keyup="birthdayDatepicker = false"
                     v-on="on">
                     </v-text-field>
                   </template>
@@ -382,9 +383,11 @@ export default {
           // Directions
           let directions = directionsRes.data.directions;
 
+            console.log(directions);
+
           directions.forEach((direction) => {
             this.directions.push({
-              caption: direction.direction_title,
+              caption: `${direction.direction_title} (${direction.level})`,
               value: direction.id
             });
           });
@@ -435,6 +438,19 @@ export default {
               ];
             }
 
+            if (this.currentStatus === 1 && this.userRole === 'Інспектор') {
+              this.statuses = [
+                {
+                    caption: 'Обробка',
+                    value: 1
+                },
+                {
+                  caption: 'Чернетка',
+                  value: 0
+                }
+              ];
+            }
+
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;
             this.date_of_issue = this.formatDate(cert.date_of_issue);
@@ -448,8 +464,9 @@ export default {
             this.second_name_ukr = cert.second_name_ukr;
             this.status = (this.currentStatus === 2) ? 3 : cert.status;
             this.sailorPhoto = cert.sailor.photo;
-            this.training_direction = {
-              caption: cert.training_direction.direction_title,
+              console.log(cert);
+              this.training_direction = {
+              caption: `${cert.training_direction.direction_title} (${cert.training_direction.level})`,
               value: cert.training_direction.id
             };
             if (this.userRole !== 'НТЗ') {
@@ -483,6 +500,9 @@ export default {
             this.certf_number = null;
             this.date_of_issue = null;
             this.first_name_en = null;
+            this.bornNotFormatted = null;
+            this.issueNotFormatted = null;
+            this.validNotFormatted = null;
             this.last_name_en = null;
             this.first_name_ukr = null;
             this.form_number = null;
@@ -508,8 +528,13 @@ export default {
     resetFormatDate(date) {
       if (!date) return null
 
-      const [day, month, year] = date.split('.')
-      return `${year}-${month}-${day}`
+      if (date.split('.').length > 1) {
+        const [day, month, year] = date.split('.')
+        return `${year}-${month}-${day}`
+      }
+      else {
+          return `${date.substring(4,8)}-${date.substring(2,4)}-${date.substring(0,2)}`
+      }
     },
 
     formatDate(date) {
