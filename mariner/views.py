@@ -28,29 +28,29 @@ from transliterate import translit, get_available_language_codes
 
 @login_required(login_url="login/")
 def crm_home(request):
-	#return redirect('app')
-	profile, created = Profile.objects.get_or_create(user=request.user)
-	if request.user.groups.all()[0].name == 'НТЗ':
-		if request.user.profile.organization_name == '':
-			return redirect('update_profile')
-		else:
-			sailorsCount = Sailor.objects.all().count
-			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-			trainigDirectionsCount = trainigOrganisation.directions.count
-			certCount = trainigOrganisation.trained.filter(status__startswith=2).count
-			certsInDraftCount = trainigOrganisation.trained.filter(status__startswith=0).count
-			certsInReviewCount = trainigOrganisation.get_certInReview().count
-			context = {'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInDraftCount': certsInDraftCount, 'certsInReviewCount': certsInReviewCount,}
-			return render(request, "crm_dashboard.html", context)
-	else:
-		sailorsCount = Sailor.objects.all().count
-		certCount = Certificate.objects.filter(status__startswith=2).count
-		certsInReviewCount = Certificate.objects.filter(status__startswith=1).count
-		trainigDirectionsCount = TrainigDirections.objects.all().count
-		# certsInReview = Certificate.objects.filter(status__startswith=1)
-		trainigOrganisations = TrainigOrganisation.objects.all()
-		context = {'trainigOrganisations': trainigOrganisations, 'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInReviewCount': certsInReviewCount,}
-		return render(request, "crm_dashboard.html", context)
+	return redirect('app')
+	# profile, created = Profile.objects.get_or_create(user=request.user)
+	# if request.user.groups.all()[0].name == 'НТЗ':
+	# 	if request.user.profile.organization_name == '':
+	# 		return redirect('update_profile')
+	# 	else:
+	# 		sailorsCount = Sailor.objects.all().count
+	# 		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+	# 		trainigDirectionsCount = trainigOrganisation.directions.count
+	# 		certCount = trainigOrganisation.trained.filter(status__startswith=2).count
+	# 		certsInDraftCount = trainigOrganisation.trained.filter(status__startswith=0).count
+	# 		certsInReviewCount = trainigOrganisation.get_certInReview().count
+	# 		context = {'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInDraftCount': certsInDraftCount, 'certsInReviewCount': certsInReviewCount,}
+	# 		return render(request, "crm_dashboard.html", context)
+	# else:
+	# 	sailorsCount = Sailor.objects.all().count
+	# 	certCount = Certificate.objects.filter(status__startswith=2).count
+	# 	certsInReviewCount = Certificate.objects.filter(status__startswith=1).count
+	# 	trainigDirectionsCount = TrainigDirections.objects.all().count
+	# 	# certsInReview = Certificate.objects.filter(status__startswith=1)
+	# 	trainigOrganisations = TrainigOrganisation.objects.all()
+	# 	context = {'trainigOrganisations': trainigOrganisations, 'sailorsCount': sailorsCount, 'certCount': certCount, 'trainigDirectionsCount': trainigDirectionsCount, 'certsInReviewCount': certsInReviewCount,}
+	# 	return render(request, "crm_dashboard.html", context)
 
 @login_required(login_url="login/")
 def crm_profile(request):
@@ -334,20 +334,21 @@ def crm_editRegulation(request, number, template_name='crm_editRegulation.html')
 #//////////////////////////////////////////////////////////
 @login_required(login_url="login/")
 def crm_certification(request):
-	if request.user.groups.all()[0].name == 'НТЗ':
-		trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
-		certifications = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
-		context = {'certifications': certifications,}
-		return render(request, "crm_certification.html", context)
-	elif request.user.groups.all()[0].name == 'Інспектор':
-		certs = Certificate.objects.exclude(status=0).order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
-		context = {'certifications': certs,}
-		return render(request, "crm_certification.html", context)
-	else:
-		#certs = Certificate.objects.all()
-		certs = Certificate.objects.all().order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
-		context = {'certifications': certs,}
-		return render(request, "crm_certification.html", context)
+	return redirect('app')
+	# if request.user.groups.all()[0].name == 'НТЗ':
+	# 	trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+	# 	certifications = Certificate.objects.filter(trainigOrganisation=trainigOrganisation).order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+	# 	context = {'certifications': certifications,}
+	# 	return render(request, "crm_certification.html", context)
+	# elif request.user.groups.all()[0].name == 'Інспектор':
+	# 	certs = Certificate.objects.exclude(status=0).order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+	# 	context = {'certifications': certs,}
+	# 	return render(request, "crm_certification.html", context)
+	# else:
+	# 	#certs = Certificate.objects.all()
+	# 	certs = Certificate.objects.all().order_by('-id').select_related('sailor').select_related('trainigOrganisation').select_related('training_direction')
+	# 	context = {'certifications': certs,}
+	# 	return render(request, "crm_certification.html", context)
 
 @login_required(login_url="login/")
 def new_certification(request):
