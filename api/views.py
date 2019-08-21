@@ -1174,7 +1174,8 @@ def printCertificate(request, certID):
 
 @login_required(login_url="login/")
 def updateCertForTable(request):
-	certs = Certificate.objects.all()
+	certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').all().order_by('-id')
+	#certs = Certificate.objects.all()
 
 	for cert in certs:
 		cert.direction_title_cert = cert.training_direction.direction_title
