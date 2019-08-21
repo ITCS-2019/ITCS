@@ -383,11 +383,9 @@ export default {
           // Directions
           let directions = directionsRes.data.directions;
 
-            console.log(directions);
-
           directions.forEach((direction) => {
             this.directions.push({
-              caption: `${direction.direction_title} (${direction.level})`,
+              caption: `${direction.direction_title} ( ${direction.allow_functions} / ${direction.level} )`,
               value: direction.id
             });
           });
@@ -398,7 +396,19 @@ export default {
 
             this.currentStatus = cert.status;
 
-            switch(this.currentStatus) {
+            switch(~~this.currentStatus) {
+              case 0:
+                this.statuses = [
+                  {
+                    caption: 'Чернетка',
+                    value: 0
+                  },
+                  {
+                    caption: 'Обробка',
+                    value: 1
+                  }
+                ];
+                break;
               case 1:
                 this.statuses = [
                   {
@@ -417,6 +427,10 @@ export default {
                 break;
               case 2:
                 this.statuses = [
+                  {
+                    caption: 'Видан',
+                    value: 2
+                  },
                   {
                     caption: 'Анульований',
                     value: 3
@@ -441,9 +455,18 @@ export default {
             if (this.currentStatus === 1 && this.userRole === 'Інспектор') {
               this.statuses = [
                 {
-                    caption: 'Обробка',
-                    value: 1
+                  caption: 'Обробка',
+                  value: 1
                 },
+                {
+                  caption: 'Чернетка',
+                  value: 0
+                }
+              ];
+            }
+
+            if (!this.currentStatus) {
+              this.statuses = [
                 {
                   caption: 'Чернетка',
                   value: 0
@@ -462,11 +485,10 @@ export default {
             this.last_name_ukr = cert.last_name_ukr;
             this.ntz_number = cert.ntz_number;
             this.second_name_ukr = cert.second_name_ukr;
-            this.status = (this.currentStatus === 2) ? 3 : cert.status;
+            this.status = cert.status;
             this.sailorPhoto = cert.sailor.photo;
-              console.log(cert);
-              this.training_direction = {
-              caption: `${cert.training_direction.direction_title} (${cert.training_direction.level})`,
+            this.training_direction = {
+              caption: `${cert.training_direction.direction_title} ( ${cert.training_direction.allow_functions} / ${cert.training_direction.level} )`,
               value: cert.training_direction.id
             };
             if (this.userRole !== 'НТЗ') {
