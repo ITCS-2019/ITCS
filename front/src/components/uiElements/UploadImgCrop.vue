@@ -25,6 +25,17 @@
 
   export default {
     name: "CropImgUpload",
+    props: {
+      editable: {
+        type: Boolean,
+        required: false,
+        default: true
+      },
+      status: {
+        type: Number,
+        required: false,
+      }
+    },
     data: function () {
       return {
         show: false,
@@ -40,7 +51,8 @@
 
     methods: {
       toggleShow() {
-        if (!this.show && this.isNewPhoto) {
+        if ((!this.show && this.isNewPhoto && this.editable)
+        || (!this.show && this.status === 0)) {
           this.show = !this.show;
         }
       },

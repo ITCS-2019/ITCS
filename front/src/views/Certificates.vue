@@ -93,6 +93,7 @@
                       <v-list-tile-title v-text="`Таблицю`"/>
                     </v-list-tile>
                     <v-list-tile key="Certificates"
+                    v-if="userRole !== 'Інспектор'"
                     v-on:click="e => exportGrid(true, 'PrintCerts')">
                       <v-list-tile-title v-text="`Обранi сертифiкати`"/>
                     </v-list-tile>
@@ -601,7 +602,7 @@
 
                   html2canvas(PDFWrap,
                   {
-                    imageTimeout: 0,
+
                   })
                     .then(canvas => {
 
@@ -614,6 +615,7 @@
                       pdf.save(`cert_${i}.pdf`);
 
                       PDFWrap.innerHTML = '';
+                      PDFWrap.style.cssText = 'width: 0px; height: 0px;';
 
                       if (i === (certs.length - 1))
                         _this.loader.show = false;

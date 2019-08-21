@@ -11,7 +11,9 @@
 
               <v-flex xs12 md4
               :align-self-end="true">
-                <CropImgUpload ref="photoUpload">
+                <CropImgUpload ref="photoUpload"
+                :editable="(currentStatus === 1 || currentStatus === 2) ? false : true"
+                :status="currentStatus">
                 </CropImgUpload>
               </v-flex>
 
@@ -418,6 +420,19 @@ export default {
                   }
                 ];
                 break;
+            }
+
+            if (this.currentStatus === 0 && this.userRole === 'НТЗ') {
+              this.statuses = [
+                {
+                  caption: 'Чернетка',
+                  value: 0
+                },
+                {
+                  caption: 'Видан',
+                  value: 2
+                }
+              ];
             }
 
             this.born = this.formatDate(cert.born);

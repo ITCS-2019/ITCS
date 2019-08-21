@@ -1,14 +1,15 @@
 <template>
   <div id="req-num-form"
   class="c-pdf-a4"
+  style="position: absolute; left: -99999px;"
   v-if="downloadingFile">
     <div class="c-pdf-a4__row">
-      <div class="c-pdf-a4__row-block c-pdf-a4__row-block--align-right">
+      <div class="c-pdf-a4__row-block c-pdf-a4__row-block--align-right" style="text-align: right;">
         <div class="c-pdf-a4__text">
           Додаток №01
         </div>
         <div class="c-pdf-a4__text">
-          До договору № {{contract_number}}/-НТЗ
+          До договору № {{contract_number}}-НТЗ
         </div>
         <div class="c-pdf-a4__text">
           про надання послуг з реєстрації документів моряків України
@@ -21,15 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="c-pdf-a4__row c-pdf-a4__row--margin-top-35 c-pdf-a4__row--flex c-pdf-a4__row--justify-center">
-      <div class="c-pdf-a4__row-block">
-        <div class="c-pdf-a4__text c-pdf-a4__text--align-center c-pdf-a4__text--italic c-pdf-a4__text--font-weight-700">
-          <b>
-            На бланку Замовника
-          </b>
-        </div>
-      </div>
-    </div>
+    <br><br>
     <div class="c-pdf-a4__row c-pdf-a4__row--margin-top-20">
       <div class="c-pdf-a4__text">
         Вих. № ________________________
@@ -38,42 +31,54 @@
         вiд ___________________________
       </div>
     </div>
+    <br>
     <div class="c-pdf-a4__row c-pdf-a4__row--margin-top-12 c-pdf-a4__row--flex c-pdf-a4__row--justify-end">
       <div class="c-pdf-a4__row-block c-pdf-a4__row-block--align-right">
-        <div class="c-pdf-a4__text c-pdf-a4__text--italic c-pdf-a4__text--font-weight-700">
+        <div class="c-pdf-a4__text c-pdf-a4__text--italic c-pdf-a4__text--font-weight-700"
+        style="text-align: right;">
           <b>
-            Iнспекції з питань підготовки та
+            <i>
+              Iнспекції з питань підготовки та
+            </i>
           </b>
         </div>
-        <div class="c-pdf-a4__text c-pdf-a4__text--italic c-pdf-a4__text--font-weight-700">
+        <div class="c-pdf-a4__text c-pdf-a4__text--italic c-pdf-a4__text--font-weight-700"
+        style="text-align: right;">
           <b>
-            дипломування моряків
+            <i>
+              дипломування моряків
+            </i>
           </b>
         </div>
       </div>
     </div>
+    <br>
     <div class="c-pdf-a4__row c-pdf-a4__row--margin-top-12">
       <div class="c-pdf-a4__text">
-        Відповідно до договору № {{contract_number}}/-НТЗ від {{formatDate(activated)}}р. просимо нaдати реєстраційний номер для
+        Відповідно до договору № {{contract_number}}-НТЗ від {{formatDate(activated)}}р. просимо нaдати реєстраційний номер для
         подальшого внесення до єдиного Державного реєстру документів моряків інформацію про свідоцтва (сертифікати),
         які видаються
       </div>
-      <br>
-      <div class="c-pdf-a4__text c-pdf-a4__text--font-weight-700 c-pdf-a4__text--align-center">
+      <br><br>
+      <div class="c-pdf-a4__text c-pdf-a4__text--font-weight-700 c-pdf-a4__text--align-center"
+      style="text-align: center;">
         <b>
           {{organisation_name}}
         </b>
       </div>
       <hr>
-      <div class="c-pdf-a4__text c-pdf-a4__text--italic c-pdf-a4__text--align-center">
+      <div class="c-pdf-a4__text c-pdf-a4__text--italic c-pdf-a4__text--align-center"
+      style="text-align: center;">
         <sup>
           (назва НТЗ або його вiдокремленного пiдроздiлу)
         </sup>
       </div>
+      <br>
       <div class="c-pdf-a4__text c-pdf-a4__text--margin-top-10">
         Після закінчення відповідних курсів відповідно до даних таблиці 1:
       </div>
-      <div class="c-pdf-a4__text c-pdf-a4__text--margin-top-10 c-pdf-a4__text--font-weight-700 c-pdf-a4__text--align-right">
+      <div class="c-pdf-a4__text c-pdf-a4__text--margin-top-10 c-pdf-a4__text--font-weight-700 c-pdf-a4__text--align-right"
+     style="text-align: right;">
         <b>
           Таблиця 1
         </b>
@@ -112,47 +117,58 @@
           </th>
         </tr>
         <tr v-for="(cert, i) in reqCerts">
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{i + 1}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{cert.sailor}}
             <br>
             {{formatDate(cert.born)}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{cert.trainingDirection}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{cert.direction_level}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{cert.direction_allow_functions}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{(cert.blankNumber) ? cert.blankNumber : '---'}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
 
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
 
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{formatDate(cert.issueDate)}}
           </td>
-          <td class="c-table__cell c-table__cell--font-size-9">
+          <td class="c-table__cell c-table__cell--font-size-9"
+          style="font-size: 9px">
             {{formatDate(cert.validDate)}}
           </td>
         </tr>
       </table>
+      <br>
       <div class="c-pdf-a4__text c-pdf-a4__text--margin-top-24">
         Оплату гарантуемо у встановлений Договором строк.
       </div>
     </div>
     <br><br><br>
     <div class="c-pdf-a4__row">
-      <table style="border: none;">
+      <table style="border: none; width: 100%;">
         <tr>
           <td style="text-align: center; border: none; border-top: 1px solid black;">
             <b>
@@ -172,9 +188,9 @@
         </tr>
       </table>
     </div>
-    <br><br>
+    <br><br><br>
     <div class="c-pdf-a4__row">
-      <table style="border: none;">
+      <table style="border: none; width: 100%;">
         <tr>
           <td style="text-align: center; border: none; border-top: 1px solid black;">
             <b>
@@ -259,6 +275,7 @@
           fileDownload.download = 'request_certs_num_form.doc';
           fileDownload.click();
           document.body.removeChild(fileDownload);
+          this.downloadingFile = false;
         });
       },
 
