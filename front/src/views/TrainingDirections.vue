@@ -324,14 +324,11 @@ export default {
           let directions = res.data.trainigDirections;
 
           this.dataSource = [];
-
           directions.forEach((direction) => {
             this.dataSource.push({
               id: (gUserRole === 'НТЗ') ? direction.direction_id : direction.id,
               price_id: direction.price_id,
-              direction_title: (gUserRole === 'НТЗ')
-                                ? `${direction.dirction_name} (${direction.allow_functions}/${direction.level})`
-                                : `${direction.direction_title} (${direction.allow_functions}/${direction.level})`,
+              direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
               direction_reviewCertCount: direction.direction_reviewCertCount,
               direction_issuedCertCount: direction.direction_issuedCertCount,
               direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,

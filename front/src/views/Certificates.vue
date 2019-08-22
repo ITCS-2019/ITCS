@@ -126,7 +126,7 @@
               </v-btn>
               <v-btn color="success"
               small
-              v-if="certsCelected > 0 && userRole === 'НТЗ'"
+              v-if="certsCelected > 0 && (userRole === 'НТЗ' || userRole === 'Адміністратор')"
               v-on:click="e => exportGrid(true, 'reqNumbers')">
                 <v-icon>
                   mdi-download
@@ -725,7 +725,6 @@
             let certs = res.data.certificates;
 
             this.dataSource = [];
-
 
             certs.forEach((cert) => {
               let status;
