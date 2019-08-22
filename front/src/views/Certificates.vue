@@ -126,7 +126,7 @@
               </v-btn>
               <v-btn color="success"
               small
-              v-if="certsCelected > 0 && userRole === 'НТЗ'"
+              v-if="certsCelected > 0 && (userRole === 'НТЗ' || userRole === 'Адміністратор')"
               v-on:click="e => exportGrid(true, 'reqNumbers')">
                 <v-icon>
                   mdi-download
@@ -351,7 +351,7 @@
             if (rows.length > 0) {
               rows.forEach((row) => {
                 certIDs.push(row.data.certificateId);
-                if (row.data.status !== 'Видан') {
+                if (row.data.status !== 'Чернетка') {
                   isAllIssued = false;
                 }
               });
@@ -429,11 +429,23 @@
               } else if (e.column.dataField && e.data.status === 'Чернетка' && gUserRole !== 'Інспектор') {
                 _this.showCertFormModal(e.data.certificateId);
               }
+              else if (!e.data.status && e.column.dataField) {
+                  _this.showCertFormModal(e.data.certificateId);
+              }
               else if (e.column.dataField && gUserRole !== 'Інспектор') {
                 _this.snackbarConfig.icon = 'mdi-alert-circle';
                 _this.snackbarConfig.color = 'warning';
                 _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
                 _this.snackbar = true;
+              }
+              else if (gUserRole === 'Інспектор' && e.column.dataField && e.data.status === 'Обробка') {
+                _this.showCertFormModal(e.data.certificateId);
+              }
+              else if (gUserRole === 'Інспектор' && e.column.dataField) {
+                  _this.snackbarConfig.icon = 'mdi-alert-circle';
+                  _this.snackbarConfig.color = 'warning';
+                  _this.snackbarConfig.message = `Сертифiкати зi статусом "${e.data.status}" не можна редагувати!`;
+                  _this.snackbar = true;
               }
             }
 
@@ -649,7 +661,7 @@
         else {
           this.snackbarConfig.icon = 'mdi-alert-circle';
           this.snackbarConfig.color = 'red';
-          this.snackbarConfig.message = 'Заявку на номери можна сформувати тiльки для виданих сертифiкатiв!';
+          this.snackbarConfig.message = 'Заявку на номери можна сформувати тiльки для чернеток!';
           this.snackbar = true;
         }
       },
@@ -713,6 +725,7 @@
             let certs = res.data.certificates;
 
             this.dataSource = [];
+
             certs.forEach((cert) => {
               let status;
 
@@ -740,7 +753,7 @@
                 blankNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
                 validDate: cert.valid_date,
-                trainingDirection: cert.direction_title_cert,
+                trainingDirection: `${cert.direction_title_cert} (${cert.direction_allow_functions}/${cert.direction_level})`,
                 sailorId: cert.sailor_id,
                 sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
                 trainigOrganisation: cert.organisation_name_cert,
@@ -772,6 +785,12 @@
           u8arr[n] = bstr.charCodeAt(n);
         }
         return new File([u8arr], filename, {type:mime});
+      },
+
+      isDataURL(s) {
+          let regex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
+
+          return !!s.match(regex);
       },
 
       saveCert() {
@@ -806,9 +825,10 @@
 
             if (this.$refs.certForm.getSailorPhoto().isNew) {
 
-              if (this.$refs.certForm.getSailorPhoto().dataURL) {
+
+              if (this.isDataURL(this.$refs.certForm.getSailorPhoto().dataURL)) {
                 sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto().dataURL,
-                        `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
+                            `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
               }
 
               formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);

@@ -59,6 +59,7 @@
 
       cropSuccess(imgDataUrl, field){
         this.imgDataUrl = imgDataUrl;
+        this.isNewPhoto = true;
         this.imgName = `Iм'я файла буде сгенеровано автоматично`;
       },
 
