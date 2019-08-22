@@ -817,10 +817,12 @@ def uploadXLS(request):
 							if created:
 								sailor.save()
 
+							trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+							derection = TrainigDirections.objects.get(id=directionID) 		
 							certificate, created = Certificate.objects.get_or_create(
 								form_number = docNumber,
-								trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name),
-								training_direction = TrainigDirections.objects.get(id=directionID),
+								trainigOrganisation = trainigOrganisation,
+								training_direction = derection,
 								first_name_en = firstNameEn,
 								last_name_en = lastNameEn,
 								last_name_ukr = lastNameUkr,
@@ -832,6 +834,8 @@ def uploadXLS(request):
 								valid_date = endDate,
 								)
 							if created:
+								certificate.organisation_name_cert = trainigOrganisation.organisation_name
+								certificate.direction_title_cert = derection.direction_title
 								certificate.save()
 					return render(request, 'crm_xlsImport.html', {"excel_data":excel_data, "error_message": "Сертифікати добавлени"})
 				else:
@@ -902,11 +906,12 @@ def uploadXLS(request):
 							)
 							if created:
 								sailor.save()
-
+							trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
+							derection = TrainigDirections.objects.get(id=directionID)
 							certificate, created = Certificate.objects.get_or_create(
 								form_number = docNumber,
-								trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name),
-								training_direction = TrainigDirections.objects.get(id=directionID),
+								trainigOrganisation = trainigOrganisation,
+								training_direction = derection,
 								first_name_en = firstNameEn,
 								last_name_en = lastNameEn,
 								last_name_ukr = lastNameUkr,
@@ -919,6 +924,8 @@ def uploadXLS(request):
 								valid_date = endDate,
 								)
 							if created:
+								certificate.organisation_name_cert = trainigOrganisation.organisation_name
+								certificate.direction_title_cert = derection.direction_title
 								certificate.save()
 					return render(request, 'crm_xlsImport.html', {"excel_data":excel_data, "error_message": "Сертифікати добавлени"})
 				else:

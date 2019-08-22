@@ -398,9 +398,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			print("Update: set organisation ID")
 		certificate.trainigOrganisation = trainigOrganisation
 		certificate.organisation_name_cert = trainigOrganisation.organisation_name
-		# certificate.date_of_issue = request.data.get('date_of_issue'),
-		# certificate.valid_date =  request.data.get('valid_date'),
-		# certificate.valid_type = request.data.get('valid_type'),
+		certificate.date_of_issue = request.data.get('date_of_issue')
+		certificate.valid_date =  request.data.get('valid_date')
+		certificate.valid_type = request.data.get('valid_type')
 		derection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
 		certificate.training_direction = derection
 		certificate.direction_title_cert = derection.direction_title
