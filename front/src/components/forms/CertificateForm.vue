@@ -532,7 +532,7 @@ export default {
             this.last_name_ukr = null;
             this.ntz_number = null;
             this.second_name_ukr = null;
-            this.status = null;
+            this.status = 0;
             this.training_direction = null;
             this.training_organisation = null;
             this.valid_date = null;
