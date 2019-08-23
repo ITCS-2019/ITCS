@@ -283,6 +283,7 @@
 
     data() {
       return {
+        draftCount: 0,
         loader: {
           show: false,
           message: '',
@@ -393,7 +394,7 @@
 
             this.certsCelected = certsGrid.getSelectedRowKeys().length;
 
-            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}, Чернеток: ${this.draftCount}`);
           },
           onCellClick: (e) => {
             let certsGrid = e.component,
@@ -720,6 +721,8 @@
       },
 
       loadGridData(refresh = false) {
+        this.draftCount = 0;
+
         axios.get(`/mariner/api/tableCertificates/`)
           .then(res => {
             let certs = res.data.certificates;
@@ -759,6 +762,10 @@
                 trainigOrganisation: cert.organisation_name_cert,
                 status: status
               });
+
+              if (cert.status === 0) {
+                this.draftCount++;
+              }
             });
 
             let certsGrid = this.$refs.certsGrid.tableInstance,
@@ -766,7 +773,7 @@
 
             this.certsCelected = certsGrid.getSelectedRowKeys().length;
             certsGrid.option('dataSource', this.dataSource);
-            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}, Чернеток: ${this.draftCount}`);
             certsGrid.endCustomLoading();
 
             if (refresh) {
