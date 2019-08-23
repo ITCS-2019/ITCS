@@ -8,30 +8,15 @@
         <v-form>
           <v-container py-0>
             <v-layout wrap>
-
-              <v-flex xs12 md4
+              <v-flex xs12 md12
               :align-self-end="true">
                 <CropImgUpload ref="photoUpload"
                 :editable="(currentStatus === 1 || currentStatus === 2) ? false : true"
                 :status="currentStatus">
                 </CropImgUpload>
               </v-flex>
-
-              <v-flex xs12 md4
-              :align-self-end="true">
-                <v-text-field label="Name"
-                prepend-inner-icon="mdi-web"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="first_name_en"/>
-              </v-flex>
-              <v-flex xs12 md4
-              :align-self-end="true">
-                <v-text-field label="Surname"
-                prepend-inner-icon="mdi-web"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="last_name_en"/>
-              </v-flex>
             </v-layout>
+
             <v-layout wrap>
               <v-flex xs12 md4>
                 <v-text-field label="Прiзвище"
@@ -47,6 +32,22 @@
                 <v-text-field label="По батькові"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="second_name_ukr"/>
+              </v-flex>
+            </v-layout>
+            <v-layout wrap>
+              <v-flex xs12 md6
+              :align-self-end="true">
+                <v-text-field label="Name"
+                prepend-inner-icon="mdi-web"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="first_name_en"/>
+              </v-flex>
+              <v-flex xs12 md6
+              :align-self-end="true">
+                <v-text-field label="Surname"
+                prepend-inner-icon="mdi-web"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="last_name_en"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>

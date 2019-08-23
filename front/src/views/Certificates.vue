@@ -755,7 +755,7 @@
                 validDate: cert.valid_date,
                 trainingDirection: `${cert.direction_title_cert} (${cert.direction_allow_functions}/${cert.direction_level})`,
                 sailorId: cert.sailor_id,
-                sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
+                sailor: `${cert.last_name_ukr} ${cert.first_name_ukr} ${cert.second_name_ukr}`,
                 trainigOrganisation: cert.organisation_name_cert,
                 status: status
               });
