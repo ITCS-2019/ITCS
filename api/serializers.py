@@ -204,7 +204,7 @@ class CertificateCustomSerializer(serializers.Serializer):
 	#last_name_en = serializers.CharField()
 	last_name_ukr = serializers.CharField()
 	first_name_ukr = serializers.CharField()
-	#second_name_ukr = serializers.CharField()
+	second_name_ukr = serializers.CharField()
 	born = serializers.DateField()
 	#inn = serializers.CharField()
 	#sailor = SailorSerializer()
