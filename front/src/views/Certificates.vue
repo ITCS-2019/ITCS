@@ -255,6 +255,9 @@
       <v-card>
         <v-card-text>
         <CertificateForm :certId="certId"
+        :lastNamesUkr="lastNamesUkr"
+        :firstNamesUkr="firstNamesUkr"
+        :secondNamesUkr="secondNamesUkr"
         ref="certForm">
         </CertificateForm>
         </v-card-text>
@@ -283,6 +286,9 @@
 
     data() {
       return {
+        lastNamesUkr: [],
+        firstNamesUkr: [],
+        secondNamesUkr: [],
         draftCount: 0,
         loader: {
           show: false,
@@ -728,7 +734,9 @@
             let certs = res.data.certificates;
 
             this.dataSource = [];
-
+            this.lastNamesUkr = [];
+            this.firstNamesUkr = [];
+            this.secondNamesUkr = [];
             certs.forEach((cert) => {
               let status;
 
@@ -766,7 +774,13 @@
               if (cert.status === 0) {
                 this.draftCount++;
               }
+
+              this.lastNamesUkr.push(cert.last_name_ukr);
+              this.firstNamesUkr.push(cert.first_name_ukr);
+              this.secondNamesUkr.push(cert.second_name_ukr);
             });
+
+              console.log(this.firstNamesUkr);
 
             let certsGrid = this.$refs.certsGrid.tableInstance,
                 selected = (certsGrid._options.selection.mode === 'multiple') ? `, Вибрано: ${certsGrid.getSelectedRowKeys().length}` : '';

@@ -19,19 +19,28 @@
 
             <v-layout wrap>
               <v-flex xs12 md4>
-                <v-text-field label="Прiзвище"
+                <v-combobox v-model="last_name_ukr"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="last_name_ukr"/>
+                :items="lastNames"
+                label="Прiзвище"
+                append-icon="">
+                </v-combobox>
               </v-flex>
               <v-flex xs12 md4>
-                <v-text-field label="Iм'я"
+                <v-combobox v-model="first_name_ukr"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="first_name_ukr"/>
+                :items="firstNames"
+                label="Iм'я"
+                append-icon="">
+                </v-combobox>
               </v-flex>
               <v-flex xs12 md4>
-                <v-text-field label="По батькові"
+                <v-combobox v-model="second_name_ukr"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="second_name_ukr"/>
+                :items="secondNames"
+                label="По батькові"
+                append-icon="">
+                </v-combobox>
               </v-flex>
             </v-layout>
             <v-layout wrap>
@@ -207,6 +216,27 @@ export default {
     certId: {
       type: Number,
       required: true
+    },
+    lastNamesUkr: {
+      type: Array,
+      required: false,
+      default: function() {
+        return [];
+      }
+    },
+    firstNamesUkr: {
+      type: Array,
+      required: false,
+      default: function() {
+        return [];
+      }
+    },
+    secondNamesUkr: {
+      type: Array,
+      required: false,
+      default: function() {
+        return [];
+      }
     }
   },
 
@@ -216,8 +246,10 @@ export default {
 
   data() {
     return {
+      lastNames: [],
+      firstNames: [],
+      secondNames: [],
       test: '',
-
       currentStatus: null,
       userRole: gUserRole,
 
@@ -267,6 +299,21 @@ export default {
   },
 
   watch: {
+    lastNamesUkr(val) {
+      this.lastNames = [];
+      this.lastNames = this.lastNames.concat(val);
+    },
+
+    firstNamesUkr(val) {
+      this.firstNames = [];
+      this.firstNames = this.firstNames.concat(val);
+    },
+
+    secondNamesUkr(val) {
+      this.secondNames = [];
+      this.secondNames = this.secondNames.concat(val);
+    },
+
     birthdayDatepicker(val) {
       val && setTimeout(() => (this.$refs.birthdayPicker.activePicker = 'YEAR'))
     },
