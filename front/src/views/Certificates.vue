@@ -255,6 +255,9 @@
       <v-card>
         <v-card-text>
         <CertificateForm :certId="certId"
+        :lastNamesUkr="lastNamesUkr"
+        :firstNamesUkr="firstNamesUkr"
+        :secondNamesUkr="secondNamesUkr"
         ref="certForm">
         </CertificateForm>
         </v-card-text>
@@ -283,6 +286,10 @@
 
     data() {
       return {
+        lastNamesUkr: [],
+        firstNamesUkr: [],
+        secondNamesUkr: [],
+        draftCount: 0,
         loader: {
           show: false,
           message: '',
@@ -393,7 +400,7 @@
 
             this.certsCelected = certsGrid.getSelectedRowKeys().length;
 
-            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}, Чернеток: ${this.draftCount}`);
           },
           onCellClick: (e) => {
             let certsGrid = e.component,
@@ -562,6 +569,18 @@
               allowFiltering: true,
             },
             {
+                dataField: 'allow_functions',
+                caption: 'Рівень функцій',
+                allowEditing: false,
+                allowFiltering: true
+            },
+            {
+                dataField: 'level',
+                caption: 'Рівень кваліфікації',
+                allowEditing: false,
+                allowFiltering: true
+            },
+            {
               dataField: 'sailorId',
               visible: false,
             },
@@ -720,12 +739,16 @@
       },
 
       loadGridData(refresh = false) {
+        this.draftCount = 0;
+
         axios.get(`/mariner/api/tableCertificates/`)
           .then(res => {
             let certs = res.data.certificates;
 
             this.dataSource = [];
-
+            this.lastNamesUkr = [];
+            this.firstNamesUkr = [];
+            this.secondNamesUkr = [];
             certs.forEach((cert) => {
               let status;
 
@@ -753,12 +776,22 @@
                 blankNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
                 validDate: cert.valid_date,
-                trainingDirection: `${cert.direction_title_cert} (${cert.direction_allow_functions}/${cert.direction_level})`,
+                trainingDirection: cert.direction_title_cert,
+                allow_functions: cert.direction_allow_functions,
+                level: cert.direction_level,
                 sailorId: cert.sailor_id,
-                sailor: `${cert.first_name_ukr} ${cert.last_name_ukr}`,
+                sailor: `${cert.last_name_ukr} ${cert.first_name_ukr} ${cert.second_name_ukr}`,
                 trainigOrganisation: cert.organisation_name_cert,
                 status: status
               });
+
+              if (cert.status === 0) {
+                this.draftCount++;
+              }
+
+              this.lastNamesUkr.push(cert.last_name_ukr);
+              this.firstNamesUkr.push(cert.first_name_ukr);
+              this.secondNamesUkr.push(cert.second_name_ukr);
             });
 
             let certsGrid = this.$refs.certsGrid.tableInstance,
@@ -766,7 +799,7 @@
 
             this.certsCelected = certsGrid.getSelectedRowKeys().length;
             certsGrid.option('dataSource', this.dataSource);
-            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+            certsGrid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}, Чернеток: ${this.draftCount}`);
             certsGrid.endCustomLoading();
 
             if (refresh) {

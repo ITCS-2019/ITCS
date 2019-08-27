@@ -8,45 +8,55 @@
         <v-form>
           <v-container py-0>
             <v-layout wrap>
-
-              <v-flex xs12 md4
+              <v-flex xs12 md12
               :align-self-end="true">
                 <CropImgUpload ref="photoUpload"
                 :editable="(currentStatus === 1 || currentStatus === 2) ? false : true"
                 :status="currentStatus">
                 </CropImgUpload>
               </v-flex>
+            </v-layout>
 
-              <v-flex xs12 md4
+            <v-layout wrap>
+              <v-flex xs12 md4>
+                <v-combobox v-model="last_name_ukr"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                :items="lastNames"
+                label="Прiзвище"
+                append-icon="">
+                </v-combobox>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-combobox v-model="first_name_ukr"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                :items="firstNames"
+                label="Iм'я"
+                append-icon="">
+                </v-combobox>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-combobox v-model="second_name_ukr"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                :items="secondNames"
+                label="По батькові"
+                append-icon="">
+                </v-combobox>
+              </v-flex>
+            </v-layout>
+            <v-layout wrap>
+              <v-flex xs12 md6
               :align-self-end="true">
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_en"/>
               </v-flex>
-              <v-flex xs12 md4
+              <v-flex xs12 md6
               :align-self-end="true">
                 <v-text-field label="Surname"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="last_name_en"/>
-              </v-flex>
-            </v-layout>
-            <v-layout wrap>
-              <v-flex xs12 md4>
-                <v-text-field label="Прiзвище"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="last_name_ukr"/>
-              </v-flex>
-              <v-flex xs12 md4>
-                <v-text-field label="Iм'я"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="first_name_ukr"/>
-              </v-flex>
-              <v-flex xs12 md4>
-                <v-text-field label="По батькові"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="second_name_ukr"/>
               </v-flex>
             </v-layout>
             <v-layout wrap>
@@ -206,6 +216,27 @@ export default {
     certId: {
       type: Number,
       required: true
+    },
+    lastNamesUkr: {
+      type: Array,
+      required: false,
+      default: function() {
+        return [];
+      }
+    },
+    firstNamesUkr: {
+      type: Array,
+      required: false,
+      default: function() {
+        return [];
+      }
+    },
+    secondNamesUkr: {
+      type: Array,
+      required: false,
+      default: function() {
+        return [];
+      }
     }
   },
 
@@ -215,8 +246,10 @@ export default {
 
   data() {
     return {
+      lastNames: [],
+      firstNames: [],
+      secondNames: [],
       test: '',
-
       currentStatus: null,
       userRole: gUserRole,
 
@@ -266,6 +299,21 @@ export default {
   },
 
   watch: {
+    lastNamesUkr(val) {
+      this.lastNames = [];
+      this.lastNames = this.lastNames.concat(val);
+    },
+
+    firstNamesUkr(val) {
+      this.firstNames = [];
+      this.firstNames = this.firstNames.concat(val);
+    },
+
+    secondNamesUkr(val) {
+      this.secondNames = [];
+      this.secondNames = this.secondNames.concat(val);
+    },
+
     birthdayDatepicker(val) {
       val && setTimeout(() => (this.$refs.birthdayPicker.activePicker = 'YEAR'))
     },
@@ -532,7 +580,7 @@ export default {
             this.last_name_ukr = null;
             this.ntz_number = null;
             this.second_name_ukr = null;
-            this.status = null;
+            this.status = 0;
             this.training_direction = null;
             this.training_organisation = null;
             this.valid_date = null;
