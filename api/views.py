@@ -513,6 +513,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			certification.inn = request.data.get('inn')
 			certification.organisation_name_cert = trainigOrganisation.organisation_name
 			certification.direction_title_cert = trainigDirection.direction_title
+			certification.direction_level = trainigDirection.level
+			certification.direction_allow_functions = trainigDirection.allow_functions
 
 			printSettings, created = CertificatePrintSettings.objects.get_or_create(
 				logo_pic = trainigOrganisation.logo_pic,
