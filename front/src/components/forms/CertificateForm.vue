@@ -406,6 +406,11 @@ export default {
   },
 
   methods: {
+    validateName(val, model) {
+        console.log(val);
+        console.log(this);
+    },
+
     getSailorPhoto() {
       let photo = {
         dataURL: this.$refs.photoUpload.imgDataUrl,
