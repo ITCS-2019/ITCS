@@ -713,6 +713,7 @@
           .then(res => {
             let certs = res.data.certificates;
 
+            console.log(certs);
             this.dataSource = [];
             certs.forEach((cert) => {
               let status;
@@ -737,8 +738,7 @@
                 certificateNumber: cert.certf_number,
                 formNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
-                specialty: cert.direction_title_cert,
-                // sailorId: cert.sailor.id,
+                specialty: `${cert.direction_title_cert} ( ${cert.direction_allow_functions} / ${cert.direction_level} )`,
                 sailor: `${cert.last_name_ukr} ${cert.first_name_ukr}`,
                 status: status,
               });
