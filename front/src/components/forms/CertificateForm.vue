@@ -114,7 +114,8 @@
                     <v-text-field v-model="date_of_issue"
                     label="Дата видачі"
                     prepend-inner-icon="mdi-calendar-range"
-                    readonly
+                    mask="##.##.####"
+                    v-on:keyup="issueDatepicker = false"
                     v-on="on">
                     </v-text-field>
                   </template>
@@ -143,7 +144,8 @@
                     <v-text-field v-model="valid_date"
                     label="Дійсний до"
                     prepend-inner-icon="mdi-calendar-range"
-                    readonly
+                    mask="##.##.####"
+                    v-on:keyup="validDatepicker = false"
                     v-on="on">
                     </v-text-field>
                   </template>

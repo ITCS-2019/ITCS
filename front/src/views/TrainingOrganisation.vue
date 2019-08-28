@@ -291,7 +291,8 @@
           rowAlternationEnabled: true,
           customizeExportData: (cols, rows) => {
             let certIDs = [],
-                _this= this;
+                _this= this,
+                grid = this.$refs.certsOnReviewGrid.tableInstance;
 
             if (rows.length > 0) {
 
@@ -352,6 +353,7 @@
                   else {
                     axios.get(`/mariner/api/exportXLS?exportType=${_this.exportType}&certIDs=${certIDs.join(',')}`)
                       .then(res => {
+                        grid.beginCustomLoading();
                         _this.loadGridData(true);
                         _this.snackbarConfig.icon = 'mdi-check-circle';
                         _this.snackbarConfig.color = 'success';
@@ -388,6 +390,7 @@
                 if (isEmptyNumbers) {
                   axios.get(`/mariner/api/setRangeNumbers/?certIDs=${certIDs.join(',')}`)
                     .then(res => {
+                      grid.beginCustomLoading();
                       _this.loadGridData(true);
                       _this.snackbarConfig.icon = 'mdi-check-circle';
                       _this.snackbarConfig.color = 'success';
@@ -660,20 +663,23 @@
 
       saveCert() {
         let formData = {
-          first_name_en: this.$refs.certForm.first_name_en,
-          last_name_en: this.$refs.certForm.last_name_en,
-          last_name_ukr: this.$refs.certForm.last_name_ukr,
-          first_name_ukr: this.$refs.certForm.first_name_ukr,
-          second_name_ukr: this.$refs.certForm.second_name_ukr,
-          born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
-          inn: this.$refs.certForm.inn,
-          date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
-          valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
-          training_direction: this.$refs.certForm.training_direction.value,
-          form_number: this.$refs.certForm.form_number,
-          certf_number: this.$refs.certForm.certf_number,
-          status: this.$refs.certForm.status
-        };
+              first_name_en: this.$refs.certForm.first_name_en,
+              last_name_en: this.$refs.certForm.last_name_en,
+              last_name_ukr: this.$refs.certForm.last_name_ukr,
+              first_name_ukr: this.$refs.certForm.first_name_ukr,
+              second_name_ukr: this.$refs.certForm.second_name_ukr,
+              born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
+              inn: this.$refs.certForm.inn,
+              date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
+              valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
+              training_direction: this.$refs.certForm.training_direction.value,
+              form_number: this.$refs.certForm.form_number,
+              certf_number: this.$refs.certForm.certf_number,
+              status: this.$refs.certForm.status,
+              trainigOrganisation: ~~this.$route.params.id
+            },
+            grid = this.$refs.certsOnReviewGrid.tableInstance;
+
 
         axios({
           method: (this.certId === 0) ? 'POST' : 'PUT',
@@ -681,6 +687,7 @@
           data: formData
         })
           .then(res => {
+            grid.beginCustomLoading();
             this.loadGridData(true);
             this.certFormModal = false;
 
@@ -713,7 +720,6 @@
           .then(res => {
             let certs = res.data.certificates;
 
-            console.log(certs);
             this.dataSource = [];
             certs.forEach((cert) => {
               let status;
