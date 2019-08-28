@@ -499,6 +499,10 @@ export default {
                   value: 0
                 },
                 {
+                    caption: 'Обробка',
+                    value: 1
+                },
+                {
                   caption: 'Видан',
                   value: 2
                 }

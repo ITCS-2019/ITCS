@@ -828,20 +828,21 @@
 
       saveCert() {
         let formData = {
-          first_name_en: this.$refs.certForm.first_name_en,
-          last_name_en: this.$refs.certForm.last_name_en,
-          last_name_ukr: this.$refs.certForm.last_name_ukr,
-          first_name_ukr: this.$refs.certForm.first_name_ukr,
-          second_name_ukr: this.$refs.certForm.second_name_ukr,
-          born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
-          inn: this.$refs.certForm.inn,
-          date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
-          valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
-          training_direction: this.$refs.certForm.training_direction.value,
-          form_number: this.$refs.certForm.form_number,
-          certf_number: this.$refs.certForm.certf_number,
-          status: this.$refs.certForm.status
-        };
+              first_name_en: this.$refs.certForm.first_name_en,
+              last_name_en: this.$refs.certForm.last_name_en,
+              last_name_ukr: this.$refs.certForm.last_name_ukr,
+              first_name_ukr: this.$refs.certForm.first_name_ukr,
+              second_name_ukr: this.$refs.certForm.second_name_ukr,
+              born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
+              inn: this.$refs.certForm.inn,
+              date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
+              valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
+              training_direction: this.$refs.certForm.training_direction.value,
+              form_number: this.$refs.certForm.form_number,
+              certf_number: this.$refs.certForm.certf_number,
+              status: this.$refs.certForm.status
+            },
+            grid = this.$refs.certsGrid.tableInstance;
 
         if (gUserRole !== 'НТЗ') {
           formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
@@ -882,6 +883,7 @@
               });
             }
             else {
+              grid.beginCustomLoading();
               this.loadGridData(true);
               this.certFormModal = false;
 
@@ -895,6 +897,7 @@
           })
             .then(res => {
               if (this.$refs.certForm.getSailorPhoto().isNew) {
+                grid.beginCustomLoading();
                 this.loadGridData(true);
                 this.certFormModal = false;
 
