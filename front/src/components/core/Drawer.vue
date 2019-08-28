@@ -57,6 +57,7 @@
           v-bind:class="{hide: userRole === 'НТЗ'
           && (link.to === '/mariner/app/sailors'
             || link.to === '/mariner/app/training-organisations'
+            || link.to === '/mariner/app/users'
             || link.to === '/mariner/app/regulations')}"
         >
           <v-list-tile-action>
@@ -143,7 +144,12 @@ export default {
       //   to: '/mariner/app/regulations',
       //   icon: 'mdi-file-document-box',
       //   text: 'Нормативнi документи'
-      // }
+      // },
+      {
+        to: '/mariner/app/users',
+        icon: 'mdi-account-group',
+        text: 'Користувачi'
+      }
     ],
     responsive: false,
     userName: gUserName,

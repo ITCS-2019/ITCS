@@ -58,6 +58,26 @@
         title="Сертифікати">
           <v-layout wrap
           class="mt-2 pl-2 pr-2">
+            <v-flex md12
+            v-if="role === 'НТЗ' ? true : false">
+              <router-link class="c-link"
+              :to="{name: 'Certificates',
+              params: {
+                columns: [
+                  {
+                    dataField: 'status',
+                    filterValue: 'Чернетка'
+                  }
+                ]
+              }}">
+                <span class="font-weight-bold black--text">
+                  Чернеток
+                </span>
+                <span class="font-weight-bold black--text">
+                  - {{draftCertsCount}},
+                </span>
+              </router-link>
+            </v-flex>
             <v-flex md12>
               <router-link class="c-link"
               :to="{name: 'Certificates',
@@ -118,6 +138,7 @@ export default {
   data () {
     return {
       issuedCertCount: 0,
+      draftCertsCount: 0,
       certsInReviewCount: 0,
       organisationsCount: 0,
       directionsCount: 0,
@@ -235,12 +256,15 @@ export default {
     // TODO: Make one request for all info
     axios.get(`/mariner/api/dashInfo/`)
       .then(res => {
+          console.log(res);
+
         let dashInfo = res.data.dashInfo[0];
 
         if (this.role === 'Адміністратор') {
           this.organisationsCount = dashInfo.trainigOrganisations.length;
         }
 
+        this.draftCertsCount = dashInfo.certsInDraftCount;
         this.directionsCount = dashInfo.trainigDirectionsCount;
         this.certsInReviewCount = dashInfo.certsInReviewCount;
         this.issuedCertCount = dashInfo.certCount;
