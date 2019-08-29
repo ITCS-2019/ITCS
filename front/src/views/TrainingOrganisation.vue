@@ -354,6 +354,7 @@
                     axios.get(`/mariner/api/exportXLS?exportType=${_this.exportType}&certIDs=${certIDs.join(',')}`)
                       .then(res => {
                         grid.beginCustomLoading();
+                        grid.clearSelection();
                         _this.loadGridData(true);
                         _this.snackbarConfig.icon = 'mdi-check-circle';
                         _this.snackbarConfig.color = 'success';
