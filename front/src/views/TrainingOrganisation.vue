@@ -487,6 +487,15 @@
               }
             }
           },
+
+          onOptionChanged(e) {
+              if (e.name === 'columns' && e.fullName.endsWith('filterValues')) {
+                let grid = e.component;
+
+                grid.clearSelection();
+              }
+          },
+
           onContentReady: function(e) {
             function changePage(page) {
               e.component.pageIndex(page);
