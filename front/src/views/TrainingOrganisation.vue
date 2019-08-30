@@ -354,8 +354,10 @@
                     axios.get(`/mariner/api/exportXLS?exportType=${_this.exportType}&certIDs=${certIDs.join(',')}`)
                       .then(res => {
                         grid.beginCustomLoading();
+                        let filterVals = grid.columnOption('status').filterValues.length > 0 ? grid.columnOption('status').filterValues : undefined;
+                        grid.clearFilter();
                         grid.clearSelection();
-                        _this.loadGridData(true);
+                        _this.loadGridData(true, filterVals);
                         _this.snackbarConfig.icon = 'mdi-check-circle';
                         _this.snackbarConfig.color = 'success';
                         _this.snackbarConfig.message = `Сертифiкати успiшно виданi!`;
@@ -725,7 +727,7 @@
         this.loadGridData();
       },
 
-      loadGridData(refresh = false) {
+      loadGridData(refresh = false, filterVals = undefined) {
         axios.get(`/mariner/api/organisationCerts/${this.organisationId}`)
           .then(res => {
             let certs = res.data.certificates;
@@ -769,6 +771,10 @@
 
             if (refresh) {
               grid.refresh();
+            }
+
+            if (filterVals && filterVals.length > 0) {
+                grid.columnOption('status', 'filterValues', filterVals);
             }
 
             if (this.$route.params.directionName) {
