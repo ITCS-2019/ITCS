@@ -17,8 +17,7 @@
             <!--Grid btns row right side-->
             <div>
               <v-btn color="success" small :depressed="true"
-              v-if="userRole !== 'НТЗ'"
-              v-on:click="showCertFormModal(0)">
+              v-if="userRole === 'Адміністратор'">
                 <v-icon>
                   mdi-plus-box
                 </v-icon>
@@ -30,7 +29,7 @@
           </v-layout>
           <DxGrid :tableConfig="tableConfig"
           v-on:init="gridInited()"
-          ref="directionsGrid"/>
+          ref="usersGrid"/>
         </material-card>
       </v-flex>
     </v-layout>
@@ -114,10 +113,9 @@ export default {
           width: 240,
           placeholder: "Шукати..."
         },
-        export: {
-          enabled: false,
-          fileName: "certificates",
-          allowExportSelectedData: true
+        selection: {
+          mode: "multiple",
+          showCheckBoxesMode: 'always'
         },
         headerFilter: {
           visible: true
@@ -136,36 +134,44 @@ export default {
 
           grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
         },
-        onCellClick: function (data) {
-          switch (data.column.dataField) {
-            case 'status':
-              if (gUserRole === 'НТЗ') {
-                let grid = data.component,
-                    newStatus = (~~data.data.status === 0) ? 1 : 0;
-
-                axios.get(`/mariner/api/changeTrainigDirectionStatus/`,
-                {
-                  params: {
-                    certID: data.data.id,
-                    dirStatus: newStatus
-                  }
-                })
-                  .then(res => {
-                    let trainigDirections = grid.option('dataSource');
-
-                    trainigDirections.some((direction) => {
-                      if (~~direction.id === ~~data.data.id) {
-                        direction.status = newStatus;
-                      }
-                    });
-                    grid.option('dataSource', trainigDirections);
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
-                break;
-              }
-          }
+        onCellClick: function (e) {
+            let grid = e.component,
+                _this = this;
+    
+            function initialClick() {
+                grid.clickCount = 1;
+                grid.clickKey = e.key;
+                grid.clickDate = new Date();
+                _this.clickDelay = setTimeout(() => {
+                    if (e.column.dataField) {
+                        if (e.row.isSelected) {
+                            grid.deselectRows([e.key]);
+                        }
+                        else {
+                            grid.selectRows([e.key], true);
+                        }
+                    }
+                }, 300);
+            }
+    
+            function doubleClick() {
+                clearTimeout(_this.clickDelay);
+                grid.clickCount = 0;
+                grid.clickKey = 0;
+                grid.clickDate = null;
+            }
+    
+            if ((!grid.clickCount) || (grid.clickCount != 1) || (grid.clickKey != e.key) ) {
+                initialClick();
+            }
+            else if (grid.clickKey == e.key) {
+                if (((new Date()) - grid.clickDate) <= 300) {
+                    doubleClick();
+                }
+                else {
+                    initialClick();
+                }
+            }
         },
         onContentReady: function(e) {
           function changePage(page) {
@@ -237,80 +243,28 @@ export default {
             visible: false
           },
           {
-            dataField: 'price_id',
-            caption: 'Код',
+            dataField: 'username',
+            caption: 'Логiн',
             allowEditing: false,
             allowFiltering: true,
-            sortOrder: 'asc',
-            alignment: 'left'
           },
           {
-            dataField: 'direction_title',
-            caption: 'Напрямок підготовки',
-            allowEditing: false,
-            allowFiltering: true
-          },
-          {
-            dataField: 'allow_functions',
-            caption: 'Рівень функцій',
-            allowEditing: false,
-            allowFiltering: true
-          },
-          {
-            dataField: 'level',
-            caption: 'Рівень кваліфікації',
-            allowEditing: false,
-            allowFiltering: true
-          },
-          {
-            dataField: 'status',
-            caption: 'Статус',
-            allowEditing: false,
-            allowFiltering: false,
-            cssClass: 'center-vertical',
-            alignment: 'left',
-            cellTemplate: function (element, data) {
-              element.append(`<div style="text-align: center; color: green;">
-                                ${(~~data.value === 0) ? '&#10004;' : '&#x274C;'}
-                            </div>`);
-            }
-          },
-          {
-            dataField: 'direction_reviewCertCount',
-            caption: 'В обробцi',
+            dataField: 'full_name',
+            caption: 'ПIБ',
             allowEditing: false,
             allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
           },
           {
-            dataField: 'direction_issuedCertCount',
-            caption: 'Видано',
+            dataField: 'organization_name',
+            caption: 'Органiзацiя',
             allowEditing: false,
             allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
           },
           {
-            dataField: 'direction_reviewAndIssuedCertsCount',
-            caption: 'Всього',
+            dataField: 'is_active',
+            caption: 'Активний',
             allowEditing: false,
             allowFiltering: true,
-            alignment: 'left',
-            visible: gUserRole === 'НТЗ',
-          },
-          {
-            type: "buttons",
-            width: 110,
-            visible: gUserRole !== 'НТЗ',
-            cssClass: 'center-vertical',
-            buttons: [{
-              hint: 'Редагувати',
-              icon: 'edit',
-              onClick: (e) => {
-                this.showCertFormModal(e.row.data.id);
-              }
-            }]
           }
         ]
       }
@@ -319,26 +273,26 @@ export default {
 
   methods: {
     loadGridData(refresh = false) {
-      axios.get(`/mariner/api/directionsInfo/`)
+      axios.get(`/mariner/api/users/`)
         .then(res => {
-          let directions = res.data.trainigDirections;
+
+            console.log(res);
+
+
+          let users = res.data.users;
 
           this.dataSource = [];
-          directions.forEach((direction) => {
+          users.forEach((user) => {
             this.dataSource.push({
-              id: (gUserRole === 'НТЗ') ? direction.direction_id : direction.id,
-              price_id: direction.price_id,
-              direction_title: (gUserRole === 'НТЗ') ? direction.dirction_name : direction.direction_title,
-              direction_reviewCertCount: direction.direction_reviewCertCount,
-              direction_issuedCertCount: direction.direction_issuedCertCount,
-              direction_reviewAndIssuedCertsCount: direction.direction_reviewAndIssuedCertsCount,
-              allow_functions: direction.allow_functions,
-              level: direction.level,
-              status: direction.status
+              id: user.id,
+              username: user.username,
+              full_name: user.full_name,
+              organization_name: user.profile.organization_name,
+              is_active: (user.is_active) ? 'Так' : 'Нi'
             });
           });
 
-          let grid = this.$refs.directionsGrid.tableInstance,
+          let grid = this.$refs.usersGrid.tableInstance,
               selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
           grid.option('dataSource', this.dataSource);

@@ -55,6 +55,11 @@ export default [
     view: 'EditTrainingOrganisations'
   },
   {
+    path: '/mariner/app/users',
+    name: 'Users',
+    view: 'Users'
+  },
+  {
     path: '/mariner/app/regulations',
     name: 'Regulations',
     view: 'Regulations'

@@ -92,6 +92,9 @@ export default {
         case 'Regulations':
           this.title = 'Нормативнi документы'
           break
+        case 'Users':
+          this.title = 'Користувачi'
+          break
       }
     }
   },

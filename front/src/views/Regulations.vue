@@ -108,7 +108,7 @@ export default {
           let grid = e.component,
               selected = (grid._options.selection.mode === 'multiple') ? `, Вибрано: ${grid.getSelectedRowKeys().length}` : '';
 
-          grid.option('pager.infoText', `Всього: ${certsGrid.option('dataSource').length}${selected}`);
+          grid.option('pager.infoText', `Всього: ${grid.option('dataSource').length}${selected}`);
         },
         onCellClick: function (data) {
           switch (data.column.dataField) {

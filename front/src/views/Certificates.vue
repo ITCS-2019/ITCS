@@ -559,18 +559,6 @@
               allowFiltering: true,
             },
             {
-                dataField: 'allow_functions',
-                caption: 'Рівень функцій',
-                allowEditing: false,
-                allowFiltering: true
-            },
-            {
-                dataField: 'level',
-                caption: 'Рівень кваліфікації',
-                allowEditing: false,
-                allowFiltering: true
-            },
-            {
               dataField: 'sailorId',
               visible: false,
             },
@@ -766,9 +754,7 @@
                 blankNumber: cert.form_number,
                 issueDate: cert.date_of_issue,
                 validDate: cert.valid_date,
-                trainingDirection: cert.direction_title_cert,
-                allow_functions: cert.direction_allow_functions,
-                level: cert.direction_level,
+                trainingDirection: `${cert.direction_title_cert} ( ${cert.direction_allow_functions} / ${cert.direction_level} )`,
                 sailorId: cert.sailor_id,
                 sailor: `${cert.last_name_ukr} ${cert.first_name_ukr} ${cert.second_name_ukr}`,
                 trainigOrganisation: cert.organisation_name_cert,
@@ -818,21 +804,20 @@
 
       saveCert() {
         let formData = {
-              first_name_en: this.$refs.certForm.first_name_en,
-              last_name_en: this.$refs.certForm.last_name_en,
-              last_name_ukr: this.$refs.certForm.last_name_ukr,
-              first_name_ukr: this.$refs.certForm.first_name_ukr,
-              second_name_ukr: this.$refs.certForm.second_name_ukr,
-              born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
-              inn: this.$refs.certForm.inn,
-              date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
-              valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
-              training_direction: this.$refs.certForm.training_direction.value,
-              form_number: this.$refs.certForm.form_number,
-              certf_number: this.$refs.certForm.certf_number,
-              status: this.$refs.certForm.status
-            },
-            grid = this.$refs.certsGrid.tableInstance;
+          first_name_en: this.$refs.certForm.first_name_en,
+          last_name_en: this.$refs.certForm.last_name_en,
+          last_name_ukr: this.$refs.certForm.last_name_ukr,
+          first_name_ukr: this.$refs.certForm.first_name_ukr,
+          second_name_ukr: this.$refs.certForm.second_name_ukr && this.$refs.certForm.second_name_ukr.length > 0 ? this.$refs.certForm.second_name_ukr : ' ',
+          born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
+          inn: this.$refs.certForm.inn,
+          date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
+          valid_date: this.$refs.certForm.resetFormatDate(this.$refs.certForm.valid_date),
+          training_direction: this.$refs.certForm.training_direction.value,
+          form_number: this.$refs.certForm.form_number,
+          certf_number: this.$refs.certForm.certf_number,
+          status: this.$refs.certForm.status
+        };
 
         if (gUserRole !== 'НТЗ') {
           formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
@@ -859,7 +844,7 @@
               formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
               formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
               formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
-              formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
+              formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr && this.$refs.certForm.second_name_ukr.length > 0 ? this.$refs.certForm.second_name_ukr : ' ');
               formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
               formDataPhoto.append('sailorPhoto', sailorPhoto);
 

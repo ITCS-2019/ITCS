@@ -23,7 +23,9 @@
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :items="lastNames"
                 label="Прiзвище"
-                append-icon="">
+                append-icon=""
+                v-on:change="lastNameEdited = true"
+                v-on:blur="lastNameEdited = false">
                 </v-combobox>
               </v-flex>
               <v-flex xs12 md4>
@@ -31,7 +33,9 @@
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 :items="firstNames"
                 label="Iм'я"
-                append-icon="">
+                append-icon=""
+                v-on:input="firstNameEdited = true"
+                v-on:blur="firstNameEdited = false">
                 </v-combobox>
               </v-flex>
               <v-flex xs12 md4>
@@ -77,6 +81,7 @@
                     prepend-inner-icon="mdi-calendar-range"
                     mask="##.##.####"
                     v-on:keyup="birthdayDatepicker = false"
+                    v-on:blur="validateBorn"
                     v-on="on">
                     </v-text-field>
                   </template>
@@ -248,6 +253,8 @@ export default {
 
   data() {
     return {
+      lastNameEdited: false,
+      firstNameEdited: false,
       lastNames: [],
       firstNames: [],
       secondNames: [],
@@ -259,12 +266,12 @@ export default {
       minValidDate: new Date().toISOString().substr(0, 10),
       inn: null,
       certf_number: '',
-      first_name_ukr: null,
-      last_name_ukr: null,
-      second_name_ukr: null,
+      first_name_ukr: '',
+      last_name_ukr: '',
+      second_name_ukr: '',
       form_number: '',
-      last_name_en: null,
-      first_name_en: null,
+      last_name_en: '',
+      first_name_en: '',
       born: null,
       bornNotFormatted: null,
       birthdayDatepicker: false,
@@ -364,7 +371,10 @@ export default {
           let newVal = this.capitalize(val.replace(regExp, ''));
 
           this.$set(this, 'first_name_ukr', newVal);
-          this.$set(this, 'first_name_en', this.translitToEn(newVal));
+
+          if (this.firstNameEdited) {
+            this.$set(this, 'first_name_en', this.translitToEn(newVal));
+          }
         }
       });
     },
@@ -389,7 +399,10 @@ export default {
           let newVal = this.capitalize(val.replace(regExp, ''));
 
           this.$set(this, 'last_name_ukr', newVal);
-          this.$set(this, 'last_name_en', this.translitToEn(newVal));
+
+          if (this.lastNameEdited) {
+              this.$set(this, 'last_name_en', this.translitToEn(newVal));
+          }
         }
       });
     },
@@ -408,9 +421,13 @@ export default {
   },
 
   methods: {
-    validateName(val, model) {
-        console.log(val);
-        console.log(this);
+    validateBorn() {
+        const [year, month, day] = this.resetFormatDate(this.born).split('-');
+        const born = new Date(year, month - 1, day);
+
+        if (new Date().getTime() - born.getTime() < 189302400000) {
+            this.born = '';
+        }
     },
 
     getSailorPhoto() {
