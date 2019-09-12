@@ -422,10 +422,11 @@ export default {
 
   methods: {
     validateBorn() {
-        const [year, month, day] = this.resetFormatDate(this.born).split('-');
+        const [year, month, day] = this.resetFormatDate(this.born) ? this.resetFormatDate(this.born).split('-') : ['', '', ''];
         const born = new Date(year, month - 1, day);
 
-        if (new Date().getTime() - born.getTime() < 189302400000) {
+        if ((new Date().getTime() - born.getTime() < 189302400000)
+        || (born.getTime() < new Date().getTime() - 3155760000000)) {
             this.born = '';
         }
     },

@@ -818,6 +818,7 @@
           certf_number: this.$refs.certForm.certf_number,
           status: this.$refs.certForm.status
         };
+        let grid = this.$refs.certsGrid.tableInstance;
 
         if (gUserRole !== 'НТЗ') {
           formData['trainigOrganisation'] = this.$refs.certForm.training_organisation.value;
@@ -839,6 +840,17 @@
                 sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto().dataURL,
                             `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
               }
+
+              grid.beginCustomLoading();
+              this.loadGridData(true);
+              this.certFormModal = false;
+
+              this.snackbarConfig.icon = 'mdi-check-circle';
+              this.snackbarConfig.color = 'success';
+              this.snackbarConfig.message = (this.certId === 0)
+                  ? 'Сертифiкат успiшно створено!'
+                  : 'Сертифiкат успiшно вiдредаговано!';
+              this.snackbar = true;
 
               formDataPhoto.append('first_name_en', this.$refs.certForm.first_name_en);
               formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
@@ -872,19 +884,22 @@
           })
             .then(res => {
               if (this.$refs.certForm.getSailorPhoto().isNew) {
-                grid.beginCustomLoading();
-                this.loadGridData(true);
-                this.certFormModal = false;
-
-                this.snackbarConfig.icon = 'mdi-check-circle';
-                this.snackbarConfig.color = 'success';
-                this.snackbarConfig.message = (this.certId === 0)
-                        ? 'Сертифiкат успiшно створено!'
-                        : 'Сертифiкат успiшно вiдредаговано!';
-                this.snackbar = true;
+                console.log('photo updated');
+                // TODO: check error
+                // grid.beginCustomLoading();
+                // this.loadGridData(true);
+                // this.certFormModal = false;
+                //
+                // this.snackbarConfig.icon = 'mdi-check-circle';
+                // this.snackbarConfig.color = 'success';
+                // this.snackbarConfig.message = (this.certId === 0)
+                //         ? 'Сертифiкат успiшно створено!'
+                //         : 'Сертифiкат успiшно вiдредаговано!';
+                // this.snackbar = true;
               }
             })
             .catch((err) => {
+              console.log('photo update error');
               console.log(err);
             });
       },
