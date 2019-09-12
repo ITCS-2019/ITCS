@@ -145,11 +145,11 @@ export default {
       //   icon: 'mdi-file-document-box',
       //   text: 'Нормативнi документи'
       // },
-      {
-        to: '/mariner/app/users',
-        icon: 'mdi-account-group',
-        text: 'Користувачi'
-      }
+      // {
+      //   to: '/mariner/app/users',
+      //   icon: 'mdi-account-group',
+      //   text: 'Користувачi'
+      // }
     ],
     responsive: false,
     userName: gUserName,
