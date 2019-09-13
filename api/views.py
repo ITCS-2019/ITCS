@@ -1132,7 +1132,7 @@ def printCertificate(request, certID):
 	validDateStr = cert.valid_date
 
 	# String which represent the QR code 
-	s = "http://127.0.0.1:8000/mariner/api/printCertificate/" + certID + '/'
+	s = "https://ntz.itcs.org.ua/mariner/api/printCertificate/" + certID + '/'
 	# Generate QR code 
 	url = pyqrcode.create(s)
  
