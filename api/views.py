@@ -548,11 +548,13 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 			certification.save()
 		
-		marilogger = Marilogger()
-		marilogger.message = "Add Certificate id:" + certification.id
-		marilogger.action_username =  request.user.username
-		marilogger.date = datetime.datetime.now()
-		marilogger.save()
+			marilogger = Marilogger()
+			marilogger.message = "{} {}".format(
+							"Add Certificate", 
+							certification.id)
+			marilogger.action_username =  request.user.username
+			marilogger.date = datetime.datetime.now()
+			marilogger.save()
 
 		return Response({"message": "Add Certificate"}, status=200)
 
@@ -951,7 +953,9 @@ def changeToReviewStatus(request):
 			'error_message' : errorMessage,
 		}
 		marilogger = Marilogger()
-		marilogger.message = "Change to review status certificate id:" + certIDsList
+		marilogger.message = "{} {}".format(
+							"Change to review status", 
+							certIDsList)
 		marilogger.action_username =  request.user.username
 		marilogger.date = datetime.datetime.now()
 		marilogger.save()
@@ -980,7 +984,9 @@ def removeDraftCerts(request):
 			'error_message' : errorMessage,
 		}
 		marilogger = Marilogger()
-		marilogger.message = "Delete Certificate id:" + certIDsList
+		marilogger.message = "{} {}".format(
+							"Delete Certificate id:", 
+							certIDsList)
 		marilogger.action_username =  request.user.username
 		marilogger.date = datetime.datetime.now()
 		marilogger.save()
