@@ -16,7 +16,7 @@ from rest_framework import decorators
 
 from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
-from accounts.models import Profile
+from accounts.models import Profile, Marilogger
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor, CertificatePrintSettings
 from regulations.models import RegulationDoc
 
@@ -365,7 +365,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			born = request.data.get('born'),
 		).count()
 
-		print('SAILOR COUNT: ', sailorCount)
 		if sailorCount > 1 : #if multiple objects
 			sailor = Sailor.objects.filter(
 				first_name_en = request.data.get('first_name_en'),
@@ -432,6 +431,12 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		)
 		if created:
 			certificate.printInfo = printSettings
+
+		marilogger = Marilogger()
+		marilogger.message = "Certificate id:" + pk + " updated"
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
 
 		certificate.save()
 
@@ -543,6 +548,12 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 			certification.save()
 		
+		marilogger = Marilogger()
+		marilogger.message = "Add Certificate id:" + certification.id
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
+
 		return Response({"message": "Add Certificate"}, status=200)
 
 class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -939,6 +950,11 @@ def changeToReviewStatus(request):
 			'error' : hasError,
 			'error_message' : errorMessage,
 		}
+		marilogger = Marilogger()
+		marilogger.message = "Change to review status certificate id:" + certIDsList
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
 		return JsonResponse(data)
 	else:
 		hasError = True
@@ -963,6 +979,11 @@ def removeDraftCerts(request):
 			'error' : hasError,
 			'error_message' : errorMessage,
 		}
+		marilogger = Marilogger()
+		marilogger.message = "Delete Certificate id:" + certIDsList
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
 		return JsonResponse(data)
 	else:
 		hasError = True

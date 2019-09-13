@@ -12,7 +12,6 @@ from django.contrib import admin
 #         return qs.prefetch_related('certificated')
 
 
-
 class Sailor(models.Model):
     M = 0
     W = 1
