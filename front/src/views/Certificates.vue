@@ -804,6 +804,8 @@
 
       saveCert() {
         let formData = {
+          passport_serie: this.$refs.certForm.passport_serie,
+          passport_number: this.$refs.certForm.passport_number,
           first_name_en: this.$refs.certForm.first_name_en,
           last_name_en: this.$refs.certForm.last_name_en,
           last_name_ukr: this.$refs.certForm.last_name_ukr,

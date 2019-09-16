@@ -137,7 +137,7 @@ export default {
         onCellClick: function (e) {
             let grid = e.component,
                 _this = this;
-    
+
             function initialClick() {
                 grid.clickCount = 1;
                 grid.clickKey = e.key;
@@ -153,14 +153,14 @@ export default {
                     }
                 }, 300);
             }
-    
+
             function doubleClick() {
                 clearTimeout(_this.clickDelay);
                 grid.clickCount = 0;
                 grid.clickKey = 0;
                 grid.clickDate = null;
             }
-    
+
             if ((!grid.clickCount) || (grid.clickCount != 1) || (grid.clickKey != e.key) ) {
                 initialClick();
             }
@@ -275,10 +275,6 @@ export default {
     loadGridData(refresh = false) {
       axios.get(`/mariner/api/users/`)
         .then(res => {
-
-            console.log(res);
-
-
           let users = res.data.users;
 
           this.dataSource = [];

@@ -18,6 +18,27 @@
             </v-layout>
 
             <v-layout wrap>
+              <v-flex xs12 md2>
+                <v-text-field label="Passport Serie"
+                prepend-inner-icon="mdi-passport"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="passport_serie"/>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-text-field label="PassportNumber"
+                prepend-inner-icon="mdi-passport"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="passport_number"/>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-text-field label="ІПН"
+                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
+                v-model="inn"
+                mask="#### #### ####"/>
+              </v-flex>
+            </v-layout>
+
+            <v-layout wrap>
               <v-flex xs12 md4>
                 <v-combobox v-model="last_name_ukr"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
@@ -48,23 +69,22 @@
               </v-flex>
             </v-layout>
             <v-layout wrap>
-              <v-flex xs12 md6
+              <v-flex xs12 md4
               :align-self-end="true">
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="first_name_en"/>
               </v-flex>
-              <v-flex xs12 md6
+              <v-flex xs12 md4
               :align-self-end="true">
                 <v-text-field label="Surname"
                 prepend-inner-icon="mdi-web"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="last_name_en"/>
               </v-flex>
-            </v-layout>
-            <v-layout wrap>
-              <v-flex xs12 md6>
+              <v-flex xs12 md4
+              :align-self-end="true">
                 <v-menu ref="birthdayDatepicker"
                 :disabled="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="birthdayDatepicker"
@@ -94,12 +114,6 @@
                   v-on:change="saveBirthday">
                   </v-date-picker>
                 </v-menu>
-              </v-flex>
-              <v-flex xs12 md6>
-                <v-text-field label="ІПН"
-                :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="inn"
-                mask="#### #### ####"/>
               </v-flex>
             </v-layout>
 
@@ -264,6 +278,8 @@ export default {
 
       // TODO: refactor to one object
       minValidDate: new Date().toISOString().substr(0, 10),
+      passport_serie: '',
+      passport_number: '',
       inn: null,
       certf_number: '',
       first_name_ukr: '',
@@ -417,6 +433,28 @@ export default {
           this.$set(this, 'form_number', newVal);
         }
       });
+    },
+    passport_serie(val) {
+      let regExp = /[^a-zA-Zа-щА-ЩЬьЮюЯяЇїІіЄєҐґ]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '').toUpperCase();
+
+          this.$set(this, 'passport_serie', newVal);
+        }
+      });
+    },
+    passport_number(val) {
+      let regExp = /[^0-9]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+
+          this.$set(this, 'passport_number', newVal);
+        }
+      });
     }
   },
 
@@ -551,6 +589,8 @@ export default {
               ];
             }
 
+            this.passport_number = cert.passport_number;
+            this.passport_serie = cert.passport_serie;
             this.born = this.formatDate(cert.born);
             this.certf_number = cert.certf_number;
             this.date_of_issue = this.formatDate(cert.date_of_issue);
