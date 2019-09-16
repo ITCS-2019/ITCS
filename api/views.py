@@ -355,6 +355,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certificate.second_name_ukr = request.data.get('second_name_ukr')
 		certificate.born = request.data.get('born')
 		certificate.inn = request.data.get('inn')
+		certificate.passport_serie = request.data.get('passport_serie')
+		certificate.passport_number = request.data.get('passport_number')
 
 		sailorCount = Sailor.objects.filter(
 			first_name_en = request.data.get('first_name_en'),
@@ -457,6 +459,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 					sailor.born = request.data.get('born')
 					sailor.died = request.data.get('died')#?
 					sailor.inn = request.data.get('inn')
+					sailor.passport_serie = request.data.get('passport_serie')
+					sailor.passport_number = request.data.get('passport_number')
 					sailor.save()
 				else:
 					sailor = Sailor()
@@ -471,6 +475,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				sailor.second_name_ukr = request.data.get('second_name_ukr')
 				sailor.born = request.data.get('born')
 				sailor.inn = request.data.get('inn')
+				sailor.passport_serie = request.data.get('passport_serie')
+				sailor.passport_number = request.data.get('passport_number')
 				sailor.save()
 		else:
 			sailor, created = Sailor.objects.get_or_create(
@@ -516,6 +522,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			)
 		if created:
 			certification.inn = request.data.get('inn')
+			certification.passport_serie = request.data.get('passport_serie')
+			certification.passport_number = request.data.get('passport_number')
 			certification.organisation_name_cert = trainigOrganisation.organisation_name
 			certification.direction_title_cert = trainigDirection.direction_title
 			certification.direction_level = trainigDirection.level
