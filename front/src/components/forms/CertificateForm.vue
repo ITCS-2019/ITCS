@@ -19,13 +19,13 @@
 
             <v-layout wrap>
               <v-flex xs12 md2>
-                <v-text-field label="Passport Serie"
+                <v-text-field label="Серiя паспорту"
                 prepend-inner-icon="mdi-passport"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="passport_serie"/>
               </v-flex>
               <v-flex xs12 md4>
-                <v-text-field label="PassportNumber"
+                <v-text-field label="Номер паспорту"
                 prepend-inner-icon="mdi-passport"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="passport_number"/>

@@ -8,6 +8,23 @@
         <v-form>
           <v-container py-0>
             <v-layout wrap>
+              <v-flex xs12 md2>
+                <v-text-field label="Серiя паспорту"
+                prepend-inner-icon="mdi-passport"
+                v-model="passport_serie"/>
+              </v-flex>
+              <v-flex xs12 md4>
+                <v-text-field label="Номер паспорту"
+                prepend-inner-icon="mdi-passport"
+                v-model="passport_number"/>
+              </v-flex>
+              <v-flex xs12 md6>
+                <v-text-field label="ІПН"
+                v-model="inn"
+                mask="#### #### ####"/>
+              </v-flex>
+            </v-layout>
+            <v-layout wrap>
               <v-flex xs12 md6>
                 <v-text-field label="Name"
                 prepend-inner-icon="mdi-web"
@@ -34,7 +51,7 @@
               </v-flex>
             </v-layout>
             <v-layout wrap>
-              <v-flex xs12 md4>
+              <v-flex xs12 md6>
                 <v-menu ref="birthdayDatepicker"
                 v-model="birthdayDatepicker"
                 :close-on-content-click="false"
@@ -62,12 +79,7 @@
                   </v-date-picker>
                 </v-menu>
               </v-flex>
-              <v-flex xs12 md4>
-                <v-text-field label="ІПН"
-                v-model="inn"
-                mask="#### #### ####"/>
-              </v-flex>
-              <v-flex xs12 md4>
+              <v-flex xs12 md6>
                 <v-select v-model="sex"
                 :items="sexItems"
                 label="Стать"
@@ -92,6 +104,8 @@ export default {
 
       // TODO: refactor to one object
       minValidDate: new Date().toISOString().substr(0, 10),
+      passport_serie: null,
+      passport_number: null,
       inn: null,
       first_name_ukr: null,
       last_name_ukr: null,
@@ -173,6 +187,29 @@ export default {
 
         this.$set(this, 'last_name_ukr', newVal);
         this.$set(this, 'last_name_en', this.translitToEn(newVal));
+      });
+    },
+
+    passport_serie(val) {
+      let regExp = /[^a-zA-Zа-щА-ЩЬьЮюЯяЇїІіЄєҐґ]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '').toUpperCase();
+
+          this.$set(this, 'passport_serie', newVal);
+        }
+      });
+    },
+    passport_number(val) {
+      let regExp = /[^0-9]/g;
+
+      this.$nextTick(() => {
+        if (val) {
+          let newVal = val.replace(regExp, '');
+        
+          this.$set(this, 'passport_number', newVal);
+        }
       });
     }
   },

@@ -269,6 +269,8 @@ export default {
   methods: {
     saveSailor() {
       let formData = {
+        passport_serie: this.$refs.sailorForm.passport_serie,
+        passport_number: this.$refs.sailorForm.passport_number,
         first_name_en: this.$refs.sailorForm.first_name_en,
         last_name_en: this.$refs.sailorForm.last_name_en,
         last_name_ukr: this.$refs.sailorForm.last_name_ukr,
