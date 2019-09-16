@@ -635,7 +635,7 @@ class MariloggerViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets
 		if self.request.method == 'GET':
 			return [permissions.IsAdminUser()]
 		else:
-			return [permissions.IsAdminUser()]
+			return [permissions.IsAuthenticated()]
 
 """
 AJAX Requests
