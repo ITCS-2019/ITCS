@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
+from .serializers import UserSerializer, MariloggerSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
 from accounts.models import Profile, Marilogger
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor, CertificatePrintSettings
@@ -614,6 +614,29 @@ class CertificatesOfTable(mixins.RetrieveModelMixin, mixins.ListModelMixin, view
 			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').all().order_by('-id')
 		serializer = CertificateCustomSerializer(certs, many=True)
 		return Response({"certificates": serializer.data})
+
+
+class MariloggerViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
+	
+	serializer_class = MariloggerSerializer
+
+	def list(self, request):
+		logs = Marilogger.objects.all()
+		serializer = MariloggerSerializer(logs, many=True)
+		return Response({"logs": serializer.data})
+
+	def create(self, request, format=None):
+		marilogger = Marilogger()
+		marilogger.message = request.data.get('message')
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+
+	def get_permissions(self):
+		if self.request.method == 'GET':
+			return [permissions.IsAdminUser()]
+		else:
+			return [permissions.IsAuthenticated()]
+
 """
 AJAX Requests
 """
