@@ -616,14 +616,26 @@ class CertificatesOfTable(mixins.RetrieveModelMixin, mixins.ListModelMixin, view
 		return Response({"certificates": serializer.data})
 
 
-class MariloggerViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin,viewsets.GenericViewSet):
+class MariloggerViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):
 	
-	serializer = MariloggerSerializer
+	serializer_class = MariloggerSerializer
 
 	def list(self, request):
 		logs = Marilogger.objects.all()
 		serializer = MariloggerSerializer(logs, many=True)
 		return Response({"logs": serializer.data})
+
+	def create(self, request, format=None):
+		marilogger = Marilogger()
+		marilogger.message = request.data.get('message')
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+
+	def get_permissions(self):
+		if self.request.method == 'GET':
+			return [permissions.IsAdminUser()]
+		else:
+			return [permissions.IsAdminUser()]
 
 """
 AJAX Requests

@@ -39,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
 	# 	}
 
 class MariloggerSerializer(serializers.Serializer):
-	message = serializers.models.TextField()
+	message = serializers.CharField()
 	date = serializers.DateTimeField()
 	action_username = serializers.CharField()
 
