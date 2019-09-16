@@ -19,6 +19,7 @@ router.register(r'organisationCerts', views.CertificatesOfOrganisation, base_nam
 router.register(r'certificates', views.CertificateViewSet)
 router.register(r'tableCertificates', views.CertificatesOfTable, base_name='tableCertificates')
 router.register(r'regulations', views.RegulationViewSet)
+router.register(r'marilogger', views.MariloggerViewSet, base_name='marilogger')
 
 urlpatterns = [
     path('dashInfo/', views.dashInfo, name="api-dashInfo"),

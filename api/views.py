@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
+from .serializers import UserSerializer, MariloggerSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
 from accounts.models import Profile, Marilogger
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor, CertificatePrintSettings
@@ -614,6 +614,17 @@ class CertificatesOfTable(mixins.RetrieveModelMixin, mixins.ListModelMixin, view
 			certs = Certificate.objects.select_related('sailor').select_related('trainigOrganisation').select_related('training_direction').all().order_by('-id')
 		serializer = CertificateCustomSerializer(certs, many=True)
 		return Response({"certificates": serializer.data})
+
+
+class MariloggerViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin,viewsets.GenericViewSet):
+	
+	serializer = MariloggerSerializer
+
+	def list(self, request):
+		logs = Marilogger.objects.all()
+		serializer = MariloggerSerializer(logs, many=True)
+		return Response({"logs": serializer.data})
+
 """
 AJAX Requests
 """
