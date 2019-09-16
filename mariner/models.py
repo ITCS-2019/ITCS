@@ -12,7 +12,6 @@ from django.contrib import admin
 #         return qs.prefetch_related('certificated')
 
 
-
 class Sailor(models.Model):
     M = 0
     W = 1
@@ -32,6 +31,8 @@ class Sailor(models.Model):
     died = models.DateField(null=True, blank=True)
     inn = models.CharField(max_length=100, null=True, blank=True)
     sex = models.IntegerField(choices=SEX, null=True, default=M)
+    passport_serie = models.CharField(max_length=100, null=True, blank=True)
+    passport_number = models.CharField(max_length=100, null=True, blank=True)
     # objects = SailorManager()
     class Meta:
         ordering = ('last_name_ukr', 'first_name_ukr')
@@ -210,6 +211,8 @@ class Certificate(models.Model):
     second_name_ukr = models.CharField(max_length=140, blank=True)
     born = models.DateField()
     inn = models.CharField(max_length=100, null=True, blank=True)
+    passport_serie = models.CharField(max_length=100, null=True, blank=True)
+    passport_number = models.CharField(max_length=100, null=True, blank=True)
 
     sailor = models.ForeignKey(to='Sailor', null=True, on_delete=models.SET_NULL, related_name='certificated', blank=True)
     

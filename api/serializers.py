@@ -52,6 +52,8 @@ class SailorSerializer(serializers.ModelSerializer):
 			'died',
 			'inn',
 			'sex',
+			'passport_serie',
+			'passport_number',
 		)
 
 class SailorCustomSerializer(serializers.Serializer):
@@ -65,6 +67,8 @@ class SailorCustomSerializer(serializers.Serializer):
 	died = serializers.DateField()
 	inn = serializers.CharField()
 	sex = serializers.IntegerField()
+	passport_serie = serializers.CharField()
+	passport_number = serializers.CharField()
 
 class TrainigDirectionSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -235,8 +239,10 @@ class CertificateSerializer(serializers.ModelSerializer):
 			'first_name_ukr',
 			'second_name_ukr',
 			'born',
-			'inn', 
-			'sailor', 
+			'inn',
+			'passport_serie',
+			'passport_number',
+			'sailor',
 			'trainigOrganisation',
 			'date_of_issue',
 			'valid_date',

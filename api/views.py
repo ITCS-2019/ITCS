@@ -16,7 +16,7 @@ from rest_framework import decorators
 
 from .serializers import UserSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
-from accounts.models import Profile
+from accounts.models import Profile, Marilogger
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor, CertificatePrintSettings
 from regulations.models import RegulationDoc
 
@@ -355,6 +355,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		certificate.second_name_ukr = request.data.get('second_name_ukr')
 		certificate.born = request.data.get('born')
 		certificate.inn = request.data.get('inn')
+		certificate.passport_serie = request.data.get('passport_serie')
+		certificate.passport_number = request.data.get('passport_number')
 
 		sailorCount = Sailor.objects.filter(
 			first_name_en = request.data.get('first_name_en'),
@@ -365,7 +367,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			born = request.data.get('born'),
 		).count()
 
-		print('SAILOR COUNT: ', sailorCount)
 		if sailorCount > 1 : #if multiple objects
 			sailor = Sailor.objects.filter(
 				first_name_en = request.data.get('first_name_en'),
@@ -433,6 +434,12 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		if created:
 			certificate.printInfo = printSettings
 
+		marilogger = Marilogger()
+		marilogger.message = "Certificate id:" + pk + " updated"
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
+
 		certificate.save()
 
 		return Response({"Certificate": "Updated"}, status=200)
@@ -452,6 +459,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 					sailor.born = request.data.get('born')
 					sailor.died = request.data.get('died')#?
 					sailor.inn = request.data.get('inn')
+					sailor.passport_serie = request.data.get('passport_serie')
+					sailor.passport_number = request.data.get('passport_number')
 					sailor.save()
 				else:
 					sailor = Sailor()
@@ -466,6 +475,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				sailor.second_name_ukr = request.data.get('second_name_ukr')
 				sailor.born = request.data.get('born')
 				sailor.inn = request.data.get('inn')
+				sailor.passport_serie = request.data.get('passport_serie')
+				sailor.passport_number = request.data.get('passport_number')
 				sailor.save()
 		else:
 			sailor, created = Sailor.objects.get_or_create(
@@ -511,6 +522,8 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			)
 		if created:
 			certification.inn = request.data.get('inn')
+			certification.passport_serie = request.data.get('passport_serie')
+			certification.passport_number = request.data.get('passport_number')
 			certification.organisation_name_cert = trainigOrganisation.organisation_name
 			certification.direction_title_cert = trainigDirection.direction_title
 			certification.direction_level = trainigDirection.level
@@ -543,6 +556,14 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 			certification.save()
 		
+			marilogger = Marilogger()
+			marilogger.message = "{} {}".format(
+							"Add Certificate", 
+							certification.id)
+			marilogger.action_username =  request.user.username
+			marilogger.date = datetime.datetime.now()
+			marilogger.save()
+
 		return Response({"message": "Add Certificate"}, status=200)
 
 class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -939,6 +960,13 @@ def changeToReviewStatus(request):
 			'error' : hasError,
 			'error_message' : errorMessage,
 		}
+		marilogger = Marilogger()
+		marilogger.message = "{} {}".format(
+							"Change to review status", 
+							certIDsList)
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
 		return JsonResponse(data)
 	else:
 		hasError = True
@@ -963,6 +991,13 @@ def removeDraftCerts(request):
 			'error' : hasError,
 			'error_message' : errorMessage,
 		}
+		marilogger = Marilogger()
+		marilogger.message = "{} {}".format(
+							"Delete Certificate id:", 
+							certIDsList)
+		marilogger.action_username =  request.user.username
+		marilogger.date = datetime.datetime.now()
+		marilogger.save()
 		return JsonResponse(data)
 	else:
 		hasError = True
@@ -1132,7 +1167,7 @@ def printCertificate(request, certID):
 	validDateStr = cert.valid_date
 
 	# String which represent the QR code 
-	s = "http://127.0.0.1:8000/mariner/api/printCertificate/" + certID + '/'
+	s = "https://ntz.itcs.org.ua/mariner/api/printCertificate/" + certID + '/'
 	# Generate QR code 
 	url = pyqrcode.create(s)
  
