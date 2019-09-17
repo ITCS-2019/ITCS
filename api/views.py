@@ -70,11 +70,11 @@ class CurrentUserViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 	def get_permissions(self):
 		if self.request.method == 'GET':
-			return [permissions.IsAuthenticated()]
+			return [permissions.IsAdminUser()]
 		else:
 			return [permissions.IsAdminUser()]
 
-class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
+class UserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):#(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 	"""
     Returns list of users.
     If user from training organisations return list of users of this organisation.
@@ -102,6 +102,37 @@ class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 			users = User.objects.all()
 			serializer = UserSerializer(users, many=True)#TODO: check if len(users) count > 1
 			return Response({"users": serializer.data})
+
+	def create(self, request, format=None):
+		userName = request.data.get('userName')
+		userPass = request.data.get('userPass')
+		userMail = request.data.get('userMail')
+		userFirstName = request.data.get('userFirstName')
+		userSurname = request.data.get('userSurname')
+		userGroup = request.data.get('userGroup')
+		userNTZName = request.data.get('userNTZName')
+		
+		if userName and userPass and userMail:
+			u,created = User.objects.get_or_create(username=userName, email=userMail)
+			if created:
+				print('User Created')
+				u.set_password(userPass)
+				u.first_name = userFirstName
+				u.last_name = userSurname
+				group = Group.objects.get(name=userGroup)
+				print(group)
+				u.groups.add(group)#!!!!Rewrite and get from list
+				profile, created = Profile.objects.get_or_create(user=u)
+				u.profile.organization_name = userNTZName
+				print('User Profile Created')
+				u.save()
+				return Response({"message": "User created"}, status=200)
+			else:
+				print('User Not Created and Exist')
+				return Response({"message": "User Not Created and Exist"}, status=200)
+		else:
+			print('request is empty')
+		return Response({"message": "User created"}, status=200)
 
 	def get_permissions(self):
 		if self.request.method == 'GET':

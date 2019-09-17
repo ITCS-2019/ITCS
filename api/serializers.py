@@ -38,6 +38,9 @@ class UserSerializer(serializers.ModelSerializer):
 	# 			request=request),
 	# 	}
 
+#class UserProfileSerializer(serializers.Serializer):
+
+
 class MariloggerSerializer(serializers.Serializer):
 	message = serializers.CharField()
 	date = serializers.DateTimeField()
