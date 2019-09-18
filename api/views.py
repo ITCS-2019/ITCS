@@ -1079,10 +1079,10 @@ def exportXLS(request):
 		'born', 'date_of_issue', 'valid_date')
 		dirName = ""
 		if multi:
-			dirName = "MultiDirection"
+			dirName = "MultiDirections"
 		else:
-			dirName = firstCert.direction_title_cert
-		fileNameXLS = 'itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '-' + dirName + '.xls'
+			dirName = firstCert.direction_title_cert + ' (' + firstCert.direction_allow_functions + ' ' + firstCert.direction_level + ')'
+		fileNameXLS = dirName + '.xls'
 		response = HttpResponse(content_type='application/ms-excel')
 		file_expr = "filename*=utf-8''{}".format(urlquote(fileNameXLS))
 		response['Content-Disposition'] = 'attachment; {}'.format(file_expr)
