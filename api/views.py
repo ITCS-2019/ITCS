@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from django.http import HttpResponse, JsonResponse
+from django.utils.http import urlquote
 
 from django.template.loader import render_to_string
 
@@ -1064,16 +1065,28 @@ def removeDraftCerts(request):
 
 @login_required(login_url="login/")
 def exportXLS(request):
-	print(request.GET.get('exportType'))
 	certIDsList = request.GET.get('certIDs').split(',')
-	# certsQuerySet = Certificate.objects.filter(pk__in=certIDsList)
 	if request.GET.get('exportType') == 'Register':
+		certs = Certificate.objects.filter(pk__in=certIDsList)
+		firstCert = certs.first()
+		multi = False
+		for cert in certs:
+			if (firstCert.direction_title_cert != cert.direction_title_cert):
+				multi = True
+
 		rows = Certificate.objects.filter(pk__in=certIDsList).values_list(
 		'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
 		'born', 'date_of_issue', 'valid_date')
-		fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
+		dirName = ""
+		if multi:
+			dirName = "MultiDirection"
+		else:
+			dirName = firstCert.direction_title_cert
+		fileNameXLS = 'itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '-' + dirName + '.xls'
 		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
+		file_expr = "filename*=utf-8''{}".format(urlquote(fileNameXLS))
+		response['Content-Disposition'] = 'attachment; {}'.format(file_expr)
+
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet('Сертифікати')
 		
