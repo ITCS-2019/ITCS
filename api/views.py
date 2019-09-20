@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from django.http import HttpResponse, JsonResponse
+from django.utils.http import urlquote
 
 from django.template.loader import render_to_string
 
@@ -70,11 +71,11 @@ class CurrentUserViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 	def get_permissions(self):
 		if self.request.method == 'GET':
-			return [permissions.IsAuthenticated()]
+			return [permissions.IsAdminUser()]
 		else:
 			return [permissions.IsAdminUser()]
 
-class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
+class UserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):#(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 	"""
     Returns list of users.
     If user from training organisations return list of users of this organisation.
@@ -102,6 +103,37 @@ class UserViewSet(DefaultsMixin, viewsets.ModelViewSet):#ReadOnlyModelViewSet):
 			users = User.objects.all()
 			serializer = UserSerializer(users, many=True)#TODO: check if len(users) count > 1
 			return Response({"users": serializer.data})
+
+	def create(self, request, format=None):
+		userName = request.data.get('userName')
+		userPass = request.data.get('userPass')
+		userMail = request.data.get('userMail')
+		userFirstName = request.data.get('userFirstName')
+		userSurname = request.data.get('userSurname')
+		userGroup = request.data.get('userGroup')
+		userNTZName = request.data.get('userNTZName')
+		
+		if userName and userPass and userMail:
+			u,created = User.objects.get_or_create(username=userName, email=userMail)
+			if created:
+				print('User Created')
+				u.set_password(userPass)
+				u.first_name = userFirstName
+				u.last_name = userSurname
+				group = Group.objects.get(name=userGroup)
+				print(group)
+				u.groups.add(group)#!!!!Rewrite and get from list
+				profile, created = Profile.objects.get_or_create(user=u)
+				u.profile.organization_name = userNTZName
+				print('User Profile Created')
+				u.save()
+				return Response({"message": "User created"}, status=200)
+			else:
+				print('User Not Created and Exist')
+				return Response({"message": "User Not Created and Exist"}, status=200)
+		else:
+			print('request is empty')
+		return Response({"message": "User created"}, status=200)
 
 	def get_permissions(self):
 		if self.request.method == 'GET':
@@ -434,6 +466,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		if created:
 			certificate.printInfo = printSettings
 
+		useTrainingAPI = request.data.get('useTrainingAPI')
+		if useTrainingAPI:
+			print('Add sailor to Training API')
 		marilogger = Marilogger()
 		marilogger.message = "Certificate id:" + pk + " updated"
 		marilogger.action_username =  request.user.username
@@ -555,6 +590,10 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				certification.printInfo = printSettings
 
 			certification.save()
+
+			useTrainingAPI = request.data.get('useTrainingAPI')
+			if useTrainingAPI:
+				print('Add sailor to Training API')
 		
 			marilogger = Marilogger()
 			marilogger.message = "{} {}".format(
@@ -1033,16 +1072,28 @@ def removeDraftCerts(request):
 
 @login_required(login_url="login/")
 def exportXLS(request):
-	print(request.GET.get('exportType'))
 	certIDsList = request.GET.get('certIDs').split(',')
-	# certsQuerySet = Certificate.objects.filter(pk__in=certIDsList)
 	if request.GET.get('exportType') == 'Register':
+		certs = Certificate.objects.filter(pk__in=certIDsList)
+		firstCert = certs.first()
+		multi = False
+		for cert in certs:
+			if (firstCert.direction_title_cert != cert.direction_title_cert):
+				multi = True
+
 		rows = Certificate.objects.filter(pk__in=certIDsList).values_list(
 		'certf_number', 'first_name_en', 'last_name_en', 'last_name_ukr', 'first_name_ukr', 'second_name_ukr',
 		'born', 'date_of_issue', 'valid_date')
-		fileNameXLS = 'attachment; filename=\"itcs-' + datetime.datetime.today().strftime('%Y%m%d-%H%M') + '.xls\"'
+		dirName = ""
+		if multi:
+			dirName = "MultiDirections"
+		else:
+			dirName = firstCert.direction_title_cert + ' (' + firstCert.direction_allow_functions + ' ' + firstCert.direction_level + ')'
+		fileNameXLS = dirName + '.xls'
 		response = HttpResponse(content_type='application/ms-excel')
-		response['Content-Disposition'] = fileNameXLS #'attachment; filename="certificates.xls"'
+		file_expr = "filename*=utf-8''{}".format(urlquote(fileNameXLS))
+		response['Content-Disposition'] = 'attachment; {}'.format(file_expr)
+
 		wb = xlwt.Workbook(encoding='utf-8')
 		ws = wb.add_sheet('Сертифікати')
 		
