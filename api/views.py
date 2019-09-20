@@ -466,6 +466,9 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		if created:
 			certificate.printInfo = printSettings
 
+		useTrainingAPI = request.data.get('useTrainingAPI')
+		if useTrainingAPI:
+			print('Add sailor to Training API')
 		marilogger = Marilogger()
 		marilogger.message = "Certificate id:" + pk + " updated"
 		marilogger.action_username =  request.user.username
@@ -587,6 +590,10 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				certification.printInfo = printSettings
 
 			certification.save()
+
+			useTrainingAPI = request.data.get('useTrainingAPI')
+			if useTrainingAPI:
+				print('Add sailor to Training API')
 		
 			marilogger = Marilogger()
 			marilogger.message = "{} {}".format(
