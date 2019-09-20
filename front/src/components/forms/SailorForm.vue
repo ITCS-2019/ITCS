@@ -207,15 +207,11 @@ export default {
       this.$nextTick(() => {
         if (val) {
           let newVal = val.replace(regExp, '');
-        
+
           this.$set(this, 'passport_number', newVal);
         }
       });
     }
-  },
-
-  mounted() {
-
   },
 
   methods: {

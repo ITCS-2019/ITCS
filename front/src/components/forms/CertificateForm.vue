@@ -22,13 +22,15 @@
                 <v-text-field label="Серiя паспорту"
                 prepend-inner-icon="mdi-passport"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="passport_serie"/>
+                v-model="passport_serie"
+                v-on:blur="getSailor"/>
               </v-flex>
               <v-flex xs12 md4>
                 <v-text-field label="Номер паспорту"
                 prepend-inner-icon="mdi-passport"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
-                v-model="passport_number"/>
+                v-model="passport_number"
+                v-on:blur="getSailor"/>
               </v-flex>
               <v-flex xs12 md6>
                 <v-text-field label="ІПН"
@@ -267,6 +269,7 @@ export default {
 
   data() {
     return {
+      useTrainingAPI: true,
       lastNameEdited: false,
       firstNameEdited: false,
       lastNames: [],
@@ -459,6 +462,40 @@ export default {
   },
 
   methods: {
+    getSailor() {
+      if (!this.certId && this.passport_serie.length === 2 && this.passport_number.length === 6) {
+          let params = {
+            passport: {
+              seriesAndNumber: `${this.passport_serie}${this.passport_number}`
+            }
+          };
+          const token = window.axios.defaults.headers.common['X-CSRFToken'];
+          delete window.axios.defaults.headers.common['X-CSRFToken'];
+          axios.get(`https://dev.itcs.app/api/1.0.0/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`,
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+            }
+          }).then(res => {
+            window.axios.defaults.headers.common['X-CSRFToken'] = token;
+            console.log(res);
+            this.useTrainingAPI = false;
+            let passportData = res[0].passport;
+            this.sailorPhoto = res[0].photos;
+            this.passport_serie = passportData.seriesAndNumber.substring(0, 2);
+            this.passport_number = passportData.seriesAndNumber.substring(2, passportData.seriesAndNumber.length);
+            this.first_name_en = passportData.fullName.name.en;
+            this.last_name_en = passportData.fullName.surname.en;
+            this.first_name_ukr = passportData.fullName.name.ua;
+            this.last_name_ukr = passportData.fullName.surname.ua;
+            this.second_name_ukr = passportData.fullName.patronymic.ua;
+            this.born = `${~~passportData.birthdate.day > 9 ? passportData.birthdate.day : `0${passportData.birthdate.day}`}.${~~passportData.birthdate.month > 9 ? passportData.birthdate.month : `0${passportData.birthdate.month}`}.${passportData.birthdate.year}`;
+            this.inn = res[0].individualTaxpayerNumber;
+          }).catch((err) => {
+            console.log(err);
+          });
+      }
+    },
     validateBorn() {
         const [year, month, day] = this.resetFormatDate(this.born) ? this.resetFormatDate(this.born).split('-') : ['', '', ''];
         const born = new Date(year, month - 1, day);
