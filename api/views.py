@@ -669,6 +669,8 @@ class MariloggerViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets
 		marilogger.message = request.data.get('message')
 		marilogger.action_username =  request.user.username
 		marilogger.date = datetime.datetime.now()
+		marilogger.save()
+		return Response({"Marilogger": "Add log message"}, status=200)
 
 	def get_permissions(self):
 		if self.request.method == 'GET':
