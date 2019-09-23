@@ -23,6 +23,7 @@
                 prepend-inner-icon="mdi-passport"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="passport_serie"
+                mask="AA"
                 v-on:blur="getSailor"/>
               </v-flex>
               <v-flex xs12 md4>
@@ -30,6 +31,7 @@
                 prepend-inner-icon="mdi-passport"
                 :readonly="(currentStatus === 1 || currentStatus === 2) ? true : false"
                 v-model="passport_number"
+                mask="## ## ##"
                 v-on:blur="getSailor"/>
               </v-flex>
               <v-flex xs12 md6>
@@ -227,6 +229,24 @@
         </v-form>
       </v-flex>
     </v-layout>
+
+    <!--Notifications-->
+    <v-snackbar :color="snackbarConfig.color"
+    :top="true"
+    v-model="snackbar"
+    dark>
+      <v-icon color="white"
+      class="mr-3">
+        {{snackbarConfig.icon}}
+      </v-icon>
+      <div>
+        {{snackbarConfig.message}}
+      </div>
+      <v-icon size="16"
+      v-on:click="snackbar = false">
+        mdi-close-circle
+      </v-icon>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -269,6 +289,23 @@ export default {
 
   data() {
     return {
+      snackbar: false,
+      snackbarConfig: {
+        color: null,
+        icon: null,
+        message: null
+      },
+      trainingApi: {
+        schema: 'https://',
+        host: 'dev.itcs.app/api/1.0.0',
+        auth: {
+          credentials: {
+            email: 'traininginstitutionservice@staging.com',
+            password: 'traininginstitutionservicepass'
+          },
+          token: ''
+        }
+      },
       useTrainingAPI: true,
       lastNameEdited: false,
       firstNameEdited: false,
@@ -461,7 +498,22 @@ export default {
     }
   },
 
+  mounted() {
+    this.getTestToken();
+  },
+
   methods: {
+    getTestToken() {
+        // const token = window.axios.defaults.headers.common['X-CSRFToken'];
+        // delete window.axios.defaults.headers.common['X-CSRFToken'];
+        axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
+          // window.axios.defaults.headers.common['X-CSRFToken'] = token;
+          console.log(res);
+          // this.trainingApi.auth.token =
+        }).catch((err) => {
+          console.log(err.response);
+        });
+    },
     getSailor() {
       if (!this.certId && this.passport_serie.length === 2 && this.passport_number.length === 6) {
           let params = {
@@ -470,20 +522,19 @@ export default {
             }
           };
           const token = window.axios.defaults.headers.common['X-CSRFToken'];
+          // console.log(`token111: ${token}`);
           delete window.axios.defaults.headers.common['X-CSRFToken'];
-          axios.get(`https://dev.itcs.app/api/1.0.0/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`,
-          {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-            }
-          }).then(res => {
+          // window.axios.defaults.headers.common['X-CSRFToken'] = this.trainingApi.auth.token;
+          axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`).then(res => {
             window.axios.defaults.headers.common['X-CSRFToken'] = token;
+            console.log('api data:');
             console.log(res);
             this.useTrainingAPI = false;
-            let passportData = res[0].passport;
-            this.sailorPhoto = res[0].photos;
-            this.passport_serie = passportData.seriesAndNumber.substring(0, 2);
-            this.passport_number = passportData.seriesAndNumber.substring(2, passportData.seriesAndNumber.length);
+            let passportData = res.data[0].passport;
+            this.sailorPhoto = res.data[0].photos[0];
+            console.log('this.sailorPhoto');
+            console.log(this.sailorPhoto);
+            this.$refs.photoUpload.showPic(this.sailorPhoto);
             this.first_name_en = passportData.fullName.name.en;
             this.last_name_en = passportData.fullName.surname.en;
             this.first_name_ukr = passportData.fullName.name.ua;
@@ -491,9 +542,39 @@ export default {
             this.second_name_ukr = passportData.fullName.patronymic.ua;
             this.born = `${~~passportData.birthdate.day > 9 ? passportData.birthdate.day : `0${passportData.birthdate.day}`}.${~~passportData.birthdate.month > 9 ? passportData.birthdate.month : `0${passportData.birthdate.month}`}.${passportData.birthdate.year}`;
             this.inn = res[0].individualTaxpayerNumber;
+            this.snackbarConfig.icon = 'mdi-check-circle';
+            this.snackbarConfig.color = 'success';
+            this.snackbarConfig.message = `Данi про моряка успiшно завантаженi!`;
+            this.snackbar = true;
+            // let logPayload = {
+            //   message: encodeURIComponent(JSON.stringify(res)),
+            //   date: new Date(),
+            //   action_username: gUserName
+            // };
           }).catch((err) => {
-            console.log(err);
+            // console.log(`tokenOrig: ${token}`);
+            window.axios.defaults.headers.common['X-CSRFToken'] = token;
+            // console.log(`token: ${window.axios.defaults.headers.common['X-CSRFToken'] = token}`);
+            console.log(err.response);
+            if (err.response.status === 404) {
+              console.log('in error!');
+              this.snackbarConfig.icon = 'mdi-alert-circle';
+              this.snackbarConfig.color = 'warning';
+              this.snackbarConfig.message = `Данi про моряка не знайденi!`;
+              this.snackbar = true;
+            }
           });
+
+          //   return axios.post(`/mariner/api/marilogger/`, logPayload)
+          // }).then(res => {
+          //   console.log(res);
+          // }).catch((err) => {
+          //   console.log(err.response);
+          //   this.snackbarConfig.icon = 'mdi-alert-circle';
+          //   this.snackbarConfig.color = 'warning';
+          //   this.snackbarConfig.message = `Данi про моряка не знайденi!`;
+          //   this.snackbar = true;
+          // });
       }
     },
     validateBorn() {
@@ -685,7 +766,7 @@ export default {
             this.inn = null;
             this.last_name_ukr = null;
             this.ntz_number = null;
-            this.second_name_ukr = null;
+            this.second_name_ukr = '';
             this.status = 0;
             this.training_direction = null;
             this.training_organisation = null;

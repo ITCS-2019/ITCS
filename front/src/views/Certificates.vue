@@ -811,7 +811,8 @@
           last_name_en: this.$refs.certForm.last_name_en,
           last_name_ukr: this.$refs.certForm.last_name_ukr,
           first_name_ukr: this.$refs.certForm.first_name_ukr,
-          second_name_ukr: this.$refs.certForm.second_name_ukr && this.$refs.certForm.second_name_ukr.length > 0 ? this.$refs.certForm.second_name_ukr : ' ',
+          // second_name_ukr: this.$refs.certForm.second_name_ukr && this.$refs.certForm.second_name_ukr.length > 0 ? this.$refs.certForm.second_name_ukr : ' ',
+          second_name_ukr: this.$refs.certForm.second_name_ukr,
           born: this.$refs.certForm.resetFormatDate(this.$refs.certForm.born),
           inn: this.$refs.certForm.inn,
           date_of_issue: this.$refs.certForm.resetFormatDate(this.$refs.certForm.date_of_issue),
@@ -859,7 +860,8 @@
               formDataPhoto.append('last_name_en', this.$refs.certForm.last_name_en);
               formDataPhoto.append('last_name_ukr', this.$refs.certForm.last_name_ukr);
               formDataPhoto.append('first_name_ukr', this.$refs.certForm.first_name_ukr);
-              formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr && this.$refs.certForm.second_name_ukr.length > 0 ? this.$refs.certForm.second_name_ukr : ' ');
+              // formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr && this.$refs.certForm.second_name_ukr.length > 0 ? this.$refs.certForm.second_name_ukr : ' ');
+              formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
               formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
               formDataPhoto.append('sailorPhoto', sailorPhoto);
 
