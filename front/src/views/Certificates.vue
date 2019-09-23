@@ -864,6 +864,7 @@
               formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
               formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
               formDataPhoto.append('sailorPhoto', sailorPhoto);
+              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, encodeURIComponent(JSON.stringify(formData)), encodeURIComponent(JSON.stringify(res)));
 
               return axios({
                 method: 'POST',
@@ -904,7 +905,11 @@
               }
             })
             .catch((err) => {
-              console.log('photo update error');
+              this.snackbarConfig.icon = 'mdi-alert-circle';
+              this.snackbarConfig.color = 'warning';
+              this.snackbarConfig.message = err.response.data;
+              this.snackbar = true;
+              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, encodeURIComponent(JSON.stringify(formData)), err.response.data);
               console.log(err);
             });
       },

@@ -500,9 +500,9 @@ export default {
   },
 
   methods: {
-    saveLog(user, method, route, response) {
+    saveLog(user, method, route, payload, response) {
       let logPayload = {
-        message: `Method: ${method} Request: ${route}; Response: ${response}`,
+        message: `Method: ${method}; Request: ${route}; Payload: ${payload}; Response: ${response}`,
         date: new Date(),
         action_username: user
       };
@@ -517,8 +517,10 @@ export default {
     setTestToken() {
       axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
         window.axios.defaults.headers.common['X-CSRFToken'] = 'testtoken';
+        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), encodeURIComponent(JSON.stringify(res)));
       }).catch((err) => {
         console.log(err.response);
+        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
       });
     },
 
@@ -551,31 +553,18 @@ export default {
             this.snackbarConfig.color = 'success';
             this.snackbarConfig.message = `Данi про моряка успiшно завантаженi!`;
             this.snackbar = true;
-            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, encodeURIComponent(JSON.stringify(res)));
+            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, fasle, encodeURIComponent(JSON.stringify(res)));
           }).catch((err) => {
             console.log('error:');
             console.log(err);
-            console.log('-----------------------');
             console.log(err.response);
-            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
+            console.log('-----------------------');
+            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, false, err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
             this.snackbarConfig.icon = 'mdi-alert-circle';
             this.snackbarConfig.color = 'warning';
             this.snackbarConfig.message = `Данi про моряка не знайденi!`;
             this.snackbar = true;
           });
-          // }).catch((err) => {
-          //   // console.log(`tokenOrig: ${token}`);
-          //   window.axios.defaults.headers.common['X-CSRFToken'] = token;
-          //   // console.log(`token: ${window.axios.defaults.headers.common['X-CSRFToken'] = token}`);
-          //   console.log(err.response);
-          //   if (err.response.status === 404) {
-          //     console.log('in error!');
-          //     this.snackbarConfig.icon = 'mdi-alert-circle';
-          //     this.snackbarConfig.color = 'warning';
-          //     this.snackbarConfig.message = `Данi про моряка не знайденi!`;
-          //     this.snackbar = true;
-          //   }
-          // });
       }
     },
     validateBorn() {
@@ -754,6 +743,8 @@ export default {
             }
 
             this.$refs.photoUpload.showPic('');
+            this.passport_number = '';
+            this.passport_serie = '';
             this.born = null;
             this.certf_number = null;
             this.date_of_issue = null;
