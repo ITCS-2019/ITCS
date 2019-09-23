@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework import decorators
 
 
-from .serializers import UserSerializer, MariloggerSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
+from .serializers import UserSerializer, MariloggerSerializer, TrainigDirectionSerializer,  RangeNumberSerializer, RangeSerializer, CertificateSerializer, CertificateCustomSerializer, CertificateInfoSerializer, SailorSerializer, TrainigOrganisationSerializer, RegulationSerializer
 
 from accounts.models import Profile, Marilogger
 from mariner.models import Certificate, TrainigOrganisation, RangeNumber, TrainigDirections, Sailor, CertificatePrintSettings
@@ -605,6 +605,20 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 		return Response({"message": "Add Certificate"}, status=200)
 
+class CertificateInfo(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+	serializer = CertificateInfoSerializer
+
+	def retrieve(self, request, pk):
+		cert = Certificate.objects.get(id=pk)
+		serializer = CertificateInfoSerializer(cert, many=False)
+		return Response({"certificate": serializer.data})
+
+	def get_permissions(self):
+		if self.request.method == 'GET':
+			return [permissions.AllowAny()]
+		else:
+			return [permissions.IsAdminUser()]
+
 class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
 	"""
     Return a list of organisation certificates.
@@ -669,6 +683,8 @@ class MariloggerViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets
 		marilogger.message = request.data.get('message')
 		marilogger.action_username =  request.user.username
 		marilogger.date = datetime.datetime.now()
+		marilogger.save()
+		return Response({"Marilogger": "Add log message"}, status=200)
 
 	def get_permissions(self):
 		if self.request.method == 'GET':
@@ -1241,7 +1257,7 @@ def printCertificate(request, certID):
 	validDateStr = cert.valid_date
 
 	# String which represent the QR code 
-	s = "https://ntz.itcs.org.ua/mariner/api/printCertificate/" + certID + '/'
+	s = "https://check-certificate.online/certificate/" + certID + '/'
 	# Generate QR code 
 	url = pyqrcode.create(s)
  
