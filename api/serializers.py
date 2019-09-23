@@ -231,7 +231,30 @@ class CertificateCustomSerializer(serializers.Serializer):
 	direction_title_cert = serializers.CharField()
 	status = serializers.IntegerField()
 
-	
+class CertificateInfoSerializer(serializers.Serializer):
+	id = serializers.IntegerField()
+	certf_number = serializers.CharField()
+	form_number = serializers.CharField()
+	#ntz_number = serializers.CharField()
+	#first_name_en = serializers.CharField()
+	#last_name_en = serializers.CharField()
+	last_name_ukr = serializers.CharField()
+	first_name_ukr = serializers.CharField()
+	second_name_ukr = serializers.CharField()
+	born = serializers.DateField()
+	#inn = serializers.CharField()
+	#sailor = SailorSerializer()
+	#trainigOrganisation = TrainigOrganisationSerializer()
+	organisation_name_cert = serializers.CharField()
+	date_of_issue = serializers.DateField()
+	valid_date = serializers.DateField()
+	#valid_type = serializers.IntegerField()
+	direction_level = serializers.CharField()
+	direction_allow_functions = serializers.CharField()
+	#training_direction = TrainigDirectionSerializer()
+	direction_title_cert = serializers.CharField()
+	status = serializers.IntegerField()
+
 class CertificateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Certificate
