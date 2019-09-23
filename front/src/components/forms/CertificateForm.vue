@@ -289,6 +289,7 @@ export default {
 
   data() {
     return {
+      nativeToken: window.axios.defaults.headers.common['X-CSRFToken'],
       snackbar: false,
       snackbarConfig: {
         color: null,
@@ -498,22 +499,29 @@ export default {
     }
   },
 
-  mounted() {
-    this.getTestToken();
-  },
-
   methods: {
-    getTestToken() {
-        // const token = window.axios.defaults.headers.common['X-CSRFToken'];
-        // delete window.axios.defaults.headers.common['X-CSRFToken'];
-        axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
-          // window.axios.defaults.headers.common['X-CSRFToken'] = token;
-          console.log(res);
-          // this.trainingApi.auth.token =
-        }).catch((err) => {
-          console.log(err.response);
-        });
+    saveLog(user, method, route, response) {
+      let logPayload = {
+        message: `Method: ${method} Request: ${route}; Response: ${response}`,
+        date: new Date(),
+        action_username: user
+      };
+
+      axios.post(`/mariner/api/marilogger/`, logPayload).then(res => {
+        console.log(res);
+      }).catch((err) => {
+        console.log(err.response);
+      });
     },
+
+    setTestToken() {
+      axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
+        window.axios.defaults.headers.common['X-CSRFToken'] = 'testtoken';
+      }).catch((err) => {
+        console.log(err.response);
+      });
+    },
+
     getSailor() {
       if (!this.certId && this.passport_serie.length === 2 && this.passport_number.length === 6) {
           let params = {
@@ -521,12 +529,9 @@ export default {
               seriesAndNumber: `${this.passport_serie}${this.passport_number}`
             }
           };
-          const token = window.axios.defaults.headers.common['X-CSRFToken'];
-          // console.log(`token111: ${token}`);
-          delete window.axios.defaults.headers.common['X-CSRFToken'];
-          // window.axios.defaults.headers.common['X-CSRFToken'] = this.trainingApi.auth.token;
+          this.setTestToken();
           axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`).then(res => {
-            window.axios.defaults.headers.common['X-CSRFToken'] = token;
+            window.axios.defaults.headers.common['X-CSRFToken'] = this.nativeToken;
             console.log('api data:');
             console.log(res);
             this.useTrainingAPI = false;
@@ -546,34 +551,30 @@ export default {
             this.snackbarConfig.color = 'success';
             this.snackbarConfig.message = `Данi про моряка успiшно завантаженi!`;
             this.snackbar = true;
-            // let logPayload = {
-            //   message: encodeURIComponent(JSON.stringify(res)),
-            //   date: new Date(),
-            //   action_username: gUserName
-            // };
+            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, encodeURIComponent(JSON.stringify(res)));
           }).catch((err) => {
-            // console.log(`tokenOrig: ${token}`);
-            window.axios.defaults.headers.common['X-CSRFToken'] = token;
-            // console.log(`token: ${window.axios.defaults.headers.common['X-CSRFToken'] = token}`);
+            console.log('error:');
+            console.log(err);
+            console.log('-----------------------');
             console.log(err.response);
-            if (err.response.status === 404) {
-              console.log('in error!');
-              this.snackbarConfig.icon = 'mdi-alert-circle';
-              this.snackbarConfig.color = 'warning';
-              this.snackbarConfig.message = `Данi про моряка не знайденi!`;
-              this.snackbar = true;
-            }
+            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
+            this.snackbarConfig.icon = 'mdi-alert-circle';
+            this.snackbarConfig.color = 'warning';
+            this.snackbarConfig.message = `Данi про моряка не знайденi!`;
+            this.snackbar = true;
           });
-
-          //   return axios.post(`/mariner/api/marilogger/`, logPayload)
-          // }).then(res => {
-          //   console.log(res);
           // }).catch((err) => {
+          //   // console.log(`tokenOrig: ${token}`);
+          //   window.axios.defaults.headers.common['X-CSRFToken'] = token;
+          //   // console.log(`token: ${window.axios.defaults.headers.common['X-CSRFToken'] = token}`);
           //   console.log(err.response);
-          //   this.snackbarConfig.icon = 'mdi-alert-circle';
-          //   this.snackbarConfig.color = 'warning';
-          //   this.snackbarConfig.message = `Данi про моряка не знайденi!`;
-          //   this.snackbar = true;
+          //   if (err.response.status === 404) {
+          //     console.log('in error!');
+          //     this.snackbarConfig.icon = 'mdi-alert-circle';
+          //     this.snackbarConfig.color = 'warning';
+          //     this.snackbarConfig.message = `Данi про моряка не знайденi!`;
+          //     this.snackbar = true;
+          //   }
           // });
       }
     },
