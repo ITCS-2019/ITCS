@@ -517,7 +517,7 @@ export default {
 
     saveLog(user, method, route, payload, response) {
       let logPayload = {
-        message: `Method: ${method}; Request: ${route}; Payload: ${payload}; Response: ${response}`,
+        message: `Method: ${method};||***********|| Request: ${route};||***********|| Payload: ${payload};||***********|| Response: ${response}`,
         date: new Date(),
         action_username: user
       };
@@ -547,13 +547,9 @@ export default {
           this.setTestToken();
           axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`).then(res => {
             this.setNativeToken();
-            console.log('api data:');
-            console.log(res);
             this.useTrainingAPI = false;
             let passportData = res.data[0].passport;
             this.sailorPhoto = res.data[0].photos[0];
-            console.log('this.sailorPhoto');
-            console.log(this.sailorPhoto);
             this.$refs.photoUpload.showPic(this.sailorPhoto);
             this.first_name_en = passportData.fullName.name.en;
             this.last_name_en = passportData.fullName.surname.en;

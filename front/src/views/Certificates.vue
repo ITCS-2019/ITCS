@@ -864,7 +864,6 @@
               formDataPhoto.append('second_name_ukr', this.$refs.certForm.second_name_ukr);
               formDataPhoto.append('born', this.$refs.certForm.resetFormatDate(this.$refs.certForm.born));
               formDataPhoto.append('sailorPhoto', sailorPhoto);
-              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, encodeURIComponent(JSON.stringify(formData)), encodeURIComponent(JSON.stringify(res)));
 
               return axios({
                 method: 'POST',
@@ -909,7 +908,7 @@
               this.snackbarConfig.color = 'warning';
               this.snackbarConfig.message = err.response.data;
               this.snackbar = true;
-              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, encodeURIComponent(JSON.stringify(formData)), err.response.data);
+              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, '', err.response.data);
               console.log(err);
             });
       },
@@ -1002,17 +1001,31 @@
           });
       },
 
+      toUnixDate(date) {
+        const [year, month, day] = date.split('-');
+        console.log(new Date(year, month - 1, day, 0, 0, 0).getTime());
+        return new Date (year, month, day, 0, 0, 0).getTime();
+      },
+
       handleCerts() {
         let grid = this.$refs.certsGrid.tableInstance,
             selectedRows = grid.getSelectedRowsData();
 
         if (selectedRows.length > 0) {
-          let isInvalidData = false,
+          let isInvalidData = {},
               sendRows = [];
+          const today = {
+              day: new Date().getDate() > 9 ? new Date().getDate() : `0${new Date().getDate()}`,
+              month: new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : `0${new Date().getMonth() + 1}`,
+              year: new Date().getFullYear(),
+          };
 
           selectedRows.some((row) => {
             if (row.status !== 'Чернетка') {
-              isInvalidData = true;
+              isInvalidData.draft = true;
+              return true;
+            } else if (this.toUnixDate(row.issueDate) !== this.toUnixDate(`${today.year}-${today.month}-${today.day}`)) {
+              isInvalidData.date = true;
               return true;
             }
             else {
@@ -1020,7 +1033,7 @@
             }
           });
 
-          if (!isInvalidData) {
+          if (Object.entries(isInvalidData).length === 0 && isInvalidData.constructor === Object) {
             axios.get(`/mariner/api/changeToReviewStatus/`,
             {
               params: {
@@ -1054,15 +1067,23 @@
               });
           }
           else {
-            this.snackbarConfig.icon = 'mdi-alert-circle';
-            this.snackbarConfig.color = 'red';
-            this.snackbarConfig.message = 'Змiнити статус на "Обробка" можливо тiльки для сертифiкатiв зi статусом "Чернетка"!';
-            this.snackbar = true;
+            if (isInvalidData.draft) {
+              this.snackbarConfig.icon = 'mdi-alert-circle';
+              this.snackbarConfig.color = 'warning';
+              this.snackbarConfig.message = 'Змiнити статус на "Обробка" можливо тiльки для сертифiкатiв зi статусом "Чернетка"!';
+              this.snackbar = true;
+            }
+            else {
+              this.snackbarConfig.icon = 'mdi-alert-circle';
+              this.snackbarConfig.color = 'warning';
+              this.snackbarConfig.message = 'Не можна відправляти в обробку сертифікати з датою видачі в минулому або майбутньому!';
+              this.snackbar = true;
+            }
           }
         }
         else {
           this.snackbarConfig.icon = 'mdi-alert-circle';
-          this.snackbarConfig.color = 'red';
+          this.snackbarConfig.color = 'warning';
           this.snackbarConfig.message = 'Не вибрано жодного сертифiката!';
           this.snackbar = true;
         }
