@@ -290,6 +290,7 @@ export default {
   data() {
     return {
       nativeToken: window.axios.defaults.headers.common['X-CSRFToken'],
+      testAPIToken: '',
       snackbar: false,
       snackbarConfig: {
         color: null,
@@ -499,7 +500,21 @@ export default {
     }
   },
 
+  mounted() {
+      this.getTestToken();
+  },
+
   methods: {
+    getTestToken() {
+      axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
+        this.testAPIToken = 'testtoken';
+        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), encodeURIComponent(JSON.stringify(res)));
+      }).catch((err) => {
+        console.log(err.response);
+        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
+      });
+    },
+
     saveLog(user, method, route, payload, response) {
       let logPayload = {
         message: `Method: ${method}; Request: ${route}; Payload: ${payload}; Response: ${response}`,
@@ -515,13 +530,11 @@ export default {
     },
 
     setTestToken() {
-      axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
-        window.axios.defaults.headers.common['X-CSRFToken'] = 'testtoken';
-        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), encodeURIComponent(JSON.stringify(res)));
-      }).catch((err) => {
-        console.log(err.response);
-        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
-      });
+      window.axios.defaults.headers.common['X-CSRFToken'] = this.testAPIToken;
+    },
+
+    setNativeToken() {
+      window.axios.defaults.headers.common['X-CSRFToken'] = this.nativeToken;
     },
 
     getSailor() {
@@ -533,7 +546,7 @@ export default {
           };
           this.setTestToken();
           axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`).then(res => {
-            window.axios.defaults.headers.common['X-CSRFToken'] = this.nativeToken;
+            this.setNativeToken();
             console.log('api data:');
             console.log(res);
             this.useTrainingAPI = false;
@@ -555,10 +568,8 @@ export default {
             this.snackbar = true;
             this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, fasle, encodeURIComponent(JSON.stringify(res)));
           }).catch((err) => {
-            console.log('error:');
             console.log(err);
-            console.log(err.response);
-            console.log('-----------------------');
+            this.setNativeToken();
             this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, false, err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
             this.snackbarConfig.icon = 'mdi-alert-circle';
             this.snackbarConfig.color = 'warning';
