@@ -1042,6 +1042,7 @@
             })
               .then(res => {
                 if (!res.error) {
+                  grid.clearSelection();
                   this.snackbarConfig.icon = 'mdi-check-circle';
                   this.snackbarConfig.color = 'success';
                   this.snackbarConfig.message = 'Сертифiкати успiшно вiдправленi в обробку!';
