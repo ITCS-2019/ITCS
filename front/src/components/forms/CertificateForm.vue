@@ -500,27 +500,11 @@ export default {
     }
   },
 
-  mounted() {
-      this.getTestToken();
-  },
-
   methods: {
     getCookie(name) {
         let value = "; " + document.cookie;
         let parts = value.split("; " + name + "=");
         if (parts.length === 2) return parts.pop().split(";").shift();
-    },
-
-    getTestToken() {
-      delete window.axios.defaults.headers.common['X-CSRFToken'];
-      axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
-        this.setNativeToken();
-        this.testAPIToken = this.getCookie('x-access-token');
-        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), encodeURIComponent(JSON.stringify(res)));
-      }).catch((err) => {
-        console.log(err.response);
-        this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
-      });
     },
 
     saveLog(user, method, route, payload, response) {
@@ -531,29 +515,53 @@ export default {
       };
 
       axios.post(`/mariner/api/marilogger/`, logPayload).then(res => {
-        console.log(res);
       }).catch((err) => {
         console.log(err.response);
       });
     },
 
-    setTestToken() {
-      window.axios.defaults.headers.common['X-CSRFToken'] = this.testAPIToken;
+    setTestToken(reauth = false) {
+      return new Promise((resolve, reject) => {
+        const token = localStorage.getItem('testApiToken');
+
+        console.log('localStorage.getItem(testApiToken)');
+        console.log(token);
+
+        if (token && token.length > 0 && !reauth) {
+          delete window.axios.defaults.headers.common['X-CSRFToken'];
+          window.axios.defaults.headers.common['X-CSRFToken'] = token;
+          resolve(token);
+        } else {
+          axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then((res) => {
+            if (res.data.token) {
+              localStorage.setItem('testApiToken', res.data.token);
+            }
+            this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, JSON.stringify(this.trainingApi.auth.credentials), JSON.stringify(res));
+            delete window.axios.defaults.headers.common['X-CSRFToken'];
+            window.axios.defaults.headers.common['X-CSRFToken'] = res.data.token;
+            this.getSailor();
+            resolve(res.data.token);
+          }).catch((err) => {
+            this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, JSON.stringify(this.trainingApi.auth.credentials), err.response ? JSON.stringify(err.response) : err);
+            reject(err.response ? err.response : err);
+          });
+        }
+      });
     },
 
     setNativeToken() {
       window.axios.defaults.headers.common['X-CSRFToken'] = this.nativeToken;
     },
 
-    getSailor() {
+    async getSailor() {
       if (!this.certId && this.passport_serie.length === 2 && this.passport_number.length === 6) {
-          let params = {
+          await this.setTestToken();
+          const params = {
             passport: {
               seriesAndNumber: `${this.passport_serie}${this.passport_number}`
             }
           };
-          this.setTestToken();
-          axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`).then(res => {
+          axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${JSON.stringify(params)}`).then(res => {
             this.setNativeToken();
             this.useTrainingAPI = false;
             let passportData = res.data[0].passport;
@@ -570,15 +578,18 @@ export default {
             this.snackbarConfig.color = 'success';
             this.snackbarConfig.message = `Данi про моряка успiшно завантаженi!`;
             this.snackbar = true;
-            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, fasle, encodeURIComponent(JSON.stringify(res)));
+            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${JSON.stringify(params)}`, fasle, JSON.stringify(res));
           }).catch((err) => {
-            console.log(err);
             this.setNativeToken();
-            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${encodeURIComponent(JSON.stringify(params))}`, false, err.response ? encodeURIComponent(JSON.stringify(err.response)) : err);
-            this.snackbarConfig.icon = 'mdi-alert-circle';
-            this.snackbarConfig.color = 'warning';
-            this.snackbarConfig.message = `Данi про моряка не знайденi!`;
-            this.snackbar = true;
+            this.saveLog(gUserName, 'GET', `${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${JSON.stringify(params)}`, false, err.response ? JSON.stringify(err.response) : err);
+            if (err.response.status === 401) {
+              this.setTestToken(true);
+            } else {
+              this.snackbarConfig.icon = 'mdi-alert-circle';
+              this.snackbarConfig.color = 'warning';
+              this.snackbarConfig.message = `Данi про моряка не знайденi!`;
+              this.snackbar = true;
+            }
           });
       }
     },
