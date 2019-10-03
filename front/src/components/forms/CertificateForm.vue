@@ -505,9 +505,17 @@ export default {
   },
 
   methods: {
+    getCookie(name) {
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    },
+
     getTestToken() {
+      delete window.axios.defaults.headers.common['X-CSRFToken'];
       axios.post(`${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, this.trainingApi.auth.credentials).then(res => {
-        this.testAPIToken = 'testtoken';
+        this.setNativeToken();
+        this.testAPIToken = this.getCookie('x-access-token');
         this.saveLog(gUserName, 'POST', `${this.trainingApi.schema}${this.trainingApi.host}/authentication/signin`, encodeURIComponent(JSON.stringify(this.trainingApi.auth.credentials)), encodeURIComponent(JSON.stringify(res)));
       }).catch((err) => {
         console.log(err.response);
