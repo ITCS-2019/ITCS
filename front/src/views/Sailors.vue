@@ -262,10 +262,6 @@ export default {
     }
   },
 
-  mounted() {
-
-  },
-
   methods: {
     saveSailor() {
       let formData = {
