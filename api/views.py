@@ -36,6 +36,9 @@ import xlwt
 
 import datetime
 
+#for request to training api
+import requests
+
 """
 REST Requests
 """
@@ -695,6 +698,100 @@ class MariloggerViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets
 """
 AJAX Requests
 """
+
+def trainingAuth(request):
+	message = "Training API -> "
+	seafarerId = ""
+	documentNumber = ""
+	authToken = ""
+
+	#print('--------Auth----------------')
+	URL = "https://dev.itcs.app/api/1.0.0/authentication/signin"
+	data = {
+		"roleName": "training institution service",
+		"email": "traininginstitutionservice@staging.com",
+		"password": "traininginstitutionservicepass",
+	}
+
+	response = requests.post(URL, json=data)
+	#print('Status: ', response.status_code)
+	message = message + "Auth status: {}; ".format(response.status_code)
+	if response.status_code == 200:
+		#print(response.json())
+		authToken = response.json()['token']
+
+	print('--------Sailor Search----------------')
+	surnameEN = "Drinkov"
+	surnameUA = "Дрыньков"
+	nameEN = "Brink"
+	nameUA = "Брынь"
+	patronymicEN = "Brinkovich"
+	patronymicUA = "Брынькович"
+	itn = "1255121212"
+	#URL = "https://dev.itcs.app/api/1.0.0/seafarers?conditions={\"passport\":{\"seriesAndNumber\":\"AA123456\"}}"
+	URL = "https://dev.itcs.app/api/1.0.0/seafarers?conditions={\"individualTaxpayerNumber\":\"" +  itn + "\"}"
+	#URL = "https://dev.itcs.app/api/1.0.0/seafarers?conditions={\"tempIndentificationData\":{\"fullName\":{\"surname\":{\"en\":" + surnameEN + ",\"ua\":" + surnameUA + ",},\"name\":{\"en\":" + nameEN + ",\"ua\":" + nameUA + ",},\"patronymic\":{\"en\":" + patronymicEN + ",\"ua\":" + patronymicUA + ",},},\"birthdate\":{\"day\":30,\"month\":10,\"year\":1980,}}"
+	headers = {'X-CSRFToken': authToken}
+	response = requests.get(url = URL, headers=headers, verify=False)
+	#print('Status: ', response.status_code)
+	message = message + "Search sailor status: {}; ".format(response.status_code)
+	if response.status_code == 200:
+		print("Find sailor")
+		print(response.json())
+		seafarerId = response.json()[0]['seafarerId']
+		#print("seafarerId :", seafarerId)
+	else:
+		print('--------Sailor Create----------------')
+		URL = "https://dev.itcs.app/api/1.0.0/seafarers"
+		data = {
+			"tempIndentificationData": {
+				"fullName": { 
+					"surname": {"en": surnameEN, "ua": surnameUA,}, 
+					"name": {"en": nameEN, "ua": nameUA,}, 
+					"patronymic": {"en": patronymicEN, "ua": patronymicUA,}, 
+				}, 
+				"birthdate": { 
+					"day": 30, 
+					"month": 10, 
+					"year": 1980, 
+				}, 
+			},  
+		}
+		response = requests.post(URL, json=data, headers=headers)
+		message = message + "Create sailor status: {}; ".format(response.status_code)
+		if response.status_code == 201:
+			print(response.json())
+			seafarerId = response.json()['seafarerId']
+
+	#print('--------Create Cert----------------')
+	URL = "https://dev.itcs.app/api/1.0.0/seafarerTrainingInstitutionCertificates"
+	trainingСenterName = "НТЗ ПиратыСомали"
+	trainingСenterNumber = 1234567890
+	trainingСenterSpeciality = "Підготовка з надання першої медичної допомоги"
+	data = {
+		"seafarerId": seafarerId,
+		"trainingСenterRequisites": {"name": trainingСenterName, "unifiedStateRegisterOfEnterprisesAndOrganizationsOfUkraine": trainingСenterNumber},
+		"speciality": trainingСenterSpeciality,
+		"issuanceDate": {"day": 4, "month": 10, "year": 2019,},
+		"expirationDate": {"day": 4, "month": 10, "year": 2020},
+	}
+	response = requests.post(URL, json=data, headers=headers)
+	message = message + "Create certificate status: {}; ".format(response.status_code)
+	if response.status_code == 201: 
+		#print(response.json())
+		documentNumber = response.json()['documentNumber']
+	
+	infoData = {
+		'Token': authToken,
+		'Token Len': len(authToken),
+		'SeafarerId': seafarerId,
+		'Cert trainigApiNumber': documentNumber,
+		'Message': message,
+	}
+	return JsonResponse(infoData)
+
+
+
 @login_required(login_url="login/")
 def dashInfo(request):
 	profile, created = Profile.objects.get_or_create(user=request.user)
