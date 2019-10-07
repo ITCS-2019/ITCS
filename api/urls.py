@@ -26,8 +26,6 @@ urlpatterns = [
     path('dashInfo/', views.dashInfo, name="api-dashInfo"),
     path('dashInfoStat/', views.dashInfoStat, name="api-dashInfoStat"),
     path('directionsInfo/', views.trainingDirectionsInfo, name="api-directionsInfo"),
-    #path('trainigDirections/', views.ListTrainigDirectionsView.as_view(), name="trainigDirections-all"),
-    #path('certificates/', views.CertificateViewSet.as_view(), name="certificates-all"),
     path('allCerts/', views.certificates, name="api-allCerts"),
     path('trainingOrganisationsInfo/', views.trainingOrganisationsInfo, name="api-trainingOrganisationsInfo"),
     path('organisationDirectionsStat/', views.organisationDirectionsStat, name="api-organisationDirectionsStat"),
@@ -45,6 +43,4 @@ urlpatterns = [
     path('uploadSailorPhoto/', views.uploadSailorPhoto, name='api-uploadSailorPhoto'),
     path('uploadOrganisationLogo/', views.uploadOrganisationLogo, name='api-uploadOrganisationLogo'),
     path('uploadRegulationPDF/', views.uploadRegulationPDF, name='api-uploadRegulationPDF'),
-    # path('uploadXLS/', views.uploadXLS, name='api-uploadXLS'),
-    # path('logout/', views.LogoutView.as_view(), name="api-logout"),
 ]

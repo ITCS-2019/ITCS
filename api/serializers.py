@@ -23,23 +23,6 @@ class UserSerializer(serializers.ModelSerializer):
 		model = User
 		fields = ('id', 'username', 'full_name', 'is_active', 'profile', )
 
-	# def get_links(self, obj):
-	# 	request = self.context['request']
-	# 	return {
-	# 		'self': reverse('user-detail', kwargs={'pk': obj.pk},
-	# 			request=request),
-	# 	}
-
-	# def get_links(self, obj):
-	# 	request = self.context['request']
-	# 	username = obj.get_username()
-	# 	return {
-	# 		'self': reverse('user-detail', kwargs={User.USERNAME_FIELD: username},
-	# 			request=request),
-	# 	}
-
-#class UserProfileSerializer(serializers.Serializer):
-
 
 class MariloggerSerializer(serializers.Serializer):
 	message = serializers.CharField()

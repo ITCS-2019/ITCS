@@ -83,15 +83,6 @@ class UserViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.Gener
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
-	#TODO: Show user by id only for admin?
-	# def retrieve(self, request, pk):
-	# 	print('--------------------')
-	# 	print(pk)
-	# 	current_user = User.objects.get(id = request.user.id)
-	# 	serializer = UserSerializer(current_user)
-	# 	#return Response({"User": "You can't get user by id"}, status=200)
-	# 	return Response({"user": serializer.data})
-
 	def list(self, request):
 		users = User()
 		users_count = int()
@@ -173,31 +164,10 @@ class RangeViewSet(mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.G
 		directionID = request.data.get('direction_id')
 		startFromNumber = request.data.get('startRange')
 		endAtNumber = request.data.get('endRange')
-		# print('Organisation ID: ', orgId)
-		# print('Direction ID: ', directionID)
-		# print('Start From Number: ', startFromNumber)
-		# print('End At Number: ', endAtNumber)
-		# if not (startFromNumber.isdigit()):
-		# 	print('rangeStartNumber not digit')
-		# 	form = RangeNumberForm(orgId)
-		# 	organisation = TrainigOrganisation.objects.get(id=orgId)
-		# 	return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeStartNumber not digit"})
-		# if not (endAtNumber.isdigit()):
-		# 	print('rangeEndNumber not digit')
-		# 	form = RangeNumberForm(orgId)
-		# 	organisation = TrainigOrganisation.objects.get(id=orgId)
-		# 	return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "rangeEndNumber not digit"})
-		# if int(endAtNumber) < int(startFromNumber):
-		# 	print('endAtNumber < startFromNumber')
-		# 	form = RangeNumberForm(orgId)
-		# 	organisation = TrainigOrganisation.objects.get(id=orgId)
-		# 	return render(request, 'crm_rangeNumber.html', {'form': form, 'organisation': organisation, "error_message": "endAtNumber < startFromNumber"})
-		#print('--------------------')
+		
 		organisation = TrainigOrganisation.objects.get(id=orgId)
 		direction = organisation.directions.get(id=directionID)
-		#print(organisation)
-		#print(direction)
-		#print('--------------------')
+		
 		for i in range(int(startFromNumber), int(endAtNumber)+1):
 			print(i, ' - current number')
 			rangeNum,created = RangeNumber.objects.get_or_create(number=i, organisation_id=orgId , organisation_name=organisation.organisation_name, direction_id=directionID, direction_name=direction.direction_title)
@@ -230,13 +200,6 @@ class TrainigDirectionViewSet(DefaultsMixin, viewsets.ModelViewSet):
 			directions = TrainigDirections.objects.all()
 		serializer = TrainigDirectionSerializer(directions, many=True)#TODO: check if len(directions) count > 1
 		return Response({"directions": serializer.data})
-
-	# def get_permissions(self):
-	# 	if self.request.method == 'GET':
-	# 		return [permissions.IsAuthenticated()]
-	# 	else:
-	# 		return [permissions.IsAdminUser()] #TODO: use custom permission class for Admin|Inspectors
-
 
 class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 	"""
@@ -329,19 +292,6 @@ class TrainigOrganisationViewSet(DefaultsMixin, viewsets.ModelViewSet):
 
 		return Response({"message": "Organisation updated"}, status=200)
 
-
-	# def create(self, request, format=None):
-	# 	if request.user.groups.all()[0].name == 'НТЗ':
-	# 		return Response({"Message": "You can't create organisation"}, status=200)
-	# 	else:
-	# 		print('---------------')
-	# 		print(request.data.get('directions'))
-
-	# def get_permissions(self):
-	# 	if self.request.method == 'GET':
-	# 		return [permissions.IsAuthenticated()]
-	# 	else:
-	# 		return [permissions.IsAdminUser()] #TODO: use custom permission class for Admin|Inspectors
 			
 class RegulationViewSet(viewsets.ModelViewSet):
 	"""
@@ -484,7 +434,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 		if request.data.get('inn') is not None:
 			dbSailor = Sailor.objects.filter(inn=request.data.get('inn')).first()
 			if dbSailor is not None:
-				if certification.inn != dbSailor.inn:#???
+				if certification.inn != dbSailor.inn:
 					sailor = Sailor()
 					sailor.first_name_en = request.data.get('first_name_en')
 					sailor.last_name_en = request.data.get('last_name_en')
@@ -492,7 +442,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 					sailor.first_name_ukr = request.data.get('first_name_ukr')
 					sailor.second_name_ukr = request.data.get('second_name_ukr')
 					sailor.born = request.data.get('born')
-					sailor.died = request.data.get('died')#?
+					sailor.died = request.data.get('died')
 					sailor.inn = request.data.get('inn')
 					sailor.passport_serie = request.data.get('passport_serie')
 					sailor.passport_number = request.data.get('passport_number')
@@ -524,17 +474,14 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			)
 			if created:
 				sailor.save()
-		#certification.sailor = sailor#???
 
 		trainigOrganisation = TrainigOrganisation()
 		if request.user.groups.all()[0].name == 'НТЗ':
 			trainigOrganisation = TrainigOrganisation.objects.get(organisation_name=request.user.profile.organization_name)
 		else:
 			trainigOrganisation = TrainigOrganisation.objects.get(id=request.data.get('trainigOrganisation'))
-		#certification.trainigOrganisation = trainigOrganisation#???
 		
 		trainigDirection = TrainigDirections.objects.get(id=request.data.get('training_direction'))
-		#certification.training_direction = trainigDirection???
 
 		#get or create print settings
 		
@@ -566,8 +513,7 @@ class CertificateViewSet(viewsets.ModelViewSet):
 
 			printSettings, created = CertificatePrintSettings.objects.get_or_create(
 				logo_pic = trainigOrganisation.logo_pic,
-    			bg_pic = trainigOrganisation.certBg_pic,
-    			#sailor_photo 
+    			bg_pic = trainigOrganisation.certBg_pic, 
     			organisationNameEng = trainigOrganisation.organisation_name_eng,
     			organisationAdress = trainigOrganisation.mail_adress_ukr,
     			organisationAdressEng = trainigOrganisation.mail_adress_eng,
@@ -625,7 +571,6 @@ class CertificatesOfOrganisation(mixins.RetrieveModelMixin, mixins.ListModelMixi
     Use organisation id for retrieve certificates.
     If user from training organisations return list of certificates of this organisation.
     """
-	#serializer = CertificateSerializer
 	serializer = CertificateCustomSerializer
 
 	def list(self, request):
@@ -734,7 +679,6 @@ def dashInfo(request):
 		}
 		dashDataArr.append(dashData)
 		dashInfoDict = {'dashInfo': dashDataArr,}
-		# dashInfoDict = {'dashInfo': dashData,}#'trainigOrganisations': trainigOrganisations,}
 		return JsonResponse(dashInfoDict)
 
 @login_required(login_url="login/")
@@ -1217,7 +1161,7 @@ def exportToPrint(request):
 		print('Incorrect Export Type')
 		return HttpResponse(status=204)
 
-
+сhckHost = "http://127.0.0.1:8080/certificate/"
 def printCertificate(request, certID):
 	cert = Certificate.objects.get(id=certID)
 	organisationLogoURLStr = cert.trainigOrganisation.logo_pic
@@ -1257,7 +1201,7 @@ def printCertificate(request, certID):
 	validDateStr = cert.valid_date
 
 	# String which represent the QR code 
-	s = "https://check-certificate.online/certificate/" + certID + '/'
+	s = сhckHost + certID + '/'
 	# Generate QR code 
 	url = pyqrcode.create(s)
  
@@ -1432,28 +1376,3 @@ def certificates(request):
 		certsDataArr.append(certData)
 	certificatesDict = {'certificates':certsDataArr,}
 	return JsonResponse(certificatesDict)
-# @login_required(login_url="login/")
-# def uploadXLS(request):
-# 	if "GET" == request.method:
-# 		print('GET request')
-# 		return render(request, "crm_xlsImport.html", {})
-# 	else:
-# 		print('load file')
-# 		print(request.POST.get('my_options'))
-# 		excel_file = request.FILES["excel_file"]
-# 		# TODO: validations check extension or file size
-# 		wb = openpyxl.load_workbook(excel_file, read_only=False, keep_vba=False, data_only=False, keep_links=True)
-# 		# getting a particular sheet by name out of many sheets
-# 		worksheet = wb[0]
-# 		print(worksheet)
-# 		excel_data = list()
-# 		# iterating over the rows and
-# 		# getting value from each cell in row
-# 		for row in worksheet.iter_rows():
-# 			row_data = list()
-# 			for cell in row:
-# 				row_data.append(str(cell.value))
-# 			excel_data.append(row_data)
-# 		print(excel_data)
-# 		return render(request, 'crm_xlsImport.html', {"excel_data":excel_data})
-# 		#return HttpResponse(status=204)
