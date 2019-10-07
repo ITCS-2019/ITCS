@@ -593,10 +593,6 @@ class CertificateViewSet(viewsets.ModelViewSet):
 				certification.printInfo = printSettings
 
 			certification.save()
-
-			useTrainingAPI = request.data.get('useTrainingAPI')
-			if useTrainingAPI:
-				print('Add sailor to Training API')
 		
 			marilogger = Marilogger()
 			marilogger.message = "{} {}".format(
@@ -605,6 +601,30 @@ class CertificateViewSet(viewsets.ModelViewSet):
 			marilogger.action_username =  request.user.username
 			marilogger.date = datetime.datetime.now()
 			marilogger.save()
+
+			# useTrainingAPI = request.data.get('useTrainingAPI')
+			# if useTrainingAPI:
+			# print('---Add sailor to Training API---')
+			#itn = "1255121212" = request.data.get('inn')
+			#surnameEN = request.data.get('last_name_en')
+			#urnameUA = request.data.get('last_name_ukr')
+			#nameEN = request.data.get('first_name_en')
+			#nameUA = request.data.get('first_name_ukr')
+			#patronymicEN = ""
+			#patronymicUA = request.data.get('second_name_ukr')
+			#birthdateDay = request.data.get('born').day
+			#birthdateMonth = request.data.get('born').month
+			#birthdateYear = request.data.get('born').year
+
+			#trainingСenterName = "НТЗ ПиратыСомали" = trainigOrganisation.organisation_name
+			#trainingСenterNumber = 1234567890 = trainigOrganisation.nds_number
+			#trainingСenterSpeciality = "Підготовка з надання першої медичної допомоги" = trainigDirection.direction_title
+			#issuanceDateDay = request.data.get('date_of_issue').day
+			#issuanceDateMonth = request.data.get('date_of_issue').month
+			#issuanceDateYear = request.data.get('date_of_issue').year
+			#expirationDateDay = request.data.get('valid_date').day
+			#expirationDateMonth = request.data.get('valid_date').month
+			#expirationDateYear = request.data.get('valid_date').year
 
 		return Response({"message": "Add Certificate"}, status=200)
 
@@ -705,6 +725,26 @@ def trainingAuth(request):
 	documentNumber = ""
 	authToken = ""
 
+	itn = "1255121212"
+	surnameEN = "Drinkov"
+	surnameUA = "Дрыньков"
+	nameEN = "Brink"
+	nameUA = "Брынь"
+	patronymicEN = "Brinkovich"
+	patronymicUA = "Брынькович"
+	birthdateDay = 5
+	birthdateMonth = 10
+	birthdateYear = 1970
+
+	trainingСenterName = "НТЗ ПиратыСомали"
+	trainingСenterNumber = 1234567890
+	trainingСenterSpeciality = "Підготовка з надання першої медичної допомоги"
+	issuanceDateDay = 4 
+	issuanceDateMonth = 10 
+	issuanceDateYear = 2019
+	expirationDateDay = 4
+	expirationDateMonth = 10
+	expirationDateYear = 2020
 	#print('--------Auth----------------')
 	URL = "https://dev.itcs.app/api/1.0.0/authentication/signin"
 	data = {
@@ -721,13 +761,6 @@ def trainingAuth(request):
 		authToken = response.json()['token']
 
 	print('--------Sailor Search----------------')
-	surnameEN = "Drinkov"
-	surnameUA = "Дрыньков"
-	nameEN = "Brink"
-	nameUA = "Брынь"
-	patronymicEN = "Brinkovich"
-	patronymicUA = "Брынькович"
-	itn = "1255121212"
 	#URL = "https://dev.itcs.app/api/1.0.0/seafarers?conditions={\"passport\":{\"seriesAndNumber\":\"AA123456\"}}"
 	URL = "https://dev.itcs.app/api/1.0.0/seafarers?conditions={\"individualTaxpayerNumber\":\"" +  itn + "\"}"
 	#URL = "https://dev.itcs.app/api/1.0.0/seafarers?conditions={\"tempIndentificationData\":{\"fullName\":{\"surname\":{\"en\":" + surnameEN + ",\"ua\":" + surnameUA + ",},\"name\":{\"en\":" + nameEN + ",\"ua\":" + nameUA + ",},\"patronymic\":{\"en\":" + patronymicEN + ",\"ua\":" + patronymicUA + ",},},\"birthdate\":{\"day\":30,\"month\":10,\"year\":1980,}}"
@@ -751,9 +784,9 @@ def trainingAuth(request):
 					"patronymic": {"en": patronymicEN, "ua": patronymicUA,}, 
 				}, 
 				"birthdate": { 
-					"day": 30, 
-					"month": 10, 
-					"year": 1980, 
+					"day": birthdateDay, 
+					"month": birthdateMonth, 
+					"year": birthdateYear, 
 				}, 
 			},  
 		}
@@ -765,15 +798,12 @@ def trainingAuth(request):
 
 	#print('--------Create Cert----------------')
 	URL = "https://dev.itcs.app/api/1.0.0/seafarerTrainingInstitutionCertificates"
-	trainingСenterName = "НТЗ ПиратыСомали"
-	trainingСenterNumber = 1234567890
-	trainingСenterSpeciality = "Підготовка з надання першої медичної допомоги"
 	data = {
 		"seafarerId": seafarerId,
 		"trainingСenterRequisites": {"name": trainingСenterName, "unifiedStateRegisterOfEnterprisesAndOrganizationsOfUkraine": trainingСenterNumber},
 		"speciality": trainingСenterSpeciality,
-		"issuanceDate": {"day": 4, "month": 10, "year": 2019,},
-		"expirationDate": {"day": 4, "month": 10, "year": 2020},
+		"issuanceDate": {"day": issuanceDateDay, "month": issuanceDateMonth, "year": issuanceDateYear,},
+		"expirationDate": {"day": expirationDateDay, "month": expirationDateMonth, "year": expirationDateYear},
 	}
 	response = requests.post(URL, json=data, headers=headers)
 	message = message + "Create certificate status: {}; ".format(response.status_code)
