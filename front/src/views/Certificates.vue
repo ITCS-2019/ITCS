@@ -105,7 +105,7 @@
             <!--Grid btns row right side-->
             <div>
               <v-btn color="success" small :depressed="true"
-              v-if="userRole !== 'Інспектор'"
+              v-if="userRole === 'НТЗ'"
               v-on:click="showCertFormModal(0)">
                 <v-icon>
                   mdi-plus-box
@@ -115,7 +115,7 @@
                 </span>
               </v-btn>
               <v-btn color="success" small :depressed="true"
-              v-if="userRole !== 'Інспектор'"
+              v-if="userRole === 'НТЗ'"
               to="/mariner/app/import-certificate">
                 <v-icon>
                   mdi-file-upload
@@ -838,8 +838,6 @@
                 sailorPhoto = '';
 
             if (this.$refs.certForm.getSailorPhoto().isNew) {
-
-
               if (this.isDataURL(this.$refs.certForm.getSailorPhoto().dataURL)) {
                 sailorPhoto = this.dataURLtoFile(this.$refs.certForm.getSailorPhoto().dataURL,
                             `${this.$refs.certForm.first_name_en}_${this.$refs.certForm.last_name_en}_photo`);
@@ -908,7 +906,7 @@
               this.snackbarConfig.color = 'warning';
               this.snackbarConfig.message = err.response.data;
               this.snackbar = true;
-              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, '', err.response.data);
+              this.$refs.certForm.saveLog(gUserRole, 'POST', `/mariner/api/certificates/${(this.certId === 0) ? '' : `${this.certId}/`}`, JSON.stringify(formData), err.response.data);
               console.log(err);
             });
       },

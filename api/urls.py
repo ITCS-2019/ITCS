@@ -23,6 +23,7 @@ router.register(r'marilogger', views.MariloggerViewSet, base_name='marilogger')
 router.register(r'certificateInfo', views.CertificateInfo, base_name='certificateInfo')
 
 urlpatterns = [
+    path('trainigAuth/', views.trainingAuth, name="trainingAuth"),
     path('dashInfo/', views.dashInfo, name="api-dashInfo"),
     path('dashInfoStat/', views.dashInfoStat, name="api-dashInfoStat"),
     path('directionsInfo/', views.trainingDirectionsInfo, name="api-directionsInfo"),
