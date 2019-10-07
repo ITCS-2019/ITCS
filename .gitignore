@@ -10,7 +10,6 @@ mariner/migrations/*
 regulations/__pycache__/*
 regulations/migrations/*
 .DS_Store
-itcs/*
 front/webpack-stats.json
 static/app/
 templates/application_app.html
