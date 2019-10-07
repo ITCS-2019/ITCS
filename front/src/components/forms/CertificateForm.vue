@@ -524,9 +524,6 @@ export default {
       return new Promise((resolve, reject) => {
         const token = localStorage.getItem('testApiToken');
 
-        console.log('localStorage.getItem(testApiToken)');
-        console.log(token);
-
         if (token && token.length > 0 && !reauth) {
           delete window.axios.defaults.headers.common['X-CSRFToken'];
           window.axios.defaults.headers.common['X-CSRFToken'] = token;
@@ -561,7 +558,9 @@ export default {
               seriesAndNumber: `${this.passport_serie}${this.passport_number}`
             }
           };
-          axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${JSON.stringify(params)}`).then(res => {
+          axios.get(`${this.trainingApi.schema}${this.trainingApi.host}/seafarers?conditions=${JSON.stringify(params)}`, {
+            withCredentials: true,
+          }).then(res => {
             this.setNativeToken();
             this.useTrainingAPI = false;
             let passportData = res.data[0].passport;
